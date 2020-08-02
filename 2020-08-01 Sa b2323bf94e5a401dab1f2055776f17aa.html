@@ -1,0 +1,642 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Project Proposal</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+</style></head><body><article id="b2323bf9-4e5a-401d-ab1f-2055776f17aa" class="page sans"><header><h1 class="page-title">2020-08-01 Sa</h1></header><div class="page-body"><h1 id="44c638bf-58d6-4ff1-996f-791646c03f3e" class="">Priorities</h1><ul id="57aa3519-8f71-4b8c-8fdc-a801fa896cf0" class="block-color-red_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Important &amp; urgent</span></li></ul><ul id="5131e840-fb47-4252-b4cc-16142ebb7e77" class="block-color-orange_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Important &amp; semi-urgent</span></li></ul><ul id="57678cb2-c669-4189-8f5f-d9b9331cfa9a" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Important &amp; not urgent</span></li></ul><ul id="c09225e8-d314-4473-a640-b686153d176f" class="block-color-teal_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Semi-important $ semi-urgent</span></li></ul><ul id="bc6015a8-b1ce-48d0-b000-706cd45fffb4" class="block-color-blue_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Not important &amp; urgent</span></li></ul><ul id="b6f07b95-4591-4b68-94d6-32ab68d17505" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Not important &amp; not urgent</span></li></ul><p id="c9f8e384-d357-4622-acb4-850c4bcc4667" class="">
+</p><ul id="10d36d5b-1485-4ea5-9560-35d1592f175b" class="block-color-red_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"><strong>00:00 - 00:00 Meeting Placeholder</strong></span></li></ul><p id="9aacea53-09b1-442a-8152-cfecc334e5aa" class="">
+</p><ul id="eb94965a-fbb0-428f-88b4-d6d62f5b6a5b" class="block-color-gray_background to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">12:00 - 11:59 Morning</span></li></ul><ul id="563ba365-0879-4772-8edd-042df9b0ba04" class="block-color-red_background to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Wake up by 8</span><ul id="283a8f80-11bc-40ec-99f8-e89263b96eae" class="bulleted-list"><li>Woke up &amp; got out of bed at  6 </li></ul></li></ul><ul id="d9a07dfc-31b6-4464-84a6-cd563fb85a15" class="block-color-red_background to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Wash hair</span></li></ul><ul id="72987937-1f4f-4f26-8e57-9643a40945ff" class="block-color-red_background to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked"><strong>09:00 - 01:00 RW HACKATHON</strong></span><ul id="39e22833-aa0c-41a6-9be3-dceca2bc75cc" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Name all errors</span></li></ul><ul id="994d37f5-13fd-4f0b-b58a-a982fe84fd5a" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Put error names in error list</span></li></ul><ul id="147191d1-015b-4689-8951-cf22fc231265" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Put error names on error doc</span></li></ul></li></ul><ul id="91c700e7-2330-463d-a6a5-547c2da0a35d" class="block-color-gray_background to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">12:00 - 09:00 Noon</span></li></ul><ul id="1d870e15-fc45-4e9b-89f3-989986de49d1" class="block-color-red_background to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked"><strong>[CS 184] Project 4 Due Sunday August 2</strong></span><ul id="08e9cb41-b1c3-46f7-b737-656de81ddeb2" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Part 5</span><ul id="97ba31c9-d8bb-470a-ba52-c29698e3c3db" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Blinn-Phong</span><ul id="808da089-58e9-4ddf-baa3-3f450ccfcb69" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Do</span></li></ul><ul id="d58714cc-b49b-4c40-9399-a4ee8824f40a" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Post image</span></li></ul></li></ul><ul id="2972f24b-0954-484e-9b47-d99f5c3dfc67" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Texture Mapping</span><ul id="36662586-8d47-4d1e-9cb1-4fff378edcc2" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Do </span></li></ul><ul id="43e94acc-a451-4c52-bc5a-fdb6a09c7b41" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Post image</span></li></ul><ul id="1bc5279f-6d5f-47c6-86bf-784e2eb4bec6" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Blurb</span></li></ul></li></ul><ul id="fa803798-3079-4f68-a0bb-a64d6319431d" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Bump &amp; Displacement Map</span><ul id="2c22e45d-ab3e-4f46-a4c1-902a1a7e13eb" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Do </span></li></ul><ul id="6c85ded1-c314-4f67-a6e4-f497f84b9e72" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Post image</span></li></ul><ul id="1a08a5fb-03cb-4b32-b628-369a7883a6d9" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Blurb</span></li></ul></li></ul><ul id="fd4d9d0f-a0c2-49ce-88b2-920b07086355" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Mirror</span><ul id="ad5c936a-9835-46ea-b11d-450d0d75fbd2" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Do </span></li></ul><ul id="3cdd47fe-d8e2-4fb5-a161-b128498b76d1" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Post image</span></li></ul><ul id="0f1a741d-c661-412e-beec-c29fa742311c" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Blurb</span></li></ul></li></ul></li></ul><ul id="33cef3dd-eb6e-454e-bf07-6b7eaedfdf63" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">PDF to Gradescope</span></li></ul><ul id="e705e1b0-51b6-43f5-ab2a-cb4a21f16390" class="to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">Tag submission</span></li></ul><p id="81b7e086-b9ed-4842-9679-afa837f64317" class="">
+</p><pre id="65b7a206-717c-471e-8055-6ad4d4e96a53" class="code"><code>git tag submission          // (1) Tag the latest commit as &quot;submission&quot;
+git push origin submission  // (2) Push the submission tag to remote server</code></pre><pre id="fc8cb264-8776-482c-9353-58889e399540" class="code"><code>git push origin :refs/tags/submission   // (1) Delete the old tag on remote server
+git tag -f submission                   // (2) Tag the latest commit as &quot;submission&quot;
+git push origin submission              // (3) Push the submission tag to remote server</code></pre><p id="c10a4a56-2830-4e29-9c3f-ee81168a7a58" class="">
+</p></li></ul><ul id="54dd3ab2-c276-4b41-88eb-871ce666983f" class="block-color-gray_background to-do-list"><li><div class="checkbox checkbox-on"></div> <span class="to-do-children-checked">08:00 - 11:59 Night</span></li></ul><ul id="5d9dec50-ce77-4862-ba5b-2c367e520a75" class="block-color-blue_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Bing</span><ul id="6fa61825-3124-4c88-b59b-a9d8bf2eb5d5" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Daily set</span></li></ul><ul id="9fe33af1-37a7-45c1-81b1-b428643f0aa8" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Use Edge</span></li></ul><ul id="22487ba7-e70a-48b8-bc55-55a58d5a939d" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Search on PC</span></li></ul><ul id="10ae2b8a-5855-4ac3-94cd-50302c16cdec" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Search on phone</span></li></ul></li></ul><ul id="bd1342cd-eabb-4273-9c5b-8cda1a32b868" class="block-color-blue_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Resume</span><ul id="29ff64c2-d812-4760-98be-587e3bb1ae13" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Make program that takes in input and populates resume template with it (dropdown)</span></li></ul><ul id="2c217830-eb9b-4a23-8364-834461216418" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Create resume</span></li></ul><ul id="c31bf98b-48f7-4fb6-bff5-13ba5ea810dc" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Send to Usman</span></li></ul></li></ul><ul id="719dc08f-a4ba-4638-8183-2214d201b65c" class="block-color-orange_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[PH] Physical Health (exercise, life skills, etc.)</span><ul id="e062f07d-8a2f-4793-9a17-52b829643bd1" class="block-color-orange_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Go on a walk (legs losing blood faster now!)</span></li></ul><ul id="900bc856-c74c-4d48-8009-df5c76df0ce0" class="bulleted-list"><li>Jumprope 50 times</li></ul><ul id="efedef4f-7511-46c4-b34c-c31177995144" class="bulleted-list"><li>Walk</li></ul><ul id="7aab0ee7-6189-43ee-94af-8b73f140df1f" class="bulleted-list"><li>Count to 100 in Japanese plus March in place exercise</li></ul><ul id="12d8723a-0f2f-4fa6-9206-b93c6a250cbc" class="bulleted-list"><li>Clean</li></ul></li></ul><p id="646b7bdb-3b14-45cd-87ee-39f97e62cb56" class="">
+</p><p id="d26af831-5aad-4e09-bd49-f8f322fe0c75" class="">
+</p><p id="fbeb8c8c-4974-4467-ac06-9e8364e05344" class="">30 minutes each: (Alternate between red and other colors)</p><p id="c0e75c66-6269-4244-bea4-8c0c8ab2618e" class="">
+</p><p id="c306589b-28a4-4b61-acc0-fdd09715d11e" class="">
+</p><ul id="94cc00ad-1d11-4f78-a1e9-a5c68929177d" class="block-color-red_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"><strong>[CS 184] Final Project </strong></span><ul id="c26feeae-47c1-4bce-bdcb-b5cd0dc8c68e" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"></span></li></ul><ul id="867a6e37-c914-405d-b232-fa0f32a7677c" class="bulleted-list"><li><strong>Proposal Due</strong>: Friday July 31st 11:59pm.</li></ul><ul id="b2beb07e-f337-402f-982c-f453e4ba20ee" class="bulleted-list"><li><strong>Proposal Feedback</strong> will be returned by: Monday August 3.</li></ul><ul id="d30f1ca3-84cc-406b-ab3c-b6ac15f7b158" class="bulleted-list"><li><strong>Milestone Report Due</strong>: Friday August 7th 11:59pm.</li></ul><ul id="678eab21-c960-4acf-a4b7-02c6201932f2" class="bulleted-list"><li><strong>Final Presentations</strong>: <del>Thursday August 13th</del>. --&gt; Friday, August 14th.</li></ul><ul id="3fc40e5b-11cd-4620-86f3-86effcc230ee" class="bulleted-list"><li><strong>Final Deliverables Due</strong>: Friday August 14th 11:59pm.<ul id="2031be7f-e045-4048-86da-db8eb8ce59c4" class="bulleted-list"><li>Due to grading deadline constraints, there are absolutely <strong>no late days allowed</strong>!</li></ul></li></ul><ul id="32619479-e62c-4393-9aca-7479e9d41474" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Ask mom to help brainstorm</span></li></ul><ul id="5c42525a-874e-4061-8dc4-537d48a73b5b" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Project proposal (Google Form) <strong>Due Friday July 31</strong></span><ul id="8ee53612-023d-43a4-bd58-1873b30ebe34" class="bulleted-list"><li>Based on effort. Being more specific allows TAs to be more helpful</li></ul></li></ul><ul id="8a9f97d5-ec0d-4ee8-a492-401d3d486766" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Checkpoint <strong>Due Friday August 7</strong></span><ul id="f9fa8027-2758-4ec6-8e8a-cd4266caac35" class="bulleted-list"><li>Based on effort</li></ul></li></ul><ul id="62e879bf-0abd-4b12-93eb-5302b6257906" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Video, slides, final report <strong>Due Friday August 14</strong></span><ul id="fbf3fc12-8656-4226-9f1e-1fcb88d68b3c" class="bulleted-list"><li>Mix of technical difficulty, results, presentation difficulty</li></ul><ul id="5fe578e2-a0ab-49ad-bf04-ad2238ef324f" class="bulleted-list"><li>2X work of normal project per person</li></ul></li></ul><ul id="26818c07-c6ae-4354-832e-e0fa26ed6807" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Look over</span></li></ul></li></ul><p id="037f0145-6173-4a4b-9393-2993a73e9652" class="">
+</p><ul id="7aabe0fa-b70d-4760-bab1-496d180fe32b" class="block-color-red_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[RW]</span><ul id="a48770a8-1abc-4f1d-9d24-629d4f24ab02" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">RoR Github</span><ul id="c99b6be6-96bf-48d4-8fb6-6b3177a2531e" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Bug fix current errors</span></li></ul><ul id="94385c36-0cbd-487d-9b81-0edaa336ef10" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Word set match/intersection</span></li></ul></li></ul><ul id="7c5e6259-78c2-4faa-9482-5a6beb034de7" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"><a href="https://www.notion.so/Odin-Project-Ruby-acdf22a33cf9409abe2b8bfe349a1e01">Odin Project (Ruby)</a> </span><ul id="afd0bdd0-a16e-4214-91ac-5fc19cafa120" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Mini Ruby projects</span></li></ul></li></ul></li></ul><ul id="e2434452-d6ae-4502-a2dc-0ae488f95941" class="block-color-orange_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[NT] Work on assigned tasks</span><ul id="d235b885-74f8-41d5-a622-077cc80742de" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Work on FE</span></li></ul></li></ul><p id="754ad7a4-4cd5-470d-9a92-aee479e60cfc" class="block-color-orange_background">[PB] Project Beanstalk (Bean-stocks) <a href="https://www.notion.so/Secret-Managers-e51233cef71e4735a81696a99611ac20"><span class="icon">🔒</span>Secret Managers</a> <em>— 30min/wkday</em><div class="indented"><ul id="007c47be-c992-4cba-9d8a-5b194fae0704" class="bulleted-list"><li>Channeling<ul id="3dffbb01-44df-42d2-a9cd-393c5d9258a6" class="bulleted-list"><li>Continue to brainstorm<ul id="aa0327a8-fba8-483f-9b56-571e982be824" class="bulleted-list"><li>Pass through 3 points, all points below threshold<ul id="c58d4268-2ca3-43a7-aa19-8fec6d12fa90" class="bulleted-list"><li>Line between two points</li></ul><ul id="06306099-a0b6-4b55-b2fc-6db4beb29419" class="bulleted-list"><li>Third point within +/- threshold</li></ul><ul id="f285b827-a60e-4a74-98df-20cef20b9ff1" class="bulleted-list"><li>All other points also within threshold or below</li></ul><ul id="bd539694-b778-4c74-ba9b-5a320909dec9" class="bulleted-list"><li>Keep iterating until found or give up or tried all combo</li></ul></li></ul><ul id="94d9ef34-0d80-40b1-ab5d-30fdf575dadd" class="bulleted-list"><li>SVM inspired optimization model?</li></ul></li></ul><ul id="be99a805-c4a1-4def-acc8-18254d5b75c7" class="bulleted-list"><li>Discuss with mom</li></ul></li></ul></div></p><ul id="e3d1a398-18d0-48c5-9416-45994d535b60" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[GWC] <a href="https://www.notion.so/Mask-Hygiene-e96128a8499d4daa89d565458c9276d8"><span class="icon">😷</span>Mask Hygiene</a> — <em>30mins/wkday</em></span><ul id="36f1c2c0-599a-4800-b660-c05fe84ab13c" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Ask: what is there for me to do?</span></li></ul></li></ul><ul id="5ce354fc-3335-4b43-a03e-eefdc4034130" class="block-color-orange_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[PP] Personal Project</span><ul id="e1eeaaa2-220b-4a9c-bf7d-c9d059d61c25" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Personal website <a href="https://vercel.com/home">https://vercel.com/home</a></span></li></ul><ul id="8e3fde58-702c-4fdb-b52f-c06193b49d9b" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Make app</span><ul id="dce8da65-b8c9-4f69-aeb1-befeade57d9a" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Make IG for app</span></li></ul></li></ul><ul id="5cdb4c45-084f-42ad-8fa4-263fbcf50a21" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">create bot to follow people and like photos (take inspo from existing IG automation bots for further refinement)</span><ul id="9fafe1cf-5363-468b-b41a-752df25aac32" class="bulleted-list"><li>For selfie IG (brand deals)</li></ul><ul id="00640ed4-0763-49c1-b9fb-a7934e2d4d3d" class="bulleted-list"><li>For app promo IG</li></ul></li></ul><ul id="9deb7418-3e9b-44b2-b8f6-eba2a089f43e" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Business name service Etsy</span></li></ul><ul id="1b8d84b7-084d-4ab0-bc85-71e98cdd8e2e" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">DS on amazon books — what kind is most popular?</span><ul id="9a0f8910-2cf9-461f-805b-f67f6e282cc9" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Generate novel based on those param &amp; publish</span></li></ul></li></ul></li></ul><ul id="c363a2c6-75da-4ba0-910e-9a0ed4aab9a2" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[Public Resume] CS Wordpress blog &amp; v-tuber channel</span><ul id="4944bfc2-7ce2-4215-beab-6582eab422e2" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Article about how to do loop subdivision</span></li></ul><ul id="3731f70d-6c36-49b1-b82e-189867d3980a" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Article about how to do sqrt(3) subdivision</span></li></ul><ul id="822cef05-ef0c-41f1-b2c1-21b0cda4f226" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">1 reflection article per CS 184 project (technologies &amp; concepts used) + link to writeup</span></li></ul><ul id="97d7b5b3-59ef-49d2-9335-20256239fe8a" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Sudoku tips</span></li></ul></li></ul><ul id="4d530c52-84d8-4cfa-9684-97ef0c87dd04" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Recipe recommendation</span></li></ul><ul id="eb6bedc8-54ef-4498-ad4e-894adbf35b17" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Generate text/chatbot based on my text messages (FB)</span></li></ul><ul id="8c1a677d-9cea-4a15-92bd-ea837e3a4cb2" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[PP] Discord bot — meeting, random image bot</span></li></ul><ul id="471727c5-ec9d-4a1d-af79-5d78b54b2a07" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[PP] Learn React Native</span></li></ul><ul id="74958b22-cf43-42f8-9f1f-e9f379e6c306" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[PP] Recipe Recommendation</span><ul id="e3865144-d73a-4251-9ba1-8feda34a3f22" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Write out steps</span></li></ul></li></ul><p id="0382337b-7d8c-432e-b432-93e67499e582" class="">
+</p><ul id="1f454cb2-e6d1-486a-9de2-a730be7f75cc" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Write story (webnovels.com)</span><ul id="0e5de490-c8e9-4b3b-8ef5-6e0a17819aaf" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"> Chapter</span></li></ul><ul id="d18c2fe3-d8b7-4842-9f63-9917ddf65037" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Cover</span></li></ul><ul id="d249d474-fb17-431c-abe6-735201d0110f" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Make Discord</span></li></ul><ul id="a5c18a0e-5423-45df-b5c5-acf591d365b7" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Make Patreon</span></li></ul><ul id="498e1a4a-bbb9-406e-9baf-5a56a8bd134e" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Make Ko-fi/Paypal</span></li></ul></li></ul><ul id="7a51852a-fc5b-4472-8474-310bdaab7708" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Practice line art</span><ul id="c5f2cfbe-9ef6-4f75-884a-f922053ad9f9" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Lighter lines near highlights, thicker lines near shadow</span></li></ul></li></ul><ul id="a029b0ef-0f2f-4402-8aaf-4e55b739f50b" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Practice drawing</span><ul id="08bd7824-2a32-483e-9692-cab13718508b" class="bulleted-list"><li>Do one thing over and over again changing only 1 portion each time and choose the version you like the best. (Very little detail)</li></ul></li></ul><ul id="4715908a-bcd0-453d-ad96-5d963bb183ef" class="block-color-blue_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[IG] Take photo, edit, post, 30 tags &amp; location tagging</span></li></ul><ul id="917c8a7c-5183-4a23-bbc9-4d43fa9672f9" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[LC] Leetcode or apply to internships/research</span></li></ul><ul id="e8558c4f-dca5-4322-afdb-fc0aa9ea0a1e" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Watch School-Live!: <a href="https://www.youtube.com/watch?v=DW7-OJJA9Ag">https://www.youtube.com/watch?v=DW7-OJJA9Ag</a></span></li></ul><ul id="c35600c7-1a2c-4963-942a-675ee2120735" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Watch Red Shoes and the Seven Dwarves</span></li></ul><ul id="03b33f88-bca4-4dfe-8f7b-9e79a393af6c" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Watch White Snake</span></li></ul><ul id="6c196ea9-ac5a-4cd3-9a9b-b82a2ff2ee9d" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Watch Spongebob Musical</span></li></ul><ul id="ab3d7572-6393-4e99-8e26-a714896d5cc9" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Practice sudoku</span></li></ul><p id="60945ffb-794c-4183-99e2-cacd609cacca" class="">
+</p><ul id="711a9015-e977-4463-91fe-911e84f34c33" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[CS 184] Review/study/ask q in OH</span><ul id="a9947f23-380d-4325-aef9-9dcb732c4867" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Take notes from curr lecture slides</span><ul id="afffcb1c-30cc-41a5-bedf-135d91f588dc" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">11</span></li></ul><ul id="792a7b84-e19f-4869-8df7-6a657d79021a" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">12</span></li></ul><ul id="f8173b84-6625-4676-982d-d734e2c99afb" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">13</span></li></ul><ul id="b363ca9b-44be-428a-ba1b-795bad81258d" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">14</span></li></ul><ul id="3848c0e0-d160-459a-b52d-8ebad94a4a2f" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">15</span></li></ul><ul id="6b139e2e-e0bc-4b68-a2f8-9b3d53ac447c" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">16</span></li></ul><ul id="938b9a50-bafc-4128-a318-8119928f2c8f" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">17</span></li></ul><ul id="8f943bf2-9475-4619-a3fa-cf65d694ab12" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">18</span></li></ul><ul id="629986ae-f2ae-4a83-a410-8274753698ba" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">19</span></li></ul></li></ul><ul id="f076f991-cc55-4ed3-b41a-ba692188ff00" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Take notes from personal Discord channel</span></li></ul><ul id="d9602d56-4614-4e4f-89be-1124c43cd54c" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Take notes from Gradescope &amp; discussions worksheets &amp; discussion slides</span></li></ul><ul id="333287f8-7e4c-4b92-abc1-c72a428c56f6" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Compile questions and ask in OH</span></li></ul></li></ul><ul id="f70861ca-ec58-4a8e-be64-5b5fcd7f3273" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">[MH] <a href="https://www.notion.so/Journaling-5834f5c8dcba4d45b1c8656533f68898">Journaling</a> — <em>30min/day</em></span><ul id="a279490f-d8e7-4544-a0c3-9be1aa5c58e7" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"><a href="https://www.notion.so/Happiness-Journal-ae78ab071f56481da9456945125646d1"><span class="icon">🖋️</span>Happiness Journal</a></span></li></ul></li></ul><ul id="8a28b8a4-c06d-42bf-be7e-804ef81cab9e" class="block-color-yellow_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked"><a href="https://www.notion.so/Media-List-c957a3958f624b618dfba3bc9c2a99d8"><span class="icon">📕</span>Media List</a> / <a href="https://www.notion.so/Self-Learning-List-661370f45d634cbf81b19b77c40a72ce"><span class="icon">🎓</span>Self-Learning List</a> — <em>30min/day</em></span><ul id="a3349752-57ad-42fd-8ebd-7531b1702d9d" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">AT&amp;T <a href="https://learn.att.jobs/app/categories/SyHhx2s4m7GgVZN63UUC">https://learn.att.jobs/app/categories/SyHhx2s4m7GgVZN63UUC</a></span></li></ul><ul id="a400e33f-7101-41ec-9f58-ad2dd4f5cf48" class="to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Coursera</span></li></ul></li></ul><ul id="9da2aa85-1812-44cc-b9b4-c6aaf5e0ffaf" class="block-color-purple_background to-do-list"><li><div class="checkbox checkbox-off"></div> <span class="to-do-children-unchecked">Continue Blender course <a href="https://www.notion.so/Blender-df4b580c9a0a4dbfbd6b4f8b2a013291">Blender</a> &amp; practice 3D modeling/animation</span><ul id="dbb87a38-ac3a-4397-bc2c-931105e12398" class="bulleted-list"><li>Ch 6</li></ul></li></ul><p id="6692b6ab-c1ae-41b8-8227-839ba33b6a57" class="">
+</p></div></article></body></html>
