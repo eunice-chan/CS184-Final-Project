@@ -6,54 +6,322 @@
 <link rel="icon" href="penrosetriangle.svg">
 </head>
 <body class="page sans">
-<a href="./index.html">HOME</a> / <b><a href="#">PROPOSAL</a></b> / <a href="./milestone.html">MILESTONE</a> / <a href="./project.html">PROJECT</a>  / <a href="./demo.html">DEMO</a>
-
-
-<h1 class="page-title">Expressive Inverse Kinematics</h1><h1>CS 184 Final Project Proposal</h1>
+<a href="./index.html">HOME</a> / <b>
+<a href="#">PROPOSAL</a>
+</b> / <a href="./milestone.html">MILESTONE</a> / <a href="./project.html">PROJECT</a>  / <a href="./demo.html">DEMO</a>
+<br />
+<br />
+<br />
+<br />
+<h1 class="page-title">Expressive Inverse Kinematics</h1>
+<h1>CS 184 Final Project Proposal</h1>
 Eunice Chan | <i>August 1, 2020</i>
-
+<br />
 <h2>Summary</h2>
 In this project, I will explore and implement the common techniques to tackle inverse kinematics (IK). I am particularly interested in IK algorithms that allow a greater degree of ability to control stylistic variations of the animation. Because of this, I will primarily be looking at the iterative methods using a cost function to be minimized and Sequential Monte Carlo methods (SMCM) for solving IK problems.
-
-
+<br />
+<br />
 <h2>Problem Description</h2>
 IK is the problem of generating motion from a beginning and end pose. The challenge of IK lies in the fact that unlike forward kinematics, it is an inherently under-constrained problem: there can be zero, one, or many solutions. In this project, I aim to synthesize my learnings from various articles and papers to produce smooth and natural movement with IK that offers the flexibility to modify the style (or "personality") of the movement.
-
-
+<br />
+<br />
 <h2>Quality and Performance</h2>
 To judge the quality and performance of my implementation, for a set of actions / poses, compare IK animation with desired / natural animation. Actions / poses that I will compare with will be the examples shown in the papers and articles I reference.
-
-
+<br />
+<br />
 <h2>Goals and Deliverables</h2>
 <h3>Goal 1: Setup</h3>
 Set up the development environment.
-<ul><li>Create or find robot / basic arm, rope, and human figure models.</li><li>Place robot / basic arm, rope, and human figure in three isolated environments, and associate a "limb" with a control / target point while associating another part / limb with an anchor.</li><li>Implement extra functionality for ease of testing such as switching between environments, start / stop simulation, dropdown menu to switch among the IK methods implemented, select different style constraints, etc. (Done at beginning and at the end (wrap up) phases of the project)</li></ul><h3>Deliverables</h3><ul><li>Show a screenshot of each of the three environments.</li><li>Basic demo done with the ability to switch among the three objects and move the target point.</li><li>Demo of demoable testing features.</li></ul>
+<ul>
+  <li>Create or find robot / basic arm, rope, and human figure models.</li>
+  <li>Place robot / basic arm, rope, and human figure in three isolated environments, and associate a "limb" with a control / target point while associating another part / limb with an anchor.</li>
+  <li>Implement extra functionality for ease of testing such as switching between environments, start / stop simulation, dropdown menu to switch among the IK methods implemented, select different style constraints, etc. (Done at beginning and at the end (wrap up) phases of the project)</li>
+</ul>
+<h3>Deliverables</h3>
+<ul>
+  <li>Show a screenshot of each of the three environments.</li>
+  <li>Basic demo done with the ability to switch among the three objects and move the target point.</li>
+  <li>Demo of demoable testing features.</li>
+</ul>
 <h3>Reach Goal: Forward Kinematics</h3>
-<ul><li>Implement forward kinematics</li><li>Implement other features to make testing easier / more interactive</li></ul>
+<ul>
+  <li>Implement forward kinematics</li>
+  <li>Implement other features to make testing easier / more interactive</li>
+</ul>
 <h3>Goal 2: IK</h3>
 Implement basic IK.
-<ul><li>Implement damped Least Squares / Levenberg–Marquardt algorithm</li><li>Implement pseudo-inverse damped least squares OR selectively damped least squares</li></ul>
+<ul>
+  <li>Implement damped Least Squares / Levenberg–Marquardt algorithm</li>
+  <li>Implement pseudo-inverse damped least squares OR selectively damped least squares</li>
+</ul>
 <h3>Reach Goal: IK</h3>
 Implement...
-<ul><li>Pseudo-inverse damped least squares / selectively damped least squares</li><li>SMCM</li><li>SMCM with interpolation for trajectory smoothing</li><li>Forward And Backward Reaching Inverse Kinematics (FABRIK) heuristic method</li></ul><h3>Deliverables</h3><ul><li>For each IK method implemented, demo video of the movements.</li></ul>
+<ul>
+  <li>Pseudo-inverse damped least squares / selectively damped least squares</li>
+  <li>SMCM</li>
+  <li>SMCM with interpolation for trajectory smoothing</li>
+  <li>Forward And Backward Reaching Inverse Kinematics (FABRIK) heuristic method</li>
+</ul>
+<h3>Deliverables</h3>
+<ul>
+  <li>For each IK method implemented, demo video of the movements.</li>
+</ul>
 <h3>Goal 3: Style</h3>
 Add style to the movements and wrap up project.
-<ul><li>Modify IK methods to account for stylized movement</li></ul><h3>Deliverables</h3><ul><li>For each of the IK methods, modify the constraints such that the movement is stylized in some way. Compare the movements with and without the additional style constraints.</li></ul>
-
+<ul>
+  <li>Modify IK methods to account for stylized movement</li>
+</ul>
+<h3>Deliverables</h3>
+<ul>
+  <li>For each of the IK methods, modify the constraints such that the movement is stylized in some way. Compare the movements with and without the additional style constraints.</li>
+</ul>
+<br />
 <h2>Schedule</h2>
 Updated as I go along.
-
-<h3>Week 1: August 1 - August 7</h3><ul class="to-do-list"><li><div class="checkbox checkbox-on"></div><span class="to-do-children-checked">Decide on topic</span><ul><li>Currently set on IK</li></ul></li><li><div class="checkbox checkbox-on"></div><span class="to-do-children-checked">Write proposal</span></li><li><div class="checkbox checkbox-on"></div><span class="to-do-children-checked">Submit proposal for review</span></li><li><div class="checkbox checkbox-on"></div><span class="to-do-children-checked">Decide on Unity or Three.js</span><ul><li>Decided on Three.js</li><li>Considering hosting on <a href="http://gitch.me/">http://gitch.me/</a></li></ul></li><li><div class="checkbox checkbox-on"></div><span class="to-do-children-checked">Look into how to animate 3D model with Three.js</span><ul><li><a href="https://unboring.net/workflows/animation.html">Rig model, export as Three.js-readable <code>.json</code> file</a> and <a href="https://stackoverflow.com/questions/20433474/dynamic-bones-animation-in-three-js">import into Three.js as a skinnedmesh.</a></li></ul></li>
-<li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Leaarn Three.js</span><ul><li>Currently going through <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">this course</a> (finished Chapters 1 of 10).</li><li>Notes <a href="./three.html">here</a>.</li></ul></li>
-<li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Update schedule based on proposal feedback</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Set up testing environment in Three.js</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Write milestone report</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Create models to manipulate (using Blender)</span><ul class="to-do-list"><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Robot / basic arm with limited range of movement per joint</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Rope</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Human figure</span></li></ul></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Install Blender addon to export Three.js-readable <code>.json</code> files</span></li>
-<li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">[Reach Goal] Implement basic forward kinematics</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">[Reach Goal] Implement additional features for testing/interactivity</span></li></ul>
+<br />
+<h3>Week 1: August 1 - August 7</h3>
+<ul class="to-do-list">
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Decide on topic</span>
+    <ul>
+      <li>Currently set on IK</li>
+    </ul>
+  </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Write proposal</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Submit proposal for review</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Decide on Unity or Three.js</span>
+    <ul>
+      <li>Decided on Three.js because very easy to control variables when running demo (you can do that in the Unity editor too, but I would need to make the interface when I export the program).</li>
+      <li>Considering hosting on <a href="http://gitch.me/">http://gitch.me/</a></li>
+    </ul>
+  </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Look into how to animate 3D model with Three.js</span>
+    <ul>
+      <li><a href="https://unboring.net/workflows/animation.html">Rig model, export as Three.js-readable <code>.json</code> file</a> and <a href="https://stackoverflow.com/questions/20433474/dynamic-bones-animation-in-three-js">import into Three.js as a skinnedmesh.</a></li>
+    </ul>
+  </li>
+  <br />
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Learn Three.js</span>
+    <ul>
+      <li>Currently going through <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">this course</a> (finished Chapters 4 of 10).</li>
+      <li>Notes <a href="./three.html">here</a>.</li>
+    </ul>
+  </li>
+  <br />
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Update schedule based on proposal feedback</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Set up testing environment in Three.js</span>
+  </li>
+  <li>
+  <div class="checkbox checkbox-off"></div>
+  <span class="to-do-children-unchecked">Write milestone report</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Create models to manipulate (using Blender)</span>
+    <ul class="to-do-list">
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">Robot / basic arm with limited range of movement per joint</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">Rope</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">Human figure</span>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Install Blender addon to export Three.js-readable <code>.json</code> files</span>
+  </li>
+  <br />
+  <li>
+    <div class="checkbox checkbox-off">div>
+    <span class="to-do-children-unchecked">[Reach Goal] Implement basic forward kinematics</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">[Reach Goal] Implement additional features for testing/interactivity</span>
+  </li>
+</ul>
 <h3>Week 2: August 8 - August 14</h3>
-<ul class="to-do-list"><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Implement IK methods</span><ul class="to-do-list"><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Damped least squares / Levenberg–Marquardt algorithm</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Pseudo-inverse damped least squares</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">[Reach Goal] Selectively damped least squares</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">[Reach Goal] SMCM</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">[Reach Goal] SMCM with interpolation for trajectory smoothing</span></li></ul></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Add styling / wrap up</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Add styling / wrap up</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Add finishing touches / bug fixes</span></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Get ready for demo</span><ul><li>Make more interactive</li><li>Add constraints on the fly</li></ul></li><li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Add constraints for expressiveness / style of movement</span></li></ul>
-<!-- <li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Todo Unchecked</span></li>
-<li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Todo Unchecked</span></li>
-<li><div class="checkbox checkbox-off"></div><span class="to-do-children-unchecked">Todo Unchecked</span></li>
-<li><div class="checkbox checkbox-on"></div><span class="to-do-children-checked">Todo Item</span></li>
-<li><div class="checkbox checkbox-on"></div><span class="to-do-children-checked">Todo Item</span></li>
-<li><div class="checkbox checkbox-on"></div><span class="to-do-children-checked">Todo Item</span></li> -->
+<ul class="to-do-list">
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Implement IK methods</span>
+    <ul class="to-do-list">
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">Damped least squares / Levenberg–Marquardt algorithm</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">Pseudo-inverse damped least squares</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] Selectively damped least squares</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] SMCM</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] SMCM with interpolation for trajectory smoothing</span>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Add styling / wrap up</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Add styling / wrap up</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Add finishing touches / bug fixes</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Get ready for demo</span>
+    <ul>
+      <li>Make more interactive</li>
+      <li>Add constraints on the fly</li>
+    </ul>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Add constraints for expressiveness / style of movement</span>
+  </li>
+</ul>
+<!-- <li>
+<div class="checkbox checkbox-off">
+</div>
+<span class="to-do-children-unchecked">Todo Unchecked</span>
+</li>
+<li>
+<div class="checkbox checkbox-off">
+</div>
+<span class="to-do-children-unchecked">Todo Unchecked</span>
+</li>
+<li>
+<div class="checkbox checkbox-off">
+</div>
+<span class="to-do-children-unchecked">Todo Unchecked</span>
+</li>
+<li>
+<div class="checkbox checkbox-on">
+</div>
+<span class="to-do-children-checked">Todo Item</span>
+</li>
+<li>
+<div class="checkbox checkbox-on">
+</div>
+<span class="to-do-children-checked">Todo Item</span>
+</li>
+<li>
+<div class="checkbox checkbox-on">
+</div>
+<span class="to-do-children-checked">Todo Item</span>
+</li> -->
 <h2>Resources</h2>
-<ul><li><a href="http://andreasaristidou.com/publications/papers/IK_survey.pdf">http://andreasaristidou.com/publications/papers/IK_survey.pdf</a><ul><li>Survey of the current field of IK</li></ul></li><li><a href="http://math.ucsd.edu/~sbuss/ResearchWeb/ikmethods/iksurvey.pdf">http://math.ucsd.edu/~sbuss/ResearchWeb/ikmethods/iksurvey.pdf</a><ul><li>Introduction to IK</li></ul></li><li><a href="https://billbaxter.com/courses/290/html/index.htm">https://billbaxter.com/courses/290/html/index.htm</a><ul><li>Survey of IK numerical methods</li></ul></li><li><a href="http://perception.inrialpes.fr/Publications/2008/CA08/amdo08.pdf">http://perception.inrialpes.fr/Publications/2008/CA08/amdo08.pdf</a><ul><li>SMCM + specific implementation with smoothing</li></ul></li><li><a href="https://www.ece.uvic.ca/~bctill/papers/ememcog/Rolf_etal_2010.pdf">https://www.ece.uvic.ca/~bctill/papers/ememcog/Rolf_etal_2010.pdf</a><ul><li>IK using goal babbling (path-based sampling)</li></ul></li><li><a href="https://www.alanzucconi.com/2017/04/10/robotic-arms/">https://www.alanzucconi.com/2017/04/10/robotic-arms/</a><ul><li>Robot arm implementation in Unity with gradient descent</li></ul></li><li><a href="https://www.alanzucconi.com/2017/04/12/tentacles/">https://www.alanzucconi.com/2017/04/12/tentacles/</a><ul><li>Tentacle implementation in Unity with gradient descent</li></ul></li><li><a href="https://cgl.ethz.ch/teaching/former/seminar/handouts/Hess_StyleBasedIK.pdf">https://cgl.ethz.ch/teaching/former/seminar/handouts/Hess_StyleBasedIK.pdf</a><ul><li>Constrained optimization problem to restrain the algorithm to a certain "style" of natural looking poses</li></ul></li><li><a href="https://github.com/wylieconlon/kinematics">https://github.com/wylieconlon/kinematics</a><ul><li>Basic forward & inverse kinematics with clamped Jacobian transpose method in JS</li></ul></li><li><a href="https://www.khanacademy.org/computer-programming/inverse-kinematics/1191743453">https://www.khanacademy.org/computer-programming/inverse-kinematics/1191743453</a><ul><li>Basic 2D IK example with two segments.</li></ul></li><li><a href="http://andreasaristidou.com/FABRIK.html">http://andreasaristidou.com/FABRIK.html</a><ul><li>FABRIK from the guy who made it</li></ul></li><li><a href="https://threejs.org/">https://threejs.org/</a><ul><li>JavaScript 3D library</li></ul></li></body></html>
+<ul>
+  <li>
+    <a href="http://andreasaristidou.com/publications/papers/IK_survey.pdf">http://andreasaristidou.com/publications/papers/IK_survey.pdf</a>
+    <ul>
+      <li>Survey of the current field of IK</li>
+    </ul>
+  </li>
+  <li>
+    <a href="http://math.ucsd.edu/~sbuss/ResearchWeb/ikmethods/iksurvey.pdf">http://math.ucsd.edu/~sbuss/ResearchWeb/ikmethods/iksurvey.pdf</a>
+    <ul>
+      <li>Introduction to IK</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://billbaxter.com/courses/290/html/index.htm">https://billbaxter.com/courses/290/html/index.htm</a>
+    <ul>
+      <li>Survey of IK numerical methods</li>
+    </ul>
+  </li>
+  <li>
+    <a href="http://perception.inrialpes.fr/Publications/2008/CA08/amdo08.pdf">http://perception.inrialpes.fr/Publications/2008/CA08/amdo08.pdf</a>
+    <ul>
+      <li>SMCM + specific implementation with smoothing</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://www.ece.uvic.ca/~bctill/papers/ememcog/Rolf_etal_2010.pdf">https://www.ece.uvic.ca/~bctill/papers/ememcog/Rolf_etal_2010.pdf</a>
+    <ul>
+      <li>IK using goal babbling (path-based sampling)</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://www.alanzucconi.com/2017/04/10/robotic-arms/">https://www.alanzucconi.com/2017/04/10/robotic-arms/</a>
+    <ul>
+      <li>Robot arm implementation in Unity with gradient descent</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://www.alanzucconi.com/2017/04/12/tentacles/">https://www.alanzucconi.com/2017/04/12/tentacles/</a>
+    <ul>
+      <li>Tentacle implementation in Unity with gradient descent</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://cgl.ethz.ch/teaching/former/seminar/handouts/Hess_StyleBasedIK.pdf">https://cgl.ethz.ch/teaching/former/seminar/handouts/Hess_StyleBasedIK.pdf</a>
+    <ul>
+      <li>Constrained optimization problem to restrain the algorithm to a certain "style" of natural looking poses</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://github.com/wylieconlon/kinematics">https://github.com/wylieconlon/kinematics</a>
+    <ul>
+      <li>Basic forward & inverse kinematics with clamped Jacobian transpose method in JS</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://www.khanacademy.org/computer-programming/inverse-kinematics/1191743453">https://www.khanacademy.org/computer-programming/inverse-kinematics/1191743453</a>
+    <ul>
+      <li>Basic 2D IK example with two segments.</li>
+    </ul>
+  </li>
+  <li>
+    <a href="http://andreasaristidou.com/FABRIK.html">http://andreasaristidou.com/FABRIK.html</a>
+    <ul>
+      <li>FABRIK from the guy who made it</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://threejs.org/">https://threejs.org/</a>
+    <ul>
+      <li>JavaScript 3D library</li>
+    </ul>
+  </li>
+</ul>
+</body>
+</html>

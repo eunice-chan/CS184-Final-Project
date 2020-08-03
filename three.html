@@ -16,8 +16,271 @@ Eunice Chan | <i>August 7, 2020</i>
 These are my notes from going through <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">this</a> short online course to gain familiarity with Three.js so that I can use it in my project.
 
 <h2>1. Building a Simple Scene</h2>
+<ul>
+  <li>WebGL: low-level JavaScript API for creating and displaying 3D content in browser with GPU.</li>
+  <li>Three.js: open-source JavaScript library to make it easier to do 3D stuff with WebGL. Need to serve HTML page with a server.</li>
+</ul>
+<br />
+Minified: <a href="http://threejs.org/build/three.min.js">http://threejs.org/build/three.min.js</a>
+<ul>
+  <li>Small, more efficient version used in production</li>
+  <li>Not as good for debugging</li>
+</ul>
+<br />
+Scene object: container for 3D objects.
+<br />
+Camera: POV.
+<ul>
+  <li>FOV</li>
+  <li>Aspect ratio</li>
+  <li>Near/far clipping plane (for optimization purposes)</li>
+</ul>
+<pre class="code code-wrap">
+var scene = new THREE.Scene();
+// args: FOV, aspect ratio, near plane, far plane
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 1000);
+</pre>
+<br />
+Need renderer to see scene. Typically use <code>new THREE.WebGLRenderer()</code>.
+<br />
+Can use Canvas or SVGRenderer if environment doesn't use WebGL. However, prefer not because uses CPU, so slower. Also, WebGL features like shadows or shading not available.
+<br />
+Set renderer size with:
+<pre class="code">
+renderer.setSize(window.innerWidth, window.innerHeight);
+</pre>
+Set renderer background color with:
+<pre class="code">
+renderer.setClearColor('rgb(255, 255, 255)');
+</pre>
+Can use hex or rgb to set colors (<code>0xffffff</code>, <code>'#ffffff'</code>, <code>'rgb(255, 255, 255)'</code>).
+<br />
+<br />
+Typically prefer to have renderer size proportional to window inner width and height.
+<br />
+To display results of renderer, append append the DOM element for the renderer to the HTML content. Call render on the renderer with the scene and camera to display.
+<pre class="code">
+document.getElementById('webgl').appendChild(renderer.domElement);
+renderer.render(
+  scene,
+  camera
+);
+</pre>
+<br />
+<br />
+Three.js 3D objects: geometry (shape) + material (appearance) = mesh = 3D object
+<br />
+Many different kinds of material: reflective, diffuse, etc.
+<br />
+Create cube and add to scene:
+<pre class="code">
+// args: width, height, depth
+function getBox(w, h, d) {
+	var geometry = new THREE.BoxGeometry(1, 1, 1);
+
+  // not affected by scene lighting. Will be visible even without lighting in the scene.
+	var material = new THREE.MeshBasicMaterial({
+		color: 0x00ff00
+	});
+
+	var mesh = new THREE.Mesh(
+		geometry,
+		material
+	);
+
+	return mesh;
+}
+
+var box = getBox(1, 1, 1);
+scene.add(box);
+</pre>
+Create sphere: <code>var geometry = new THREE.SphereGeometry(width, height, 24)</code>.
+<ul>
+  <li>Arguments: width, height, segment</li>
+  <li>Segment: like resolution of geometry -- how smooth the curved object will look. (24 is a good default value)</li>
+</ul>
+<br />
+<a href="https://threejs.org/editor/">https://threejs.org/editor/</a> -- to interact with a scene
+<br />
+<br />
+New objects always created at (0, 0, 0) coordinate space.
+<br />
+Y-axis pointing up
+<br />
+Can transform all objects with three attributes: position (object.position), rotation (object.rotate -- uses radians. Use Math.PI!), scale. Each attribute has x, y, z attributes.
+<br />
+<br />
+Moving the camera:
+<pre class="code">
+camera.position.x = 1;
+camera.position.y = 2;
+camera.position.z = 5;
+
+// arg: point in 3D space the camera looks at
+camera.lookAt(new THREE.Vector3(0, 0, 0));
+</pre>
+<br />
+Creating a plane:
+<pre class="code">
+function getPlane(size) {
+  // args: width, depth
+	var geometry = new THREE.PlaneGeometry(size, size);
+	var material = new THREE.MeshBasicMaterial({
+		color: 0xff0000,
+    // in 3D, 2D objects don't have both sides displayed by default
+		side: THREE.DoubleSide
+	});
+	var mesh = new THREE.Mesh(
+		geometry,
+		material
+	);
+
+	return mesh;
+}
+</pre>
+Geometry stored as a property of object. ie can get height of object with <code>object.geometry.parameters.height</code>.
+
 <h2>2. Three.js Scene Object</h2>
+Most objects in Three.js are instances of the object3D base class. Many common properties (such as the <code>visible</code> property).
+<br />
+Continually rendering -- animation and interactivity
+<pre class="code">
+function update(renderer, scene, camera) {
+	renderer.render(
+		scene,
+		camera
+	);
+	requestAnimationFrame(function() {
+		update(renderer, scene, camera);
+	})
+}
+</pre>
+<code>requestAnimationFrame</code> is similar to <code>setInterval</code> but does some performance optimizations such as when the frame is painted. Preferred
+over <code>setInterval</code> for animation because of this.
+<br />
+Roughly 60 fps.
+<br />
+<br />
+Properties
+<ul>
+  <li>
+    <code>.add</code> --> parent-child relationship.
+    <ul>
+      <li>Children shares parent's transform.</li>
+    </ul>
+  </li>
+
+  <li>
+    <code>.name</code> --> assign name to object
+    <ul>
+      <li>Easier to find objects in scene with name (<code>parent.getObjectByName(name)</code> -- returns first matching object).</li>
+    </ul>
+  </li>
+
+  <li>
+    <code>.traverse</code> --> execute callback on current object and descendants.
+    <ul>
+      <li><code>scene.traverse((child) => {//do something})</code></li>
+    </ul>
+  </li>
+</ul>
+<br />
+Scene object -- fog property
+<ul>
+  <li>Allows scene to fade out to a given color.</li>
+  <li>Two kinds of fog objects.</li>
+</ul>
+<pre class="code">
+// args: color, density
+scene.fog = new THREE.FogExp2(0xffffff, 0.2);
+</pre>
+
 <h2>3. Lights</h2>
+Other mesh material: <code>var material = new THREE.MeshPhongMaterial({ color: 'rgb(120, 120, 120)' })</code>.
+<ul>
+  <li>Blinn-Phong shading!</li>
+</ul>
+<br />
+Lights
+<ul>
+  <li>Point Light: Shadows point away from point light. <code>var light = new THREE.PointLight(0xffffff, intensity)</code>.</li>
+  <li>Spotlight: Same arguments as point light. Light limited to a  cone. <code>var light = new THREE.SpotLight(0xffffff, intensity)</code>.</li>
+  <ul>
+    <li><code>penumbra</code> property: value between 0 and 1. Controls the softness of the edge of the spotlight.</li>
+  </ul>
+  <li>Directional Light: Emits parallel light rays. Good for simulating light sources that are far away, like the sun. <code>var light = new THREE.DirectionalLight(0xffffff, intensity)</code>.</li>
+  <ul>
+    <li>Only casts light in the <code>directionalLight.shadow.camera</code>'s FOV.</li>
+    <li>Can cast more shadows by expanding shadow's camera's FOV.</li>
+    <ul>
+      <li>Do this by changing <code>directionalLight.shadow.camera</code>'s <code>left</code>, <code>right</code>, <code>top</code>, and <code>bottom</code> properties.</li>
+      <li>They are -5, 5, -5, 5 respectively by default.</li>
+    </ul>
+  </ul>
+
+  <li>Ambient Light: Illuminates everything equally. Not a realistic light -- use sparingly if you are aiming for a realistic scene. Good for increasing uniform brightness and lifting colors of shadows <code>var light = new THREE.AmbientLight(0xffffff, intensity)</code>.</li>
+  <ul>
+    <li>Doesn't cast shadows, unlike all the other lights!</li>
+  </ul>
+  <li>Rectangular Light: Point and spot lights are poor approximations of real lights because they have no dimensions. Still mostly under development in Three.js.</li>
+</ul>
+<br />
+<br />
+dat.gui
+<ul>
+  <li>JavaScript library that lets us easily create UI to control parameters</li>
+  <li>Provides way for us to alter scene in real-time.</li>
+</ul>
+<pre class="code">
+// adds controls to scene
+var gui = new dat.GUI();
+// args: what to control, value to control, min value, max value.
+// cameraZPosition.position.z = userInput
+gui.add(cameraZPosition.position, 'z', 0, 100);
+</pre>
+<br />
+<br />
+So that we can drag mouse to orbit/change view direction around the origin at the scene, as well as zoom in and out, pass in <code>OrbitControls<code>. Adds interactivity controls.
+
+<pre class="code">
+function update(renderer, scene, camera, controls) {
+	renderer.render(
+		scene,
+		camera
+	);
+
+	controls.update();
+
+	requestAnimationFrame(function() {
+		update(renderer, scene, camera, controls, clock);
+	})
+}
+...
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+update(renderer, scene, camera, controls, clock);
+</pre>
+<br />
+<br />
+<br />
+Shadows are complicated. Need to enable in multiple places.
+<ul>
+  <li>Enable shadow render: <code>renderer.shadowMap.enabled = true</code></li>
+  <ul>
+    <li>Uses shadow map technique -- performance-optimized way of calculating shadows. However, sometimes yields glitchy results.</li>
+    <li>To fix, set a small bias value on light's shadow.</li>
+    <li><code>light.shadow.bias = 0.0001</code>. Particular value chosen through trial and error. Dependent on scene scale.</li>
+    <br />
+    <li>If shadows look blurry, increase shadow map size.</li>
+    <li>May have performance implications if too high!</li>
+    <li><code>light.shadow.mapSize.width = 1024</code> and <code>light.shadow.mapSize.height = 1024</code> by default</li>
+    <li></li>
+  </ul>
+  <li>Tell lights to cast shadows: <code>light.castShadow = true</code></li>
+  <li>Tell objects to cast or recieve shadows: <code>mesh.castShadow = true</code> and <code>mesh.recieveShadow = true</code></li>
+  <li><code></code></li>
+</ul>
+<br />
+Group objects with <code>var group = new THREE.Group()</code>, then add objects to the group with <code>.add</code>. Like a <code>div</code>. It is a non-geometric object that helps us control the transformation of other shapes easier.
 <h2>4. Animation</h2>
 <h2>5. Materials and Textures</h2>
 <h2>6. Geometries</h2>
