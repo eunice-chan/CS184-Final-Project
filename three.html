@@ -240,7 +240,7 @@ gui.add(cameraZPosition.position, 'z', 0, 100);
 </pre>
 <br />
 <br />
-So that we can drag mouse to orbit/change view direction around the origin at the scene, as well as zoom in and out, pass in <code>OrbitControls<code>. Adds interactivity controls.
+So that we can drag mouse to orbit/change view direction around the origin at the scene, as well as zoom in and out, pass in <code>OrbitControls</code>. Adds interactivity controls.
 
 <pre class="code">
 function update(renderer, scene, camera, controls) {
@@ -273,14 +273,13 @@ Shadows are complicated. Need to enable in multiple places.
     <li>If shadows look blurry, increase shadow map size.</li>
     <li>May have performance implications if too high!</li>
     <li><code>light.shadow.mapSize.width = 1024</code> and <code>light.shadow.mapSize.height = 1024</code> by default</li>
-    <li></li>
   </ul>
   <li>Tell lights to cast shadows: <code>light.castShadow = true</code></li>
   <li>Tell objects to cast or recieve shadows: <code>mesh.castShadow = true</code> and <code>mesh.recieveShadow = true</code></li>
-  <li><code></code></li>
 </ul>
 <br />
 Group objects with <code>var group = new THREE.Group()</code>, then add objects to the group with <code>.add</code>. Like a <code>div</code>. It is a non-geometric object that helps us control the transformation of other shapes easier.
+
 <h2>4. Animation</h2>
 <h2>5. Materials and Textures</h2>
 <h2>6. Geometries</h2>
