@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="penrosetriangle.svg">
 </head>
-<body class="page sans">
+<body class="sans">
 <a href="./index.html">HOME</a> / <b>
 <a href="#">PROPOSAL</a>
 </b> / <a href="./milestone.html">MILESTONE</a> / <a href="./project.html">PROJECT</a>  / <a href="./demo.html">DEMO</a>
@@ -127,18 +127,16 @@ Updated as I go along.
   <li>Went through <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">this course</a> (finished Chapters 10 of 10).</li>
   <li>Notes <a href="./three.html">here</a>.</li>
 </ul>
-<br />
 <ul class="to-do-list">
   <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Figure out skeletal rigging in Three.js</span>
+  </li>
+  <li>
     <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Figure out skeletal rigging in Three.js</span>
+    <span class="to-do-children-unchecked">Create model to manipulate (using Blender): Robot / basic arm (export as a <code>.glb</code> file)</span>
   </li>
 </ul>
-<ul>
-  <li>Following
-    <a href="https://www.youtube.com/watch?v=z0MJ2KdGPFE">https://www.youtube.com/watch?v=z0MJ2KdGPFE</a> but I don't speak German.</li>
-</ul>
-<br />
 <ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-off"></div>
@@ -154,25 +152,29 @@ Updated as I go along.
   </li>
   <li>
     <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Create models to manipulate (using Blender)</span>
+    <span class="to-do-children-unchecked">Implement IK methods for rope model</span>
     <ul class="to-do-list">
       <li>
         <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">Robot / basic arm with limited range of movement per joint</span>
+        <span class="to-do-children-unchecked">Damped least squares / Levenberg–Marquardt algorithm</span>
       </li>
       <li>
         <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">Rope</span>
+        <span class="to-do-children-unchecked">Pseudo-inverse damped least squares</span>
       </li>
       <li>
         <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">Human figure</span>
+        <span class="to-do-children-unchecked">[Reach Goal] Selectively damped least squares</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] SMCM</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] SMCM with interpolation for trajectory smoothing</span>
       </li>
     </ul>
-  </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Install Blender addon to export Three.js-readable <code>.json</code> files</span>
   </li>
   <br />
   <li>
@@ -183,12 +185,24 @@ Updated as I go along.
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">[Reach Goal] Implement additional features for testing/interactivity</span>
   </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">[Reach Goal] Limit movement range</span>
+  </li>
 </ul>
 <h3>Week 2: August 8 - August 14</h3>
 <ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Implement IK methods</span>
+    <span class="to-do-children-unchecked">Create model to manipulate (using Blender): Rope</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Create model to manipulate (using Blender): Human figure</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Implement IK methods for the other figures(?)</span>
     <ul class="to-do-list">
       <li>
         <div class="checkbox checkbox-off"></div>
@@ -320,7 +334,7 @@ Updated as I go along.
   <li>
     <a href="https://github.com/wylieconlon/kinematics">https://github.com/wylieconlon/kinematics</a>
     <ul>
-      <li>Basic forward & inverse kinematics with clamped Jacobian transpose method in JS</li>
+      <li>Basic forward and inverse kinematics with clamped Jacobian transpose method in JS</li>
     </ul>
   </li>
   <li>
@@ -348,6 +362,12 @@ Updated as I go along.
     </ul>
   </li>
   <li>
+    <a href="https://www.youtube.com/watch?v=eEqB-eKcv7k">https://www.youtube.com/watch?v=eEqB-eKcv7k</a>
+    <ul>
+      <li>Video about how to do skeletal animation</li>
+    </ul>
+  </li>
+  <li>
     <a href="https://threejs.org/docs/#api/en/objects/SkinnedMesh">https://threejs.org/docs/#api/en/objects/SkinnedMesh</a>
     <ul>
       <li>Three.js SkinnedMesh documentation</li>
@@ -365,7 +385,18 @@ Updated as I go along.
       <li>Three.js Skeleton documentation</li>
     </ul>
   </li>
-
+  <li>
+    <a href="https://threejs.org/docs/#api/en/helpers/SkeletonHelper">https://threejs.org/docs/#api/en/helpers/SkeletonHelper</a>
+    <ul>
+      <li>Three.js SkeletonHelper documentation (to visualize skeleton)</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://discoverthreejs.com/">https://discoverthreejs.com/</a>
+    <ul>
+      <li>Three.js SkeletonHelper documentation (to visualize skeleton)</li>
+    </ul>
+  </li>
 </ul>
 </body>
 </html>
