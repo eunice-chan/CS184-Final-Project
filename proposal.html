@@ -33,7 +33,6 @@ To judge the quality and performance of my implementation, for a set of actions 
 <h3>Goal 1: Setup</h3>
 Set up the development environment.
 <ul>
-  <li><i>August 4 Update:</i> Focus on the robot / basic arm. The other models are bonus.</li>
   <li>Create or find robot / basic arm, rope, and human figure models.</li>
   <li>Place robot / basic arm, rope, and human figure in three isolated environments, and associate a "limb" with a control / target point while associating another part / limb with an anchor.</li>
   <li>Implement extra functionality for ease of testing such as switching between environments, start / stop simulation, dropdown menu to switch among the IK methods implemented, select different style constraints, etc. (Done at beginning and at the end (wrap up) phases of the project)</li>
@@ -85,10 +84,12 @@ Updated as I go along.
   <li>
     <div class="checkbox checkbox-on"></div>
     <span class="to-do-children-checked">Decide on topic</span>
-    <ul>
-      <li>Currently set on IK</li>
-    </ul>
   </li>
+</ul>
+<ul>
+  <li>Currently set on IK</li>
+</ul>
+<ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-on"></div>
     <span class="to-do-children-checked">Write proposal</span>
@@ -100,37 +101,45 @@ Updated as I go along.
   <li>
     <div class="checkbox checkbox-on"></div>
     <span class="to-do-children-checked">Decide on Unity or Three.js</span>
-    <ul>
-      <li>Decided on Three.js because very easy to control variables when running demo (you can do that in the Unity editor too, but I would need to make the interface when I export the program).</li>
-      <li>Considering hosting on <a href="http://gitch.me/">http://gitch.me/</a></li>
-    </ul>
+
   </li>
+</ul>
+<ul>
+  <li>Decided on Three.js because very easy to control variables when running demo (you can do that in the Unity editor too, but I would need to make the interface when I export the program).</li>
+  <li>Considering hosting on <a href="http://glitch.me/">http://glitch.me/</a></li>
+</ul>
+<ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-on"></div>
     <span class="to-do-children-checked">Look into how to animate 3D model with Three.js</span>
-    <ul>
-      <li><a href="https://unboring.net/workflows/animation.html">Rig model, export as Three.js-readable <code>.json</code> file</a> and <a href="https://stackoverflow.com/questions/20433474/dynamic-bones-animation-in-three-js">import into Three.js as a skinnedmesh.</a></li>
-    </ul>
   </li>
+</ul>
+<ul>
+  <li><a href="https://unboring.net/workflows/animation.html">Rig model, export as Three.js-readable <code>.json</code> file</a> and <a href="https://stackoverflow.com/questions/20433474/dynamic-bones-animation-in-three-js">import into Three.js as a skinnedmesh.</a></li>
+</ul>
+<ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-on"></div>
-    <span class="to-do-children-unchecked">Learn Three.js</span>
-    <ul>
-      <li>Currently going through <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">this course</a> (finished Chapters 10 of 10).</li>
-      <li>Notes <a href="./three.html">here</a>.</li>
-      <li>From what I know, rigging doesn't really exist in Three.js so the process will be more involved than I initially assumed. As a result, I decided to scale down the project and focus on applying IK to just the arm.</li>
-    </ul>
+    <span class="to-do-children-checked">Learn Three.js</span>
   </li>
-  <br />
+</ul>
+<ul>
+  <li>Went through <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">this course</a> (finished Chapters 10 of 10).</li>
+  <li>Notes <a href="./three.html">here</a>.</li>
+</ul>
+<br />
+<ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">Figure out skeletal rigging in Three.js</span>
-    <ul>
-      <li>Following
-        <a href="https://www.youtube.com/watch?v=z0MJ2KdGPFE">https://www.youtube.com/watch?v=z0MJ2KdGPFE</a> but I don't speak German.</li>
-    </ul>
   </li>
-  <br />
+</ul>
+<ul>
+  <li>Following
+    <a href="https://www.youtube.com/watch?v=z0MJ2KdGPFE">https://www.youtube.com/watch?v=z0MJ2KdGPFE</a> but I don't speak German.</li>
+</ul>
+<br />
+<ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">Update schedule based on proposal feedback</span>
@@ -167,7 +176,7 @@ Updated as I go along.
   </li>
   <br />
   <li>
-    <div class="checkbox checkbox-off">div>
+    <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">[Reach Goal] Implement basic forward kinematics</span>
   </li>
   <li>
@@ -317,7 +326,7 @@ Updated as I go along.
   <li>
     <a href="https://www.khanacademy.org/computer-programming/inverse-kinematics/1191743453">https://www.khanacademy.org/computer-programming/inverse-kinematics/1191743453</a>
     <ul>
-      <li>Basic 2D IK example with two segments.</li>
+      <li>Basic 2D IK example with two segments</li>
     </ul>
   </li>
   <li>
@@ -335,9 +344,28 @@ Updated as I go along.
   <li>
     <a href="https://www.youtube.com/watch?v=z0MJ2KdGPFE">https://www.youtube.com/watch?v=z0MJ2KdGPFE</a>
     <ul>
-      <li>Video in German about how to do skeletal animation.</li>
+      <li>Video in German about how to do skeletal animation</li>
     </ul>
   </li>
+  <li>
+    <a href="https://threejs.org/docs/#api/en/objects/SkinnedMesh">https://threejs.org/docs/#api/en/objects/SkinnedMesh</a>
+    <ul>
+      <li>Three.js SkinnedMesh documentation</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_loader_collada_kinematics.html">https://github.com/mrdoob/three.js/blob/master/examples/webgl_loader_collada_kinematics.html</a>
+    <ul>
+      <li>Three.js kinematics example code</li>
+    </ul>
+  </li>
+  <li>
+    <a href="https://threejs.org/docs/#api/en/objects/Skeleton">https://threejs.org/docs/#api/en/objects/Skeleton</a>
+    <ul>
+      <li>Three.js Skeleton documentation</li>
+    </ul>
+  </li>
+
 </ul>
 </body>
 </html>
