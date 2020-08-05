@@ -154,6 +154,8 @@ td {
 table {
 	border-left: none;
 	border-right: none;
+  table-layout: fixed;
+  width: 100%;
 }
 
 th,

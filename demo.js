@@ -165,9 +165,16 @@ function shapeModel() {
 
 }
 
+function resetPose() {
+
+  mesh.pose();
+  shapeModel();
+
+}
+
 function setupDatGui() {
 
-	gui.add( mesh, "pose" );
+	gui.add( { reset : resetPose } , "reset" );
 	gui.__controllers[ 0 ].name( "Reset Pose" );
 
   var folderFK = gui.addFolder("Forward Kinematics")
@@ -181,13 +188,9 @@ function setupDatGui() {
 
   folder = folderFK.addFolder( "Shoulder" );
 
-  folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 );
   folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 );
-  folder.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 );
 
-  folder.__controllers[ 0 ].name( "rotation.x" );
-  folder.__controllers[ 1 ].name( "rotation.y" );
-  folder.__controllers[ 2 ].name( "rotation.z" );
+  folder.__controllers[ 0 ].name( "Move" );
 
   //////////////
 
