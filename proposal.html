@@ -21,20 +21,14 @@ Eunice Chan | <i>August 1, 2020</i>
 <h2 id="changelog">Changelog</h2>
 <p class="highlight-orange_background"><i>August 4 Update</i>: Made SMCM a goal and moved the two models to reach goal. </p>
 <h2>Summary</h2>
-In this project, I will explore and implement the common techniques to tackle inverse kinematics (IK). I am particularly interested in IK algorithms that allow a greater degree of ability to control stylistic variations of the animation. Because of this, I will primarily be looking at the iterative methods using a cost function to be minimized and Sequential Monte Carlo methods (SMCM) for solving IK problems.
-<br />
-<br />
+<p>In this project, I will explore and implement the common techniques to tackle inverse kinematics (IK). I am particularly interested in IK algorithms that allow a greater degree of ability to control stylistic variations of the animation. Because of this, I will primarily be looking at the iterative methods using a cost function to be minimized and Sequential Monte Carlo methods (SMCM) for solving IK problems.</p>
 <h2>Problem Description</h2>
-IK is the problem of generating motion from a beginning and end pose. The challenge of IK lies in the fact that unlike forward kinematics, it is an inherently under-constrained problem: there can be zero, one, or many solutions. In this project, I aim to synthesize my learnings from various articles and papers to produce smooth and natural movement with IK that offers the flexibility to modify the style (or "personality") of the movement.
-<br />
-<br />
+<p>IK is the problem of generating motion from a beginning and end pose. The challenge of IK lies in the fact that unlike forward kinematics, it is an inherently under-constrained problem: there can be zero, one, or many solutions. In this project, I aim to synthesize my learnings from various articles and papers to produce smooth and natural movement with IK that offers the flexibility to modify the style (or "personality") of the movement.</p>
 <h2>Quality and Performance</h2>
-To judge the quality and performance of my implementation, for a set of actions / poses, compare IK animation with desired / natural animation. Actions / poses that I will compare with will be the examples shown in the papers and articles I reference.
-<br />
-<br />
+<p>To judge the quality and performance of my implementation, for a set of actions / poses, compare IK animation with desired / natural animation. Actions / poses that I will compare with will be the examples shown in the papers and articles I reference.</p>
 <h2>Goals and Deliverables</h2>
 <h3>Goal 1: Setup</h3>
-Set up the development environment.
+<p>Set up the development environment.</p>
 <ul>
   <li>Create or find robot / basic arm, <span class="highlight-orange">and if time permits,</span> rope, and human figure models.</li>
   <li>Place robot / basic arm, rope, and human figure in three isolated environments, and associate a "limb" with a control / target point while associating another part / limb with an anchor.</li>
@@ -52,14 +46,14 @@ Set up the development environment.
   <li>Implement other features to make testing easier / more interactive</li>
 </ul>
 <h3>Goal 2: IK</h3>
-Implement basic IK.
+<p>Implement basic IK.</p>
 <ul>
   <li>Implement damped Least Squares / Levenberg–Marquardt algorithm</li>
   <li>Implement pseudo-inverse damped least squares OR selectively damped least squares</li>
   <li class="highlight-orange">SMCM</li>
 </ul>
 <h3>Reach Goal: IK</h3>
-Implement...
+<p>Implement...</p>
 <ul>
   <li>Pseudo-inverse damped least squares / selectively damped least squares</li>
   <strike class="highlight-orange"><li>SMCM</li></strike>
@@ -79,10 +73,8 @@ Add style to the movements and wrap up project.
 <ul>
   <li>For each of the IK methods, modify the constraints such that the movement is stylized in some way. Compare the movements with and without the additional style constraints.</li>
 </ul>
-<br />
 <h2 id="schedule">Schedule</h2>
-Updated as I go along.
-<br />
+<p>Updated as I go along.</p>
 <h3>Week 1: August 1 - August 7</h3>
 <ul class="to-do-list">
   <li>
@@ -171,7 +163,22 @@ Updated as I go along.
     <div class="checkbox checkbox-on"></div>
     <span class="to-do-children-checked">Add moveable target point in demo</span>
   </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Understand the damped least squares / Levenberg–Marquardt algorithm</span>
+  </li>
 </ul>
+<ul class="to-do-list">
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Implement IK methods for arm model: Damped least squares / Levenberg–Marquardt algorithm</span>
+  </li>
+  <li>
+  <div class="checkbox checkbox-off"></div>
+  <span class="to-do-children-unchecked">Write milestone report</span>
+  </li>
+</ul>
+<h3>Week 2: August 8 - August 14</h3>
 <ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-off"></div>
@@ -192,17 +199,9 @@ Updated as I go along.
     </ul>
   </li>
   <li>
-  <div class="checkbox checkbox-off"></div>
-  <span class="to-do-children-unchecked">Write milestone report</span>
-  </li>
-  <br />
-  <li>
     <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">[Reach Goal] Limit movement range for IK</span>
+    <span class="to-do-children-unchecked">[Reach Goal] Limit movement range for IK (Show can reach if near. Otherwise, constrained by distance)</span>
   </li>
-</ul>
-<h3>Week 2: August 8 - August 14</h3>
-<ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">Add styling / wrap up</span>
@@ -307,7 +306,7 @@ Updated as I go along.
 </div>
 <span class="to-do-children-checked">Todo Item</span>
 </li> -->
-<h2>Resources</h2>
+<h2>Interesting Resources and Cool Links</h2>
 <ul>
   <li>
     <a href="http://andreasaristidou.com/publications/papers/IK_survey.pdf">http://andreasaristidou.com/publications/papers/IK_survey.pdf</a>
@@ -433,6 +432,13 @@ Updated as I go along.
     <a href="https://stackoverflow.com/questions/31539130/display-wireframe-and-solid-color">https://stackoverflow.com/questions/31539130/display-wireframe-and-solid-color</a>
     <ul>
       <li>Wireframe for debugging.</li>
+    </ul>
+  </li>
+
+  <li>
+    <a href="http://www.brnt.eu/publications/brunet2010phd.pdf">http://www.brnt.eu/publications/brunet2010phd.pdf</a>
+    <ul>
+      <li>Has some key optimization algorithms explained! A thesis on the modelling and the estimation of parametric functions in Computer Vision. I</li>
     </ul>
   </li>
 </ul>

@@ -10,10 +10,10 @@
 
 
 <h1 class="page-title">Three.js Notes</h1><h1>Background Technical Information for the CS 184 Final Project</h1>
-Eunice Chan | <i>August 7, 2020</i>
+<p>Eunice Chan | <i>August 7, 2020</i></p>
 
 <h2>Introduction</h2>
-These are my notes from going through <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">this</a> short online course to gain familiarity with Three.js so that I can use it in my project.
+<p>These are my notes from going through <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">this</a> short online course to gain familiarity with Three.js so that I can use it in my project.</p>
 
 <h2>1. Building a Simple Scene</h2>
 <ul>
@@ -21,15 +21,14 @@ These are my notes from going through <a href="https://www.linkedin.com/learning
   <li>Three.js: Open-source JavaScript library to make it easier to do 3D stuff with WebGL. Need to serve HTML page with a server.</li>
 </ul>
 <br />
-Minified: <a href="http://threejs.org/build/three.min.js">http://threejs.org/build/three.min.js</a>
+<p>Minified: <a href="http://threejs.org/build/three.min.js">http://threejs.org/build/three.min.js</a></p>
 <ul>
   <li>Small, more efficient version used in production</li>
   <li>Not as good for debugging</li>
 </ul>
 <br />
-Scene object: Container for 3D objects.
-<br />
-Camera: POV.
+<p>Scene object: Container for 3D objects.</p>
+<p>Camera: POV.</p>
 <ul>
   <li>FOV</li>
   <li>Aspect ratio</li>
@@ -40,24 +39,18 @@ Camera: POV.
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 1000);
 </div>
 <br />
-Need renderer to see scene. Typically use <code>new THREE.WebGLRenderer()</code>.
-<br />
-Can use Canvas or SVGRenderer if environment doesn't use WebGL. However, prefer not because uses CPU, so slower. Also, WebGL features like shadows or shading not available.
-<br />
-<br />
-Set renderer size with:
+<p>Need renderer to see scene. Typically use <code>new THREE.WebGLRenderer()</code>.</p>
+<p>Can use Canvas or SVGRenderer if environment doesn't use WebGL. However, prefer not because uses CPU, so slower. Also, WebGL features like shadows or shading not available.</p>
+<p>Set renderer size with:</p>
 <div class="code code-wrap">renderer.setSize(window.innerWidth, window.innerHeight);
 </div>
-<br />
-Set renderer background color with:
+<p>Set renderer background color with:</p>
 <div class="code code-wrap">renderer.setClearColor('rgb(255, 255, 255)');
 </div>
-Can use hex or rgb to set colors (<code>0xffffff</code>, <code>'#ffffff'</code>, <code>'rgb(255, 255, 255)'</code>).
+<p>Can use hex or rgb to set colors (<code>0xffffff</code>, <code>'#ffffff'</code>, <code>'rgb(255, 255, 255)'</code>).</p>
 <br />
-<br />
-Typically prefer to have renderer size proportional to window inner width and height.
-<br />
-To display results of renderer, append the DOM element for the renderer to the HTML content. Call <code>render</code> on the renderer with the scene and camera to display.
+<p>Typically prefer to have renderer size proportional to window inner width and height.</p>
+<p>To display results of renderer, append the DOM element for the renderer to the HTML content. Call <code>render</code> on the renderer with the scene and camera to display.</p>
 <div class="code code-wrap">document.getElementById('webgl').appendChild(renderer.domElement);
 renderer.render(
   scene,
@@ -65,12 +58,10 @@ renderer.render(
 );
 </div>
 <br />
+<p>Three.js 3D objects: geometry (shape) + material (appearance) = mesh = 3D object</p>
+<p>Many different kinds of material: reflective, diffuse, etc.</p>
 <br />
-Three.js 3D objects: geometry (shape) + material (appearance) = mesh = 3D object
-<br />
-Many different kinds of material: reflective, diffuse, etc.
-<br />
-Create cube and add to scene:
+<p>Create cube and add to scene:</p>
 <div class="code code-wrap">// args: width, height, depth
 function getBox(w, h, d) {
 	var geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -91,23 +82,19 @@ function getBox(w, h, d) {
 var box = getBox(1, 1, 1);
 scene.add(box);
 </div>
-Create sphere: <code>var geometry = new THREE.SphereGeometry(width, height, 24)</code>.
+<p>Create sphere: <code>var geometry = new THREE.SphereGeometry(width, height, 24)</code>.</p>
 <ul>
   <li>Arguments: width, height, segment</li>
   <li>Segment: like resolution of geometry -- how smooth the curved object will look. (24 is a good default value)</li>
 </ul>
 <br />
-<a href="https://threejs.org/editor/">https://threejs.org/editor/</a> -- to interact with a scene
+<p><a href="https://threejs.org/editor/">https://threejs.org/editor/</a> -- to interact with a scene</p>
 <br />
+<p>New objects always created at (0, 0, 0) coordinate space.</p>
+<p>Y-axis pointing up</p>
+<p>Can transform all objects with three attributes: position (object.position), rotation (object.rotate -- uses radians. Use Math.PI!), scale. Each attribute has x, y, z attributes.</p>
 <br />
-New objects always created at (0, 0, 0) coordinate space.
-<br />
-Y-axis pointing up
-<br />
-Can transform all objects with three attributes: position (object.position), rotation (object.rotate -- uses radians. Use Math.PI!), scale. Each attribute has x, y, z attributes.
-<br />
-<br />
-Moving the camera:
+<p>Moving the camera:</p>
 <div style="white-space:pre-line" class="code">camera.position.x = 1;
 camera.position.y = 2;
 camera.position.z = 5;
@@ -116,7 +103,7 @@ camera.position.z = 5;
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 </div>
 <br />
-Creating a plane:
+<p>Creating a plane:</p>
 <div class="code code-wrap">function getPlane(size) {
   // args: width, depth
 	var geometry = new THREE.PlaneGeometry(size, size);
@@ -133,12 +120,11 @@ Creating a plane:
 	return mesh;
 }
 </div>
-Geometry stored as a property of object. ie can get height of object with <code>object.geometry.parameters.height</code>.
+<p>Geometry stored as a property of object. ie can get height of object with <code>object.geometry.parameters.height</code>.</p>
 
 <h2>2. Three.js Scene Object</h2>
-Most objects in Three.js are instances of the object3D base class. Many common properties (such as the <code>visible</code> property).
-<br />
-Continually rendering -- animation and interactivity
+<p>Most objects in Three.js are instances of the object3D base class. Many common properties (such as the <code>visible</code> property).</p>
+<p>Continually rendering -- animation and interactivity</p>
 <div class="code code-wrap">function update(renderer, scene, camera) {
 	renderer.render(
 		scene,
@@ -149,13 +135,11 @@ Continually rendering -- animation and interactivity
 	})
 }
 </div>
-<code>requestAnimationFrame</code> is similar to <code>setInterval</code> but does some performance optimizations such as when the frame is painted. Preferred
-over <code>setInterval</code> for animation because of this.
+<p><code>requestAnimationFrame</code> is similar to <code>setInterval</code> but does some performance optimizations such as when the frame is painted. Preferred over <code>setInterval</code> for animation because of this.</p>
 <br />
-Roughly 60 fps.
+<p>Animated at roughly 60 fps.</p>
 <br />
-<br />
-Properties
+<p>Properties</p>
 <ul>
   <li>
     <code>.add</code> --> parent-child relationship.
@@ -179,7 +163,7 @@ Properties
   </li>
 </ul>
 <br />
-Scene object -- fog property
+<p>Scene object -- fog property</p>
 <ul>
   <li>Allows scene to fade out to a given color.</li>
   <li>Two kinds of fog objects.</li>
@@ -189,12 +173,11 @@ scene.fog = new THREE.FogExp2(0xffffff, 0.2);
 </div>
 
 <h2>3. Lights</h2>
-Other mesh material: <code>var material = new THREE.MeshPhongMaterial({ color: 'rgb(120, 120, 120)' })</code>.
+<p>Other mesh material: <code>var material = new THREE.MeshPhongMaterial({ color: 'rgb(120, 120, 120)' })</code>.</p>
 <ul>
   <li>Blinn-Phong shading!</li>
 </ul>
-<br />
-Lights
+<p>Lights</p>
 <ul>
   <li>Point Light: Shadows point away from point light. <code>var light = new THREE.PointLight(0xffffff, intensity)</code>.</li>
   <li>Spotlight: Same arguments as point light. Light limited to a  cone. <code>var light = new THREE.SpotLight(0xffffff, intensity)</code>.</li>
@@ -217,9 +200,7 @@ Lights
   </ul>
   <li>Rectangular Light: Point and spot lights are poor approximations of real lights because they have no dimensions. Still mostly under development in Three.js.</li>
 </ul>
-<br />
-<br />
-dat.gui
+<p>dat.gui</p>
 <ul>
   <li>JavaScript library that lets us easily create UI to control parameters</li>
   <li>Provides way for us to alter scene in real-time.</li>
@@ -238,9 +219,7 @@ folder1.add(lightLeft.position, 'z', -5, 15);
 folder1.open();
 </div>
 <br />
-<br />
-So that we can drag mouse to orbit/change view direction around the origin at the scene, as well as zoom in and out, pass in <code>OrbitControls</code>. Adds interactivity controls.
-
+<p>So that we can drag mouse to orbit/change view direction around the origin at the scene, as well as zoom in and out, pass in <code>OrbitControls</code>. Adds interactivity controls.</p>
 <div class="code code-wrap">function update(renderer, scene, camera, controls) {
 	renderer.render(
 		scene,
@@ -258,8 +237,7 @@ var controls = new THREE.OrbitControls(camera, renderer.domElement);
 update(renderer, scene, camera, controls, clock);
 </div>
 <br />
-<br />
-Shadows are complicated. Need to enable in multiple places.
+<p>Shadows are complicated. Need to enable in multiple places.</p>
 <ul>
   <li>Enable shadow render: <code>renderer.shadowMap.enabled = true</code></li>
   <ul>
@@ -275,22 +253,19 @@ Shadows are complicated. Need to enable in multiple places.
   <li>Tell objects to cast or recieve shadows: <code>mesh.castShadow = true</code> and <code>mesh.recieveShadow = true</code></li>
 </ul>
 <br />
-Group objects with <code>var group = new THREE.Group()</code>, then add objects to the group with <code>.add</code>. Like a <code>div</code>. It is a non-geometric object that helps us control the transformation of other shapes easier.
+<p>Group objects with <code>var group = new THREE.Group()</code>, then add objects to the group with <code>.add</code>. Like a <code>div</code>. It is a non-geometric object that helps us control the transformation of other shapes easier.</p>
 
 <h2>4. Animation</h2>
-Animation done inside update loop.
-<br />
-Helpful math functions for animation:
+<p>Animation done inside update loop.</p>
+<p>Helpful math functions for animation:</p>
 <ul>
   <li><code>Math.random()</code> to return random value between 0 & 1.</li>
   <li><code>Math.cos()</code> gives cosine value.</li>
   <li><code>Math.sin()</code> gives sine value.</li>
 </ul>
-Use cos/sine wth the clock object to get smooth animation through time!
-<br />
-Clock object: Gets elapsed time since created.
-<br />
-We can also use <code>Date.now()</code>!
+<p>Use cos/sine wth the clock object to get smooth animation through time!</p>
+<p>Clock object: Gets elapsed time since created.</p>
+<p>We can also use <code>Date.now()</code>!</p>
 <div class="code code-wrap">// create the clock object.
 var clock = new THREE.Clock();
 ...
@@ -305,14 +280,14 @@ function update(renderer, scene, camera, controls, clock) {
 }
 </div>
 <br />
-JavaScript doesn't have a built-in noise function.
+<p>JavaScript doesn't have a built-in noise function.</p>
 <ul>
   <li>Solution: 3rd-party libraries such as noisejs for 2D and 3D simplex and Perlin noise</li>
 </ul>
 <br />
-noisejs: <code>noise.simplex2(a, a)</code> -- simplex noise. Similar to Perlin noise but lower computational complexity and fewer multiplications.
+<p>noisejs: <code>noise.simplex2(a, a)</code> -- simplex noise. Similar to Perlin noise but lower computational complexity and fewer multiplications.</p>
 <br />
-Cameras
+<p>Cameras</p>
 <ul>
   <li>Perspective Camera</li>
   <ul>
@@ -327,12 +302,9 @@ Cameras
   </ul>
 </ul>
 <br />
-<br />
-Animation Rig
-<br />
-Helper objects that facilitate animation process.
-<br />
-Control rotation, position:
+<p>Animation Rigging</p>
+<p>Helper objects that facilitate animation process.</p>
+<p>Control rotation, position:</p>
 <div class="code code-wrap">var cameraZPosition = new THREE.Group();
 var cameraXRotation = new THREE.Group();
 var cameraYRotation = new THREE.Group();
@@ -342,11 +314,10 @@ cameraXRotation.add(cameraZPosition);
 cameraYRotation.add(cameraXRotation);
 scene.add(cameraYRotation);
 </div>
-Isolating specific transforms to specific objects help in keeping animation process managable.
+<p>Isolating specific transforms to specific objects help in keeping animation process managable.</p>
 <br />
-Tween.js provides easing curves.
-<br />
-Create in global with start value, end value, duration, and other parameters. Use <code>.start()</code> to start the tween. Figures out interpolation between start and end values. Just do <code>TWEEN.update()</code> in update function.
+<p>Tween.js provides easing curves.</p>
+<p>Create in global with start value, end value, duration, and other parameters. Use <code>.start()</code> to start the tween. Figures out interpolation between start and end values. Just do <code>TWEEN.update()</code> in update function.</p>
 <div class="code code-wrap">// tweens val from 100 to -50 in 1200 milliseconds.
 new TWEEN.Tween({val: 100})
   .to({val: -50}, 12000)
@@ -379,7 +350,7 @@ new TWEEN.Tween({val: 0})
 </div>
 
 <h2>5. Materials and Textures</h2>
-Lots of materials!  Basically the same syntax.
+<p>Lots of materials!  Basically the same syntax.</p>
 <div class="code code-wrap">function getMaterial(type, color) {
 	var selectedMaterial;
 	var materialOptions = {
@@ -407,8 +378,7 @@ Lots of materials!  Basically the same syntax.
 	return selectedMaterial;
 }
 </div>
-<br />
-Materials
+<p>Materials</p>
 <ul>
   <li>Basic: Not affected by lighting. Just displays given color.</li>
   <li>Lambert: For diffuse surfaces like rubber, clay, stone. Very simple so performant, but may not yield most accurate results.</li>
@@ -422,8 +392,7 @@ Materials
       <li>The <code>metalness</code> attribute (between 0 and 1). Sharpness of highlights?</li>
   </ul>
 </ul>
-<br />
-Texture Maps!
+<p>Texture Maps!</p>
 <ul>
   <li>2D images mapped onto a material for surface detail.</li>
   <li>Bump map: brightens value of texture to simulate height effect. Doesn't change surface. Just changes how the light interacts with the surface to create the illusion of the texture. Works best when used for subtle effect.</li>
@@ -474,15 +443,11 @@ maps.forEach(function(mapName) {
 </div>
 
 <h2>6. Geometries</h2>
-All Three.js primitive geometries: box, cone, cylinder, octahedron, sphere, tetrahedron, torus, torus knot.
-<br />
-<a href="https://threejsfundamentals.org/threejs/lessons/threejs-primitives.html">https://threejsfundamentals.org/threejs/lessons/threejs-primitives.html</a> has a cool interactive demo!
-<br />
-Primitive usually the building blocks of more complicated geometries (procedure called modeling). Achieved by manipulating the vertices, edges, and faces of a base geometry.
-<br />
-Segment values affect densities of polygons on objects.
-<br />
-Each object has a <code>geometry</code> property that stores the object's vertices. Can modify the vertices (in local coordinates. For example, to move vertices in the global y-axis for a plane rotated 90 degrees, modify the z-axis).
+<p>All Three.js primitive geometries: box, cone, cylinder, octahedron, sphere, tetrahedron, torus, torus knot.</p>
+<p><a href="https://threejsfundamentals.org/threejs/lessons/threejs-primitives.html">https://threejsfundamentals.org/threejs/lessons/threejs-primitives.html</a> has a cool interactive demo!</p>
+<p>Primitive usually the building blocks of more complicated geometries (procedure called modeling). Achieved by manipulating the vertices, edges, and faces of a base geometry.</p>
+<p>Segment values affect densities of polygons on objects.</p>
+<p>Each object has a <code>geometry</code> property that stores the object's vertices. Can modify the vertices (in local coordinates. For example, to move vertices in the global y-axis for a plane rotated 90 degrees, modify the z-axis).</p>
 <div class="code code-wrap">var plane = scene.getObjectByName('plane-1');
 var planeGeo = plane.geometry;
 planeGeo.vertices.forEach(function(vertex, index) {
@@ -490,13 +455,15 @@ planeGeo.vertices.forEach(function(vertex, index) {
 });
 planeGeo.verticesNeedUpdate = true;
 </div>
-Can create models ourselves by specifying vertices, but can also import external 3D models. <a href="https://www.turbosquid.com/">https://www.turbosquid.com/</a>, <a href="https://clara.io/">https://clara.io/</a>, and <a href="https://sketchfab.com/">https://sketchfab.com/</a> have a lot of 3D models for sale and for free.
-<br />
-Three.js supports loading: FBX, OBJ, STL filetypes. Use the associated loader to load the file.
+<p>Can create models ourselves by specifying vertices, but can also import external 3D models. <a href="https://www.turbosquid.com/">https://www.turbosquid.com/</a>, <a href="https://clara.io/">https://clara.io/</a>, and <a href="https://sketchfab.com/">https://sketchfab.com/</a> have a lot of 3D models for sale and for free.</p>
+<p>Three.js supports loading: FBX, OBJ, STL filetypes. Use the associated loader to load the file.</p>
+<ul>
+  <li>And now, also GLTF!</li>
+</ul>
 
 <h2>7. Particles</h2>
-For particle objeects, Three.js' workflow is to create a geometry and populate the vertices with points. Then, feeding this into a Three.js Points function, it creates a particle system from the inputs. Alternatively, feed in existing objects into the points function as well. This method ensures that when the object is rendered, you don't see any faces or edges but just particles.
-Example for particles with randomly generated positions:
+<p>For particle objeects, Three.js' workflow is to create a geometry and populate the vertices with points. Then, feeding this into a Three.js Points function, it creates a particle system from the inputs. Alternatively, feed in existing objects into the points function as well. This method ensures that when the object is rendered, you don't see any faces or edges but just particles.</p>
+<p>Example for particles with randomly generated positions:</p>
 <div class="code code-wrap">var particleGeo = new THREE.Geometry();
 var particleMat = new THREE.PointsMaterial({
   color: 'rgb(255, 255, 255)',
@@ -524,24 +491,19 @@ var particleSystem = new THREE.Points(
 );
 scene.add(particleSystem);
 </div>
-Particles can have texture.
-<br />
-If the texture has a black background, get rid of it by settning the blending mode on the texture to THREE.AdditiveBlending and by setting the transparency to true.
-<br />
-This part in the point material instantiation.
+<p>Particles can have texture.</p>
+<p>If the texture has a black background, get rid of it by settning the blending mode on the texture to THREE.AdditiveBlending and by setting the transparency to true.</p>
+<p>This part in the point material instantiation:</p>
 <div class="code code-wrap">map: new THREE.TextureLoader().load('/assets/textures/particle.jpg'),
 transparent: true,
 blending: THREE.AdditiveBlending,
 depthWrite: false
 </div>
-In that case, generate particles by creating them directly. Can also set the particle system's geometry to an object and the vertices become the  particles.
+<p>In that case, generate particles by creating them directly. Can also set the particle system's geometry to an object and the vertices become the  particles.</p>
+<p>Animate by changing vertex positions in the update function.</p>
 <br />
-Animate by changing vertex positions in the update function.
-<br />
-<br />
-Stats.js: JavaScript performance monitor. Shows FPS in corner.
-<br />
-To use:
+<p>Stats.js: JavaScript performance monitor. Shows FPS in corner.</p>
+<p>To use:</p>
 <div class="code code-wrap">var stats = new Stats();
 document.body.appendChild(stats.dom);
 ...
@@ -551,16 +513,13 @@ function update(renderer, scene, camera, controls, stats) {
   ...
 }
 </div>
-By default, FPS should be around 60. Lower indicates performance issues.
+<p>By default, FPS should be around 60. Lower indicates performance issues.</p>
 
 <h2>8. Post-Processing</h2>
-GLSL: high-level shading language with syntax based on C.
-<br />
-Shaders (post-processing) not supported by the core Three.js library. However, the Three.js examples page has many shader files.
-<br />
-To add post-processing, need to use the <code>EffectsComposer</code> object. Not in the core Three.js library. Found in the three.js/examples/js/postprocessing folder in the Github repo.
-<br />
-The <code>EffectsComposer</code> depends on the <code>RenderPass</code>, <code>CopyShader</code>, and <code>ShaderPass</code>.
+<p>GLSL: high-level shading language with syntax based on C.</p>
+<p>Shaders (post-processing) not supported by the core Three.js library. However, the Three.js examples page has many shader files.</p>
+<p>To add post-processing, need to use the <code>EffectsComposer</code> object. Not in the core Three.js library. Found in the three.js/examples/js/postprocessing folder in the Github repo.</p>
+<p>The <code>EffectsComposer</code> depends on the <code>RenderPass</code>, <code>CopyShader</code>, and <code>ShaderPass</code>.</p>
 <div class="code code-wrap">var composer = new THREE.EffectComposer(renderer);
 var renderPass = new THREE.RenderPass(scene, camera);
 composer.addPass(renderPass);
@@ -569,11 +528,9 @@ var vignetteEffect = new THREE.ShaderPass(THREE.VignetteShader);
 vignetteEffect.uniforms['darkness'].value = 2;
 composer.addPass(vignetteEffect);
 </div>
-(Need to add each shader's script to the HTML. They're in the same folder as the EffectComposer.)
-<br />
-Can also write your own or use community's shaders.
+<p>(Need to add each shader's script to the HTML. They're in the same folder as the EffectComposer.)</p>
+<p>Can also write your own or use community's shaders.</p>
 
 <h2>Conclusion</h2>
-Three.js has a lot of examples! Going through them can teach you a lot and show you what it is capable of.
-<br />
-WhitestormJS: 3D framework built with Three.js to make 3D physics simulations easier.
+<p>Three.js has a lot of examples! Going through them can teach you a lot and show you what it is capable of.</p>
+<p>WhitestormJS: 3D framework built with Three.js to make 3D physics simulations easier.</p>

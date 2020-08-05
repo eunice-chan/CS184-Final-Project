@@ -23,7 +23,7 @@ function initScene() {
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
-	document.body.appendChild( renderer.domElement );
+	document.getElementById("demo").appendChild( renderer.domElement );
 
   // View controls
 	orbit = new THREE.OrbitControls( camera, renderer.domElement );
@@ -60,20 +60,21 @@ function initScene() {
   moveSpeed = 1;
   keys = [];
 
-  window.addEventListener( "keydown",
+  top.document.documentElement.addEventListener( 'keydown',
       function( e ) {
+          console.log(e.keyCode);
           keys[ e.keyCode ] = true;
           moveTarget( e );
       },
   false );
 
-  window.addEventListener( 'keyup',
+  top.document.documentElement.addEventListener( 'keyup',
       function( e ){
           keys[ e.keyCode ] = false;
       },
   false );
 
-  document.addEventListener('mousemove', moveTargetY, false);
+  document.getElementById("demo").addEventListener('mousemove', moveTargetY, false);
 
   // Model
 	initModel();
@@ -108,6 +109,7 @@ function moveTarget( event ) {
 
     if ( keys[ 32 ] ) {
       // space bar
+      console.log(target);
       target.pose();
     }
 
@@ -116,6 +118,8 @@ function moveTarget( event ) {
 }
 
 function moveTargetY( event ) {
+
+      console.log("MOUSE MOVED");
     currY = - ( event.clientY / window.innerHeight ) * 2 + 1;
     if ( keys [ 16 ] ) {
       // shift
