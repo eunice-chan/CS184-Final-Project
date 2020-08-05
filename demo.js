@@ -1,4 +1,4 @@
-var stats, gui, scene, camera, renderer, orbit, lights, mesh, bones, skeletonHelper;
+var stats, gui, scene, camera, renderer, orbit, lights, target, moveSpeed, keys, prevY, currY, mesh, bones, skeletonHelper;
 
 function initScene() {
 
@@ -52,11 +52,102 @@ function initScene() {
 	scene.add( lights[ 0 ] );
 	scene.add( lights[ 1 ] );
 
+  // Target point
+  target = getSphere( 0.5 );
+  target.position.set(0, 15, 0);
+  scene.add( target );
+  // Move target point
+  moveSpeed = 1;
+  keys = [];
+
+  window.addEventListener( "keydown",
+      function( e ) {
+          keys[ e.keyCode ] = true;
+          moveTarget( e );
+      },
+  false );
+
+  window.addEventListener( 'keyup',
+      function( e ){
+          keys[ e.keyCode ] = false;
+      },
+  false );
+
+  document.addEventListener('mousemove', moveTargetY, false);
+
   // Model
 	initModel();
   // Model interaction
 	setupDatGui();
 
+}
+
+function moveTarget( event ) {
+
+    var keyCode = event.which;
+
+    if ( keys[ 87 ] ) {
+      // W key
+      target.position.z += moveSpeed;
+    }
+
+    if ( keys[ 83 ] ) {
+      // S key
+      target.position.z -= moveSpeed;
+    }
+
+    if ( keys[ 65 ] ) {
+      // A key
+      target.position.x -= moveSpeed;
+    }
+
+    if ( keys[ 68 ] ) {
+      // D key
+      target.position.x += moveSpeed;
+    }
+
+    if ( keys[ 32 ] ) {
+      // space bar
+      target.pose();
+    }
+
+    target.verticesNeedUpdate = true;
+
+}
+
+function moveTargetY( event ) {
+    currY = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    if ( keys [ 16 ] ) {
+      // shift
+      if ( prevY ) {
+        if ( currY - prevY > 0 ) {
+          // Moved up
+          target.position.y += moveSpeed / 2;
+        } else {
+          // Moved down
+          target.position.y -= moveSpeed / 2;
+
+        }
+        target.verticesNeedUpdate = true;
+      }
+    }
+    prevY = currY;
+}
+
+function getSphere( size ) {
+
+	var geometry = new THREE.SphereGeometry( size, 24, 24 );
+
+	var material = new THREE.MeshBasicMaterial({
+		color: 'rgb(255, 132, 200)'
+	});
+
+	var mesh = new THREE.Mesh(
+		geometry,
+		material
+	);
+
+	return mesh;
 }
 
 function createGeometry( sizing ) {
@@ -98,7 +189,7 @@ function createGeometry( sizing ) {
     if (i < 2 * ( pointsPerLayer + pointsPerTop ) ) {
 
       layer = ( Math.floor( i / ( widthSegments + 1 ) ) ) % maxLayer;
-      
+
     } else {
 
       // Remove everything before because top and bottom faces have a different number of points and throws off the layer order.
@@ -213,8 +304,7 @@ function createMesh( geometry, bones ) {
 
 function setupDatGui() {
 
-	gui.add( mesh , "pose" );
-	gui.__controllers[ 0 ].name( "Reset Pose" );
+	gui.add( mesh , "pose" ).name( "Reset Pose" );
 
 
   var folderFK = gui.addFolder("Forward Kinematics")
@@ -228,9 +318,7 @@ function setupDatGui() {
 
   folder = folderFK.addFolder( "Shoulder" );
 
-  folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 );
-
-  folder.__controllers[ 0 ].name( "Rotate" );
+  folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate" );
 
   //////////////
 
@@ -239,13 +327,9 @@ function setupDatGui() {
   folder = folderFK.addFolder( "Elbow" );
 
   // So that it won't completely bend on itself. It's not a very flexible arm. :)
-  folder.add( bone.rotation, 'x', 0, 2 );
-  folder.add( bone.position, 'x', - 5, 5 );
-  folder.add( bone.position, 'z', - 5, 5 );
-
-  folder.__controllers[ 0 ].name( "Rotate" );
-  folder.__controllers[ 1 ].name( "Move X" );
-  folder.__controllers[ 2 ].name( "Move Z" );
+  folder.add( bone.rotation, 'x', 0, 2 ).name( "Rotate" );
+  folder.add( bone.position, 'x', - 5, 5 ).name( "Move X" );
+  folder.add( bone.position, 'z', - 5, 5 ).name( "Move Z" );
 
   ////////////////
 
@@ -253,13 +337,9 @@ function setupDatGui() {
 
   folder = folderFK.addFolder( "Wrist" );
 
-  folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 );
-  folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 );
-  folder.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 );
-
-  folder.__controllers[ 0 ].name( "Rotate X" );
-  folder.__controllers[ 1 ].name( "Rotate Y" );
-  folder.__controllers[ 2 ].name( "Rotate Z" );
+  folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate X" );
+  folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Y" );
+  folder.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Z" );
 
 }
 
@@ -283,6 +363,8 @@ function initModel( wireframe = true ) {
 	var bones = createBones( sizing );
 	mesh = createMesh( geometry, bones );
 
+  mesh.position.set(0, 0, 0);
+
 	scene.add( mesh );
 
 }
@@ -292,8 +374,7 @@ function render() {
   stats.update();
 	requestAnimationFrame( render );
 
-	var time = Date.now() * 0.001;
-
+	// var time = Date.now() * 0.001;
 	// Animation: Wiggle the bones
 	// if ( state.animateBones ) {
   //
@@ -311,131 +392,3 @@ function render() {
 
 initScene();
 render();
-
-		// function init() {
-// 	var scene = new THREE.Scene();
-// 	var gui = new dat.GUI();
-// 	var stats = new Stats();
-// 	document.body.appendChild(stats.dom);
-//
-// 	// camera
-// 	var camera = new THREE.PerspectiveCamera(
-// 		45, // field of view
-// 		window.innerWidth / window.innerHeight, // aspect ratio
-// 		1, // near clipping plane
-// 		1000 // far clipping plane
-// 	);
-// 	camera.position.z = 10;
-// 	camera.position.x = 0;
-// 	camera.position.y = 5;
-// 	camera.lookAt(new THREE.Vector3(0, 0, 0));
-//
-//   var skeleton = [];
-//   var skeletonViewer = [];
-//
-// 	// load external geometry
-// 	var loader = new THREE.OBJLoader();
-//
-// 	loader.load('./models/arm.obj', function (geometry, materials) {
-// 		// var colorMap = textureLoader.load('/assets/models/head/Face_Color.jpg');
-// 		// var bumpMap = textureLoader.load('/assets/models/head/Face_Disp.jpg');
-// 		// var faceMaterial = getMaterial('phong', 'rgb(200, 20, 100)');
-//
-//     var object = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
-//     var objectViewer = new THREE.SkeletonHelper(object);
-//     skeleton.push(object);
-//     skeletonViewer.push(objectViewer);
-//     console.log(skeleton);
-//
-//     object.castShadow = true;
-//
-// 		scene.add(object);
-//
-//
-//   	// var folder1 = gui.addFolder('Forward Kinematics');
-//   	// folder1.add(object.skeleton.bones[0].rotation, 'x', -5, 15);
-//   	// folder1.add(object.skeleton.bones[0].rotation, 'y', -5, 15);
-//   	// folder1.add(object.skeleton.bones[0].rotation, 'z', -5, 15);
-// 	});
-//
-//   var directionalLight1 = getDirectionalLight();
-//   directionalLight1.position.x = -20;
-//   directionalLight1.position.y = -25;
-//   directionalLight1.position.z = -15;
-//   scene.add(directionalLight1);
-//
-//   var directionalLight2 = getDirectionalLight();
-// 	directionalLight2.position.x = 20;
-// 	directionalLight2.position.y = 25;
-// 	directionalLight2.position.z = 15;
-// 	scene.add(directionalLight2);
-//
-// 	// renderer
-// 	var renderer = new THREE.WebGLRenderer();
-// 	renderer.setSize(window.innerWidth, window.innerHeight);
-// 	renderer.shadowMap.enabled = true;
-// 	renderer.setClearColor('rgb(200, 200, 200)');
-//
-// 	var controls = new THREE.OrbitControls( camera, renderer.domElement );
-//
-// 	document.getElementById('demo').appendChild(renderer.domElement);
-//
-// 	update(renderer, scene, camera, controls, stats);
-//
-// 	return scene;
-// }
-//
-// function getMaterial(type, color) {
-// 	var selectedMaterial;
-// 	var materialOptions = {
-// 		color: color === undefined ? 'rgb(255, 255, 255)' : color,
-// 	};
-//
-// 	switch (type) {
-// 		case 'basic':
-// 			selectedMaterial = new THREE.MeshBasicMaterial(materialOptions);
-// 			break;
-// 		case 'lambert':
-// 			selectedMaterial = new THREE.MeshLambertMaterial(materialOptions);
-// 			break;
-// 		case 'phong':
-// 			selectedMaterial = new THREE.MeshPhongMaterial(materialOptions);
-// 			break;
-// 		case 'standard':
-// 			selectedMaterial = new THREE.MeshStandardMaterial(materialOptions);
-// 			break;
-// 		default:
-// 			selectedMaterial = new THREE.MeshBasicMaterial(materialOptions);
-// 			break;
-// 	}
-//
-// 	return selectedMaterial;
-// }
-//
-// function getDirectionalLight() {
-// 	var light = new THREE.DirectionalLight(0xffffff, 1.5);
-// 	light.castShadow = true;
-// 	var shadowMapSize = 30;
-//
-// 	//Set up shadow properties for the light
-// 	light.shadow.mapSize.width = 2048;
-// 	light.shadow.mapSize.height = 2048;
-//
-// 	light.shadow.camera.left = -shadowMapSize;
-// 	light.shadow.camera.bottom = -shadowMapSize;
-// 	light.shadow.camera.right = shadowMapSize;
-// 	light.shadow.camera.top = shadowMapSize;
-//
-// 	return light;
-// }
-//
-// function update(renderer, scene, camera, controls, stats) {
-// 	controls.update();
-// 	stats.update();
-// 	renderer.render(scene, camera);
-// 	requestAnimationFrame(function() {
-// 		update(renderer, scene, camera, controls, stats);
-// 	});
-// }
-//
-// var scene = init();

@@ -41,8 +41,8 @@ Set up the development environment.
 </ul>
 <h3>Deliverables</h3>
 <ul>
-  <li>Show a screenshot of each of the three environments.</li>
-  <li>Basic demo done with the ability to switch among the three objects and move the target point.</li>
+  <li>Show a screenshot of implemented environments.</li>
+  <li>Basic demo done with the ability to <strike class="highlight-orange">switch among the three objects and</strike> move the target point.</li>
   <li>Demo of demoable testing features.</li>
 </ul>
 <h3>Reach Goal: Forward Kinematics</h3>
@@ -143,100 +143,65 @@ Updated as I go along.
   <li>
     <div class="checkbox checkbox-on"></div>
     <span class="to-do-children-checked">Figure out skeletal rigging in Three.js</span>
-    <ul>
-      <li>After many false starts, I ended up taking the code <a href="https://threejs.org/docs/#api/en/objects/SkinnedMesh">here</a> and using that as starter code.</li>
-    </ul>
   </li>
+</ul>
+<ul>
+  <li>After many false starts, I ended up taking the code <a href="https://threejs.org/docs/#api/en/objects/SkinnedMesh">here</a> and using that as starter code.</li>
+</ul>
+  <ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-on"></div>
     <span class="to-do-children-checked">Update schedule based on proposal feedback</span>
   </li>
 </ul>
+<ul>
+  <li>Swapped some goals and reach goals.</li>
+</ul>
+<ul class="to-do-list">
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">[Reach Goal] Implement basic forward kinematics</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Set up testing environment in Three.js</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Add moveable target point in demo</span>
+  </li>
+</ul>
 <ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Set up testing environment in Three.js</span>
+    <span class="to-do-children-unchecked">Implement IK methods for arm model</span>
+    <ul class="to-do-list">
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">Damped least squares / Levenberg–Marquardt algorithm</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">Pseudo-inverse damped least squares</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">SMCM</span>
+      </li>
+    </ul>
   </li>
   <li>
   <div class="checkbox checkbox-off"></div>
   <span class="to-do-children-unchecked">Write milestone report</span>
   </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Implement IK methods for rope model</span>
-    <ul class="to-do-list">
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">Damped least squares / Levenberg–Marquardt algorithm</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">Pseudo-inverse damped least squares</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] Selectively damped least squares</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] SMCM</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] SMCM with interpolation for trajectory smoothing</span>
-      </li>
-    </ul>
-  </li>
   <br />
   <li>
     <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">[Reach Goal] Implement basic forward kinematics</span>
-  </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">[Reach Goal] Implement additional features for testing/interactivity</span>
-  </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">[Reach Goal] Limit movement range</span>
+    <span class="to-do-children-unchecked">[Reach Goal] Limit movement range for IK</span>
   </li>
 </ul>
 <h3>Week 2: August 8 - August 14</h3>
 <ul class="to-do-list">
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Create model to manipulate (using Blender): Rope</span>
-  </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Create model to manipulate (using Blender): Human figure</span>
-  </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Implement IK methods for the other figures(?)</span>
-    <ul class="to-do-list">
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">Damped least squares / Levenberg–Marquardt algorithm</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">Pseudo-inverse damped least squares</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] Selectively damped least squares</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] SMCM</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] SMCM with interpolation for trajectory smoothing</span>
-      </li>
-    </ul>
-  </li>
   <li>
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">Add styling / wrap up</span>
@@ -260,6 +225,55 @@ Updated as I go along.
   <li>
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">Add constraints for expressiveness / style of movement</span>
+  </li>
+  <br />
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Implement IK methods for arm model</span>
+    <ul class="to-do-list">
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] Selectively damped least squares</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] SMCM with interpolation for trajectory smoothing</span>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">[Reach Goal] Create model to manipulate: Rope</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">[Reach Goal] Create model to manipulate: Human figure</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">[Reach Goal] Implement IK methods for the other figures</span>
+    <ul class="to-do-list">
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] Damped least squares / Levenberg–Marquardt algorithm</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] Pseudo-inverse damped least squares</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] SMCM</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] Selectively damped least squares</span>
+      </li>
+      <li>
+        <div class="checkbox checkbox-off"></div>
+        <span class="to-do-children-unchecked">[Reach Goal] SMCM with interpolation for trajectory smoothing</span>
+      </li>
+    </ul>
   </li>
 </ul>
 <!-- <li>

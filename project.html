@@ -7,7 +7,7 @@
 </head>
 
 <body class="sans">
-<a href="./index.html">HOME</a> / <a href="./proposal.html">PROPOSAL</a> / <a href="#">MILESTONE</a> / <b><a href=".#">WRITEUP</a></b> / <a href="./demo.html">DEMO</a>
+<a href="./index.html">HOME</a> / <a href="./proposal.html">PROPOSAL</a> / <a href="./milestone.html">MILESTONE</a> / <b><a href="#">WRITEUP</a></b> / <a href="./demo.html">DEMO</a>
 <br />
 <br />
 <br />
@@ -160,14 +160,27 @@ Thus, I moved on to my final approach. I iterated over every vertex and set it's
 </div>
 Once I got the positioning done, that was all I had to do as I had already rigged the model and added it to the control panel when I was working with the bone scaling model version. I did not have to change it much.
 <h3>Forward Kinematics</h3>
+Although I had initially written forward kinematics as a reach goal, I realized it wasn't very difficult, and would be helpful for checking if I rigged the model correctly.
 Implementing forward kinematics was straightforward. Forward kinematics is defined as the process of obtaining the velocity and position of the end effectors given the input of the joint angles and angular velocities. In this case, I take in the user input which is the rotation or position of the joint and apply it to the model, transforming it from one pose to another.
 <br />
-In the demo, I constrained the user input so it won't be too overwhelming. I anchored the model in one position and gave it the approximate constraints on an arm.
+In the demo, I constrained the user input so it won't be too overwhelming. I anchored the model in one position and gave it the approximate constraints of an arm.
 <br />
 <br />
-<video style="width:100%" preload controls>
+<video style="width:100%;padding:0 10%;" preload controls>
     <source src="./images/FK_demo.mov" />
     <p>Your browser doesn't support my video. Here is a <a href="./images/FK_demo.mov">link to the video</a> instead.</p>
+</video>
+<h3>Moveable Target Point</h3>
+The second major part of the demo is that I need to be able to set the target point. My first thought was to implement it with the arrow keys. However, I quickly realized that the arrow keys can only control two dimensions and there are three dimensions (four if you include time) in the demo. The arrows keys are also being use by the <code>OrbitControls</code> and I really enjoyed having the ability to move around the scene, so I was reluctant to part with it.
+<br />
+In the end, I decided to implement the controls to be WASD & <code>shift</code> + mouseMoveDirection (calculated by storing the previous mouse location and the current) with <code>space</code> being the key that resets its position.
+<br />
+I find it a little clunky, but it's much better than tediously dragging sliders around, so I decided to stick with this approach unless I think of something better.
+<br />
+<br />
+<video style="width:100%;padding:0 10%;" preload controls>
+    <source src="./images/target_demo.mov" />
+    <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
 </video>
 </body>
 </html>
