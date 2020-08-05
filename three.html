@@ -6,7 +6,7 @@
 <link rel="icon" href="penrosetriangle.svg">
 </head>
 <body class="sans">
-<a href="./index.html">HOME</a> / <a href="./proposal.html">PROPOSAL</a> / <a href="#">MILESTONE</a> / <a href="./project.html">PROJECT</a>  / <a href="./demo.html">DEMO</a>
+<a href="./index.html">HOME</a> / <a href="./proposal.html">PROPOSAL</a> / <a href="#">MILESTONE</a> / <a href="./project.html">WRITEUP</a>  / <a href="./demo.html">DEMO</a>
 
 
 <h1 class="page-title">Three.js Notes</h1><h1>Background Technical Information for the CS 184 Final Project</h1>
@@ -35,37 +35,35 @@ Camera: POV.
   <li>Aspect ratio</li>
   <li>Near/far clipping plane (for optimization purposes)</li>
 </ul>
-<pre class="code code-wrap">
-var scene = new THREE.Scene();
+<div class="code code-wrap">var scene = new THREE.Scene();
 // args: FOV, aspect ratio, near plane, far plane
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 1000);
-</pre>
+</div>
 <br />
 Need renderer to see scene. Typically use <code>new THREE.WebGLRenderer()</code>.
 <br />
 Can use Canvas or SVGRenderer if environment doesn't use WebGL. However, prefer not because uses CPU, so slower. Also, WebGL features like shadows or shading not available.
 <br />
+<br />
 Set renderer size with:
-<pre class="code">
-renderer.setSize(window.innerWidth, window.innerHeight);
-</pre>
+<div class="code code-wrap">renderer.setSize(window.innerWidth, window.innerHeight);
+</div>
+<br />
 Set renderer background color with:
-<pre class="code">
-renderer.setClearColor('rgb(255, 255, 255)');
-</pre>
+<div class="code code-wrap">renderer.setClearColor('rgb(255, 255, 255)');
+</div>
 Can use hex or rgb to set colors (<code>0xffffff</code>, <code>'#ffffff'</code>, <code>'rgb(255, 255, 255)'</code>).
 <br />
 <br />
 Typically prefer to have renderer size proportional to window inner width and height.
 <br />
-To display results of renderer, append append the DOM element for the renderer to the HTML content. Call render on the renderer with the scene and camera to display.
-<pre class="code">
-document.getElementById('webgl').appendChild(renderer.domElement);
+To display results of renderer, append the DOM element for the renderer to the HTML content. Call <code>render</code> on the renderer with the scene and camera to display.
+<div class="code code-wrap">document.getElementById('webgl').appendChild(renderer.domElement);
 renderer.render(
   scene,
   camera
 );
-</pre>
+</div>
 <br />
 <br />
 Three.js 3D objects: geometry (shape) + material (appearance) = mesh = 3D object
@@ -73,8 +71,7 @@ Three.js 3D objects: geometry (shape) + material (appearance) = mesh = 3D object
 Many different kinds of material: reflective, diffuse, etc.
 <br />
 Create cube and add to scene:
-<pre class="code">
-// args: width, height, depth
+<div class="code code-wrap">// args: width, height, depth
 function getBox(w, h, d) {
 	var geometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -93,7 +90,7 @@ function getBox(w, h, d) {
 
 var box = getBox(1, 1, 1);
 scene.add(box);
-</pre>
+</div>
 Create sphere: <code>var geometry = new THREE.SphereGeometry(width, height, 24)</code>.
 <ul>
   <li>Arguments: width, height, segment</li>
@@ -111,18 +108,16 @@ Can transform all objects with three attributes: position (object.position), rot
 <br />
 <br />
 Moving the camera:
-<pre class="code">
-camera.position.x = 1;
+<div style="white-space:pre-line" class="code">camera.position.x = 1;
 camera.position.y = 2;
 camera.position.z = 5;
 
 // arg: point in 3D space the camera looks at
 camera.lookAt(new THREE.Vector3(0, 0, 0));
-</pre>
+</div>
 <br />
 Creating a plane:
-<pre class="code">
-function getPlane(size) {
+<div class="code code-wrap">function getPlane(size) {
   // args: width, depth
 	var geometry = new THREE.PlaneGeometry(size, size);
 	var material = new THREE.MeshBasicMaterial({
@@ -137,15 +132,14 @@ function getPlane(size) {
 
 	return mesh;
 }
-</pre>
+</div>
 Geometry stored as a property of object. ie can get height of object with <code>object.geometry.parameters.height</code>.
 
 <h2>2. Three.js Scene Object</h2>
 Most objects in Three.js are instances of the object3D base class. Many common properties (such as the <code>visible</code> property).
 <br />
 Continually rendering -- animation and interactivity
-<pre class="code">
-function update(renderer, scene, camera) {
+<div class="code code-wrap">function update(renderer, scene, camera) {
 	renderer.render(
 		scene,
 		camera
@@ -154,7 +148,7 @@ function update(renderer, scene, camera) {
 		update(renderer, scene, camera);
 	})
 }
-</pre>
+</div>
 <code>requestAnimationFrame</code> is similar to <code>setInterval</code> but does some performance optimizations such as when the frame is painted. Preferred
 over <code>setInterval</code> for animation because of this.
 <br />
@@ -190,10 +184,9 @@ Scene object -- fog property
   <li>Allows scene to fade out to a given color.</li>
   <li>Two kinds of fog objects.</li>
 </ul>
-<pre class="code">
-// args: color, density
+<div class="code code-wrap">// args: color, density
 scene.fog = new THREE.FogExp2(0xffffff, 0.2);
-</pre>
+</div>
 
 <h2>3. Lights</h2>
 Other mesh material: <code>var material = new THREE.MeshPhongMaterial({ color: 'rgb(120, 120, 120)' })</code>.
@@ -231,8 +224,7 @@ dat.gui
   <li>JavaScript library that lets us easily create UI to control parameters</li>
   <li>Provides way for us to alter scene in real-time.</li>
 </ul>
-<pre class="code">
-// adds controls to scene
+<div class="code code-wrap">// adds controls to scene
 var gui = new dat.GUI()
 
 // folders organize the controls into groups
@@ -244,13 +236,12 @@ folder1.add(lightLeft.position, 'y', -5, 15);
 folder1.add(lightLeft.position, 'z', -5, 15);
 // the folder will be open at the start
 folder1.open();
-</pre>
+</div>
 <br />
 <br />
 So that we can drag mouse to orbit/change view direction around the origin at the scene, as well as zoom in and out, pass in <code>OrbitControls</code>. Adds interactivity controls.
 
-<pre class="code">
-function update(renderer, scene, camera, controls) {
+<div class="code code-wrap">function update(renderer, scene, camera, controls) {
 	renderer.render(
 		scene,
 		camera
@@ -265,8 +256,7 @@ function update(renderer, scene, camera, controls) {
 ...
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 update(renderer, scene, camera, controls, clock);
-</pre>
-<br />
+</div>
 <br />
 <br />
 Shadows are complicated. Need to enable in multiple places.
@@ -299,8 +289,9 @@ Helpful math functions for animation:
 Use cos/sine wth the clock object to get smooth animation through time!
 <br />
 Clock object: Gets elapsed time since created.
-<pre class="code">
-// create the clock object.
+<br />
+We can also use <code>Date.now()</code>!
+<div class="code code-wrap">// create the clock object.
 var clock = new THREE.Clock();
 ...
 // pass into update fn
@@ -312,7 +303,7 @@ function update(renderer, scene, camera, controls, clock) {
 		update(renderer, scene, camera, controls, clock);
 	})
 }
-</pre>
+</div>
 <br />
 JavaScript doesn't have a built-in noise function.
 <ul>
@@ -342,8 +333,7 @@ Animation Rig
 Helper objects that facilitate animation process.
 <br />
 Control rotation, position:
-<pre class="code">
-var cameraZPosition = new THREE.Group();
+<div class="code code-wrap">var cameraZPosition = new THREE.Group();
 var cameraXRotation = new THREE.Group();
 var cameraYRotation = new THREE.Group();
 
@@ -351,14 +341,13 @@ cameraZPosition.add(camera);
 cameraXRotation.add(cameraZPosition);
 cameraYRotation.add(cameraXRotation);
 scene.add(cameraYRotation);
-</pre>
+</div>
 Isolating specific transforms to specific objects help in keeping animation process managable.
 <br />
 Tween.js provides easing curves.
 <br />
 Create in global with start value, end value, duration, and other parameters. Use <code>.start()</code> to start the tween. Figures out interpolation between start and end values. Just do <code>TWEEN.update()</code> in update function.
-<pre class="code">
-// tweens val from 100 to -50 in 1200 milliseconds.
+<div class="code code-wrap">// tweens val from 100 to -50 in 1200 milliseconds.
 new TWEEN.Tween({val: 100})
   .to({val: -50}, 12000)
   // use the interpolated value to update the camera's z position
@@ -387,12 +376,11 @@ new TWEEN.Tween({val: 0})
     cameraYRotation.rotation.y = this.val;
   })
   .start();
-</pre>
+</div>
 
 <h2>5. Materials and Textures</h2>
 Lots of materials!  Basically the same syntax.
-<pre class="code">
-function getMaterial(type, color) {
+<div class="code code-wrap">function getMaterial(type, color) {
 	var selectedMaterial;
 	var materialOptions = {
 		color: color === undefined ? 'rgb(255, 255, 255)' : color,
@@ -418,7 +406,7 @@ function getMaterial(type, color) {
 
 	return selectedMaterial;
 }
-</pre>
+</div>
 <br />
 Materials
 <ul>
@@ -445,8 +433,7 @@ Texture Maps!
       <li>In Three.js, environment maps are cubemaps.</li>
     </ul>
 </ul>
-<pre class="code">
-var path = '/assets/cubemap/';
+<div class="code code-wrap">var path = '/assets/cubemap/';
 var format = '.jpg';
 var urls = [
   path + 'px' + format, path + 'nx' + format,
@@ -484,7 +471,7 @@ maps.forEach(function(mapName) {
   // repetition frequency is 15
   texture.repeat.set(15, 15);
 });
-</pre>
+</div>
 
 <h2>6. Geometries</h2>
 All Three.js primitive geometries: box, cone, cylinder, octahedron, sphere, tetrahedron, torus, torus knot.
@@ -496,14 +483,13 @@ Primitive usually the building blocks of more complicated geometries (procedure 
 Segment values affect densities of polygons on objects.
 <br />
 Each object has a <code>geometry</code> property that stores the object's vertices. Can modify the vertices (in local coordinates. For example, to move vertices in the global y-axis for a plane rotated 90 degrees, modify the z-axis).
-<pre class="code">
-var plane = scene.getObjectByName('plane-1');
+<div class="code code-wrap">var plane = scene.getObjectByName('plane-1');
 var planeGeo = plane.geometry;
 planeGeo.vertices.forEach(function(vertex, index) {
   vertex.z += Math.sin(elapsedTime + index * 0.1) * 0.005;
 });
 planeGeo.verticesNeedUpdate = true;
-</pre>
+</div>
 Can create models ourselves by specifying vertices, but can also import external 3D models. <a href="https://www.turbosquid.com/">https://www.turbosquid.com/</a>, <a href="https://clara.io/">https://clara.io/</a>, and <a href="https://sketchfab.com/">https://sketchfab.com/</a> have a lot of 3D models for sale and for free.
 <br />
 Three.js supports loading: FBX, OBJ, STL filetypes. Use the associated loader to load the file.
@@ -511,8 +497,7 @@ Three.js supports loading: FBX, OBJ, STL filetypes. Use the associated loader to
 <h2>7. Particles</h2>
 For particle objeects, Three.js' workflow is to create a geometry and populate the vertices with points. Then, feeding this into a Three.js Points function, it creates a particle system from the inputs. Alternatively, feed in existing objects into the points function as well. This method ensures that when the object is rendered, you don't see any faces or edges but just particles.
 Example for particles with randomly generated positions:
-<pre class="code">
-var particleGeo = new THREE.Geometry();
+<div class="code code-wrap">var particleGeo = new THREE.Geometry();
 var particleMat = new THREE.PointsMaterial({
   color: 'rgb(255, 255, 255)',
   size: 1,
@@ -538,18 +523,17 @@ var particleSystem = new THREE.Points(
   particleMat
 );
 scene.add(particleSystem);
-</pre>
+</div>
 Particles can have texture.
 <br />
 If the texture has a black background, get rid of it by settning the blending mode on the texture to THREE.AdditiveBlending and by setting the transparency to true.
 <br />
 This part in the point material instantiation.
-<pre class="code">
-map: new THREE.TextureLoader().load('/assets/textures/particle.jpg'),
+<div class="code code-wrap">map: new THREE.TextureLoader().load('/assets/textures/particle.jpg'),
 transparent: true,
 blending: THREE.AdditiveBlending,
 depthWrite: false
-</pre>
+</div>
 In that case, generate particles by creating them directly. Can also set the particle system's geometry to an object and the vertices become the  particles.
 <br />
 Animate by changing vertex positions in the update function.
@@ -558,8 +542,7 @@ Animate by changing vertex positions in the update function.
 Stats.js: JavaScript performance monitor. Shows FPS in corner.
 <br />
 To use:
-<pre class="code">
-var stats = new Stats();
+<div class="code code-wrap">var stats = new Stats();
 document.body.appendChild(stats.dom);
 ...
 function update(renderer, scene, camera, controls, stats) {
@@ -567,7 +550,7 @@ function update(renderer, scene, camera, controls, stats) {
 	stats.update();
   ...
 }
-</pre>
+</div>
 By default, FPS should be around 60. Lower indicates performance issues.
 
 <h2>8. Post-Processing</h2>
@@ -578,15 +561,14 @@ Shaders (post-processing) not supported by the core Three.js library. However, t
 To add post-processing, need to use the <code>EffectsComposer</code> object. Not in the core Three.js library. Found in the three.js/examples/js/postprocessing folder in the Github repo.
 <br />
 The <code>EffectsComposer</code> depends on the <code>RenderPass</code>, <code>CopyShader</code>, and <code>ShaderPass</code>.
-<pre class="code">
-var composer = new THREE.EffectComposer(renderer);
+<div class="code code-wrap">var composer = new THREE.EffectComposer(renderer);
 var renderPass = new THREE.RenderPass(scene, camera);
 composer.addPass(renderPass);
 
 var vignetteEffect = new THREE.ShaderPass(THREE.VignetteShader);
 vignetteEffect.uniforms['darkness'].value = 2;
 composer.addPass(vignetteEffect);
-</pre>
+</div>
 (Need to add each shader's script to the HTML. They're in the same folder as the EffectComposer.)
 <br />
 Can also write your own or use community's shaders.

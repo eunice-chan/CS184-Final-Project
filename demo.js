@@ -60,19 +60,87 @@ function initScene() {
 }
 
 function createGeometry( sizing ) {
-  // new THREE.BoxGeometry(w, h, d)
+
+  var width = 5;
+  var depth = 5;
+
+  var widthSegments = 5;
+  var depthSegments = 5;
+
+
 	var geometry = new THREE.BoxBufferGeometry(
-		5, // width
+		width,
 		sizing.height, // height
-		3, // depth
-		5, // widthSegments
-		sizing.segmentCount * 3, // heightSegments
-		5 // depthSegments
+		depth,
+		widthSegments,
+		sizing.segmentCount * 2, // heightSegments = segmentCount * numberOfDimensions
+		depthSegments
 	);
 
 	var position = geometry.attributes.position;
+  position.needsUpdate = true;
 
-	var vertex = new THREE.Vector3();
+  var vertex = new THREE.Vector3();
+
+  for ( var i = 0; i < position.count; i ++ ) {
+
+    vertex.fromBufferAttribute( position, i );
+
+    var pointsPerLayer = ( sizing.segmentCount * 2 ) + 1;
+    pointsPerLayer = pointsPerLayer * ( widthSegments + 1);
+
+    var pointsPerTop = ( sizing.segmentCount * 2 );
+    pointsPerTop = pointsPerTop * ( widthSegments + 1);
+
+    var maxLayer = ( sizing.segmentCount ) * 2 + 1;
+    var layer;
+
+    if (i < 2 * ( pointsPerLayer + pointsPerTop ) ) {
+
+      layer = ( Math.floor( i / ( widthSegments + 1 ) ) ) % maxLayer;
+      
+    } else {
+
+      // Remove everything before because top and bottom faces have a different number of points and throws off the layer order.
+      var j = i - 2 * ( pointsPerLayer + pointsPerTop );
+      layer = ( Math.floor( j / ( widthSegments + 1 ) ) ) % maxLayer;
+
+    }
+
+    // Left: ( i < pointsPerLayer )
+    // Right: ( i < 2 * pointsPerLayer )
+
+    // Top: ( i < 2 *  pointsPerLayer + pointsPerTop  )
+    // Bottom: ( i < 2 * ( pointsPerLayer + pointsPerTop ) )
+
+    // Front: ( i < 3 * pointsPerLayer + 2 * pointsPerTop )
+    // Back: ( i < 4 * pointsPerLayer + 2 * pointsPerTop )
+    switch ( true ) {
+
+      // Left & Right || Front & Back
+      case ( i < 2 * pointsPerLayer ) || ( i >= 2 * ( pointsPerLayer + pointsPerTop ) ):
+
+        if ( layer % 2  == 0 ) {
+
+          position.setXYZ( i, vertex.x / 6, vertex.y, vertex.z / 6 );
+
+        } else {
+
+          position.setXYZ( i, vertex.x * layer / 5, vertex.y, vertex.z * layer / 5 );
+
+        }
+
+        break;
+
+      // Top & Bottom
+      default:
+
+        position.setXYZ( i, vertex.x / 6, vertex.y, vertex.z / 6 );
+
+        break;
+
+    }
+	}
 
 	var skinIndices = [];
 	var skinWeights = [];
@@ -91,8 +159,8 @@ function createGeometry( sizing ) {
 
 	}
 
-	geometry.attributes.skinIndex = new THREE.Uint16BufferAttribute( skinIndices, 4 ) ;
-	geometry.attributes.skinWeight = new THREE.Float32BufferAttribute( skinWeights, 4 ) ;
+	geometry.attributes.skinIndex = new THREE.Uint16BufferAttribute( skinIndices, 4 );
+	geometry.attributes.skinWeight = new THREE.Float32BufferAttribute( skinWeights, 4 );
 
 	return geometry;
 
@@ -143,39 +211,11 @@ function createMesh( geometry, bones ) {
 
 }
 
-function shapeModel() {
-
-  for ( var i = 0; i < bones.length; i ++ ) {
-
-		var bone = bones[ i ];
-
-    if ( i % 2 == 0 ) {
-
-      bone.scale.x = 0.5;
-      bone.scale.z = 0.5;
-
-    } else {
-
-      bone.scale.x = 2 - ( i / 10 );
-      bone.scale.z = 2 - ( i / 10 );
-
-    }
-
-	}
-
-}
-
-function resetPose() {
-
-  mesh.pose();
-  shapeModel();
-
-}
-
 function setupDatGui() {
 
-	gui.add( { reset : resetPose } , "reset" );
+	gui.add( mesh , "pose" );
 	gui.__controllers[ 0 ].name( "Reset Pose" );
+
 
   var folderFK = gui.addFolder("Forward Kinematics")
 
@@ -190,25 +230,26 @@ function setupDatGui() {
 
   folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 );
 
-  folder.__controllers[ 0 ].name( "Move" );
+  folder.__controllers[ 0 ].name( "Rotate" );
 
   //////////////
 
-  var bone = bones[ 2 ];
+  var bone = bones[ 1 ];
 
   folder = folderFK.addFolder( "Elbow" );
 
-  folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 );
-  folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 );
-  folder.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 );
+  // So that it won't completely bend on itself. It's not a very flexible arm. :)
+  folder.add( bone.rotation, 'x', 0, 2 );
+  folder.add( bone.position, 'x', - 5, 5 );
+  folder.add( bone.position, 'z', - 5, 5 );
 
-  folder.__controllers[ 0 ].name( "rotation.x" );
-  folder.__controllers[ 1 ].name( "rotation.y" );
-  folder.__controllers[ 2 ].name( "rotation.z" );
+  folder.__controllers[ 0 ].name( "Rotate" );
+  folder.__controllers[ 1 ].name( "Move X" );
+  folder.__controllers[ 2 ].name( "Move Z" );
 
   ////////////////
 
-  var bone = bones[ 4 ];
+  var bone = bones[ 2 ];
 
   folder = folderFK.addFolder( "Wrist" );
 
@@ -216,24 +257,24 @@ function setupDatGui() {
   folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 );
   folder.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 );
 
-  folder.__controllers[ 0 ].name( "rotation.x" );
-  folder.__controllers[ 1 ].name( "rotation.y" );
-  folder.__controllers[ 2 ].name( "rotation.z" );
+  folder.__controllers[ 0 ].name( "Rotate X" );
+  folder.__controllers[ 1 ].name( "Rotate Y" );
+  folder.__controllers[ 2 ].name( "Rotate Z" );
 
 }
 
-function initModel() {
+function initModel( wireframe = true ) {
   // Number of bones
-  var segmentCount = 6;
+  var segmentCount = 3;
   // Bone height
-  var segmentHeight = 4;
+  var segmentHeight = 8;
 
 	var height = segmentHeight * segmentCount;
 	var halfHeight = height * 0.5;
 
   var sizing = {
-		segmentHeight: segmentHeight,
 		segmentCount: segmentCount,
+  	segmentHeight: segmentHeight,
 		height: height,
 		halfHeight: halfHeight
 	};
@@ -242,9 +283,8 @@ function initModel() {
 	var bones = createBones( sizing );
 	mesh = createMesh( geometry, bones );
 
-  shapeModel();
-
 	scene.add( mesh );
+
 }
 
 function render() {

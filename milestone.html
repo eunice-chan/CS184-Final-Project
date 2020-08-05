@@ -7,7 +7,7 @@
 </head>
 
 <body class="sans">
-<a href="./index.html">HOME</a> / <a href="./proposal.html">PROPOSAL</a> / <b><a href="#">MILESTONE</a></b> / <a href="./project.html">PROJECT</a>  / <a href="./demo.html">DEMO</a>
+<a href="./index.html">HOME</a> / <a href="./proposal.html">PROPOSAL</a> / <b><a href="#">MILESTONE</a></b> / <a href="./project.html">WRITEUP</a>  / <a href="./demo.html">DEMO</a>
 <br />
 <br />
 <br />
@@ -22,20 +22,37 @@ This should be about 1 page long if printed. You should briefly summarize what y
 It has been a week since I started this project, meaning I am now at the halfway point of the project. I will now take a step back and assess my current progress.
 
 <h2>Achievements and Preliminary Results</h2>
+<h3>Model</h3>
+I went through three iterations of model-creation because of the various challenges I faced.
+<br />
+<ol>
+  <li>Blender model ( attempted to export and import as .GLTF and .OBJ )</li>
+  <li>Three.js geometry primitive with shaping done by scaling the bones</li>
+  <li>Three.js geometry primitive with position calculated and set manually</li>
+</ol>
+<br />
 <table>
   <tr>
     <td>
-      <img src="./images/model.png"/>
-      <figurecaption>
-        The simple arm model I would be manipulating.
-        Initially I modeled and rigged in Blender, but it was frustrating figuring out how to get the object loaded and rigged properly. I ended up making it in the script instead of uploading an object.
-      </figurecaption>
+      <img src="./images/blender_model.png" />
+      <figcaption>Blender model</figcaption>
     </td>
     <td>
-      h
+      <img src="./images/bone_model.png" />
+      <figcaption>Bone scaling</figcaption>
+    </td>
+    <td>
+      <img src="./images/geometry_model.png" />
+      <figcaption>Manual positioning</figcaption>
     </td>
   </tr>
 </table>
+<h3>Demo</h3>
+I implemented the interactive demo interface. Currently, the demo only has forward kinematics.
+<video style="width:100%" preload controls>
+    <source src="./images/FK_demo.mov" />
+    <p>Your browser doesn't support my video. Here is a <a href="./images/FK_demo.mov">link to the video</a> instead.</p>
+</video>
 <h2>Progress</h2>
 I have managed to achieve everything I have set out to do so my current progress is exactly as planned.
 <h2>Work Plan Updates</h2>

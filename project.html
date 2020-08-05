@@ -1,0 +1,173 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Expressive Inverse Kinematics | CS 184 Final Project Project Report</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="penrosetriangle.svg">
+</head>
+
+<body class="sans">
+<a href="./index.html">HOME</a> / <a href="./proposal.html">PROPOSAL</a> / <a href="#">MILESTONE</a> / <b><a href=".#">WRITEUP</a></b> / <a href="./demo.html">DEMO</a>
+<br />
+<br />
+<br />
+<br />
+<h1 class="page-title">Expressive Inverse Kinematics</h1><h1>CS 184 Final Project Report</h1>
+Eunice Chan | <i>August 14, 2020</i>
+<br />
+<br />
+<h2>Part 1: Interactive Interface</h2>
+<h3>Model</h3>
+<h3>Different Model Versions</h3>
+<table>
+  <tr>
+    <td>
+      <img src="./images/blender_model.png" />
+      <figcaption>Version 1: Blender model</figcaption>
+    </td>
+    <td>
+      <img src="./images/bone_model.png" />
+      <figcaption>Version 2: Bone scaling</figcaption>
+    </td>
+    <td>
+      <img src="./images/geometry_model.png" />
+      <figcaption>Version 3: Manual positioning</figcaption>
+    </td>
+  </tr>
+</table>
+<br />
+The first thing I did was create the model. I found this part to be unexpectedly challenging. My initial idea was to create the model in Blender and export it as a Three.js native model with the Three.js model exporter plugin. However, I found out that it was deprecated and that Three.js suggests loading in a <code>.GLTF</code> (Graphics Library Transmission Format) file instead.
+<br />
+A <code>.GLTF</code> file is a kind of file format for 3D scenes and models using the <code>JSON</code> (JavaScript Object Notation) format. It is intended for web use and therefore has a minimum file size and runtime processing by apps. I couldn't see any downsides to following Three.js' suggestion, so I created my model in Blender and exported it as a <code>.GLTF</code> file.
+So, I decided to take their suggestion and export as a <code>.GLTF</code> file.
+<br />
+Unfortunately, I ran into unexpected difficulty loading it in because the Three.js Github repo has everything in modules, which I cannot use if I do not have a server. I wanted to avoid a server if I could, so that I could host on Github Pages. As a result, I spent a long time trying to find the piece of the code that could load in my file. I did not have much luck.
+<br />
+Fortunately, I had taken an online course I took to get up to speed on Three.js. In that course, there were exercise files to accompany the videos. Most importantly, the libraries the exercises depended on were included, and one of the files in the library held the code for loading in <code>.OBJ</code> files.
+<br />
+Therefore, my next approach was to convert the <code>.GLTF</code> file I had into a <code>.OBJ</code> file. With this approach, I was able to successfully load it in, but I had to start up a server to do so as I got an error:
+<br />
+<br />
+<div class="code code-wrap">Access to XMLHttpRequest at 'path/to/models/arm.obj' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, https.
+</div>
+<br />
+I continued forward and ran into issues accessing the model's armature. I looked around online but did not find much information. I decided to drop this approach because
+<ol>
+  <li>I had to use a server. From what I understood, it's only necessary if it was a local file, but I didn't want to delve too deep into this</li>
+  <li>The model was relatively simple, so I suspected it would be faster to instead make the model in Three.js.</li>
+</ol>
+Hence, I started my second approach. I decided to shape the model by scaling the bones so that a wavy shape would form. It went well. However, when I was implementing forward kinematics, I realized I could not pretend two bones were one. I had split up each segment of the arm into two so that I could put a swell in the middle of each segment, and had assumed the fact there were two bones wouldn't change anything, as long as I only translate the "real" bones. That was a misconception.
+<br />
+Thus, I moved on to my final approach. I iterated over every vertex and set it's position. Below is the commented function that I did positioned the points in:
+<div class="code code-wrap">function createGeometry( sizing ) {
+
+  // Sets the ratio and size of the rectangle
+  var width = 5;
+  var depth = 5;
+
+  // Sets the resolution
+  var widthSegments = 5;
+  var depthSegments = 5;
+
+
+	var geometry = new THREE.BoxBufferGeometry(
+		width,
+		sizing.height, // height
+		depth,
+		widthSegments,
+		sizing.segmentCount * 2, // heightSegments = segmentCount * numberOfDimensions
+		depthSegments
+	);
+
+  // Update the positions
+	var position = geometry.attributes.position;
+  position.needsUpdate = true;
+
+  var vertex = new THREE.Vector3();
+
+  for ( var i = 0; i < position.count; i ++ ) {
+
+    // Get the position of the i-th vertex
+    vertex.fromBufferAttribute( position, i );
+
+    // Layer: each horizontal loop/segment
+    // The number of points in each layer's edge for the front, back, left, and right faces
+    var pointsPerLayer = ( sizing.segmentCount * 2 ) + 1;
+    pointsPerLayer = pointsPerLayer * ( widthSegments + 1);
+
+    // The points in the top and bottom faces
+    var pointsPerTop = ( sizing.segmentCount * 2 );
+    pointsPerTop = pointsPerTop * ( widthSegments + 1);
+
+    // Total number of layers
+    var maxLayer = ( sizing.segmentCount ) * 2 + 1;
+    var layer;
+
+    if (i < 2 * ( pointsPerLayer + pointsPerTop ) ) {
+
+      layer = ( Math.floor( i / ( widthSegments + 1 ) ) ) % maxLayer;
+
+    } else {
+
+
+      // Remove everything before because top and bottom faces have a different number of points and throws off the layer order.
+      var j = i - 2 * ( pointsPerLayer + pointsPerTop );
+      layer = ( Math.floor( j / ( widthSegments + 1 ) ) ) % maxLayer;
+
+    }
+
+    // Left: ( i < pointsPerLayer )
+    // Right: ( i < 2 * pointsPerLayer )
+
+    // Top: ( i < 2 *  pointsPerLayer + pointsPerTop  )
+    // Bottom: ( i < 2 * ( pointsPerLayer + pointsPerTop ) )
+
+    // Front: ( i < 3 * pointsPerLayer + 2 * pointsPerTop )
+    // Back: ( i < 4 * pointsPerLayer + 2 * pointsPerTop )
+    switch ( true ) {
+
+      // Left & Right || Front & Back
+      case ( i < 2 * pointsPerLayer ) || ( i >= 2 * ( pointsPerLayer + pointsPerTop ) ):
+
+        if ( layer % 2  == 0 ) {
+
+          position.setXYZ( i, vertex.x / 6, vertex.y, vertex.z / 6 );
+
+        } else {
+
+          position.setXYZ( i, vertex.x * layer / 5, vertex.y, vertex.z * layer / 5 );
+
+        }
+
+        break;
+
+      // Top & Bottom
+      default:
+
+        position.setXYZ( i, vertex.x / 6, vertex.y, vertex.z / 6 );
+
+        break;
+
+    }
+	}
+
+  // Set skin indices and weights
+	...
+
+	return geometry;
+
+}
+</div>
+Once I got the positioning done, that was all I had to do as I had already rigged the model and added it to the control panel when I was working with the bone scaling model version. I did not have to change it much.
+<h3>Forward Kinematics</h3>
+Implementing forward kinematics was straightforward. Forward kinematics is defined as the process of obtaining the velocity and position of the end effectors given the input of the joint angles and angular velocities. In this case, I take in the user input which is the rotation or position of the joint and apply it to the model, transforming it from one pose to another.
+<br />
+In the demo, I constrained the user input so it won't be too overwhelming. I anchored the model in one position and gave it the approximate constraints on an arm.
+<br />
+<br />
+<video style="width:100%" preload controls>
+    <source src="./images/FK_demo.mov" />
+    <p>Your browser doesn't support my video. Here is a <a href="./images/FK_demo.mov">link to the video</a> instead.</p>
+</video>
+</body>
+</html>
