@@ -54,23 +54,23 @@ function initScene() {
 
   // Target point
   target = getSphere( 0.5 );
-  target.position.set(0, 15, 0);
+  resetTargetPostion();
   scene.add( target );
   // Move target point
   moveSpeed = 1;
   keys = [];
 
   top.document.documentElement.addEventListener( 'keydown',
-      function( e ) {
-          console.log(e.keyCode);
-          keys[ e.keyCode ] = true;
-          moveTarget( e );
+      function( event ) {
+          event.preventDefault();
+          keys[ event.keyCode ] = true;
+          moveTarget( event );
       },
   false );
 
   top.document.documentElement.addEventListener( 'keyup',
-      function( e ){
-          keys[ e.keyCode ] = false;
+      function( event ){
+          keys[ event.keyCode ] = false;
       },
   false );
 
@@ -81,6 +81,10 @@ function initScene() {
   // Model interaction
 	setupDatGui();
 
+}
+
+function resetTargetPostion() {
+  target.position.set(0, 15, 0);
 }
 
 function moveTarget( event ) {
@@ -109,8 +113,7 @@ function moveTarget( event ) {
 
     if ( keys[ 32 ] ) {
       // space bar
-      console.log(target);
-      target.pose();
+      resetTargetPostion();
     }
 
     target.verticesNeedUpdate = true;
@@ -119,7 +122,6 @@ function moveTarget( event ) {
 
 function moveTargetY( event ) {
 
-      console.log("MOUSE MOVED");
     currY = - ( event.clientY / window.innerHeight ) * 2 + 1;
     if ( keys [ 16 ] ) {
       // shift
