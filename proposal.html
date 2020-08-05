@@ -17,6 +17,8 @@
 <h1>CS 184 Final Project Proposal</h1>
 Eunice Chan | <i>August 1, 2020</i>
 <br />
+<br />
+<p class="highlight-orange_background"><i>August 4 Update</i>: Made SMCM a goal and moved the two models to reach goal. </p>
 <h2>Summary</h2>
 In this project, I will explore and implement the common techniques to tackle inverse kinematics (IK). I am particularly interested in IK algorithms that allow a greater degree of ability to control stylistic variations of the animation. Because of this, I will primarily be looking at the iterative methods using a cost function to be minimized and Sequential Monte Carlo methods (SMCM) for solving IK problems.
 <br />
@@ -33,7 +35,7 @@ To judge the quality and performance of my implementation, for a set of actions 
 <h3>Goal 1: Setup</h3>
 Set up the development environment.
 <ul>
-  <li>Create or find robot / basic arm, rope, and human figure models.</li>
+  <li>Create or find robot / basic arm, <span class="highlight-orange">and if time permits,</span> rope, and human figure models.</li>
   <li>Place robot / basic arm, rope, and human figure in three isolated environments, and associate a "limb" with a control / target point while associating another part / limb with an anchor.</li>
   <li>Implement extra functionality for ease of testing such as switching between environments, start / stop simulation, dropdown menu to switch among the IK methods implemented, select different style constraints, etc. (Done at beginning and at the end (wrap up) phases of the project)</li>
 </ul>
@@ -53,12 +55,13 @@ Implement basic IK.
 <ul>
   <li>Implement damped Least Squares / Levenberg–Marquardt algorithm</li>
   <li>Implement pseudo-inverse damped least squares OR selectively damped least squares</li>
+  <li class="highlight-orange">SMCM</li>
 </ul>
 <h3>Reach Goal: IK</h3>
 Implement...
 <ul>
   <li>Pseudo-inverse damped least squares / selectively damped least squares</li>
-  <li>SMCM</li>
+  <strike class="highlight-orange"><li>SMCM</li></strike>
   <li>SMCM with interpolation for trajectory smoothing</li>
   <li>Forward And Backward Reaching Inverse Kinematics (FABRIK) heuristic method</li>
 </ul>
@@ -130,18 +133,26 @@ Updated as I go along.
 <ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-on"></div>
-    <span class="to-do-children-checked">Figure out skeletal rigging in Three.js</span>
+    <span class="to-do-children-checked">Create model to manipulate (using Blender): Robot / basic arm (export as a <code>.glb</code> file)</span>
   </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Create model to manipulate (using Blender): Robot / basic arm (export as a <code>.glb</code> file)</span>
-  </li>
+</ul>
+<ul>
+  <li>After a day of focused work, I couldn't figure out how to get everything loaded and rigged properly so I ended up creating the geometry from the primitive geometries in the script.</li>
 </ul>
 <ul class="to-do-list">
   <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Update schedule based on proposal feedback</span>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Figure out skeletal rigging in Three.js</span>
+    <ul>
+      <li>After many false starts, I ended up taking the code <a href="https://threejs.org/docs/#api/en/objects/SkinnedMesh">here</a> and using that as starter code.</li>
+    </ul>
   </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Update schedule based on proposal feedback</span>
+  </li>
+</ul>
+<ul class="to-do-list">
   <li>
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">Set up testing environment in Three.js</span>
