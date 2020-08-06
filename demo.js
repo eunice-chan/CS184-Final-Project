@@ -127,7 +127,8 @@ function initScene() {
 }
 
 function render() {
-
+  // endPointPosition = getEndPointWorldPosition();
+  // console.log("PREVIOUS TRANSFORM ENDPOINT POSITION:"+ endPointPosition.x + " " + endPointPosition.y + " " + endPointPosition.z);
   stats.update();
 
   requestAnimationFrame( render );

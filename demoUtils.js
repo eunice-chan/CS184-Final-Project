@@ -1,82 +1,46 @@
 
 // TODO: move to manipulationUtils, modify for IK.
 function predictTransform() {
+	// beta holds an array with each index corresponding to
 	// shoulderRotateY, elbowRotateX, elbowMoveX, elbowMoveZ, wristRotateX, wristRotateY, wristRotateZ
-	var beta = [ 0, 0, 0, 0, 1, 0, 1 ];
+	// respectively and the value is the value to set that joint + transformation to.
+	var beta = [ 2, 3, 2, 3, 1, 1, 2 ];
+	// The point on the model
+	// Reset to base position
+	mesh.pose();
 	var endPointPosition = getEndPointWorldPosition();
-	var transformedPoint = new THREE.Vector3().copy( endPointPosition );
+	// My predicted position for the point on the model (endPoint) after the transformations specified by beta are applied.
+	var transformedPoint = getEndPointWorldPosition();
 	var bones = mesh.skeleton.bones;
 
 	var bone, bonePosition, negativeBonePosition;
 
   ////////////////////////////////
 
-	bone = bones[ 0 ];
-	bonePosition = new THREE.Vector3();
-	bone.localToWorld(bonePosition);
-
-
-	// Translate to origin
-	bonePosition.negate();
-	transformedPoint.add( bonePosition );
-
-	// Tranform
-	// shoulderRotateY
-	transformedPoint.applyAxisAngle( new THREE.Vector3( 0, 1, 0 ), beta[ 0 ] );
-
-	// Translate back
-	bonePosition.negate();
-	transformedPoint.add( bonePosition );
-
-  ////////////////
-
-	var bone = bones[ 1 ];
-	bonePosition = getModelWorldPosition( bone );
-
-
-	// Translate to origin
-	bonePosition.negate();
-	transformedPoint.add( bonePosition );
-
-	// Tranform
-	// elbowRotateX
-	transformedPoint.applyAxisAngle( new THREE.Vector3( 1, 0, 0 ), beta[ 1 ] );
-	// elbowMoveX
-	transformedPoint.x += beta[2];
-	// elbowMoveZ
-	transformedPoint.z += beta[3];
-
-	// Translate back
-	bonePosition.negate();
-	transformedPoint.add( bonePosition );
-
-  //////////////
-
 	// Get the world position of the joint
 	bone = bones[ 2 ];
 	bonePosition = getModelWorldPosition( bone );
 
-	// Translate to origin
-	bonePosition.negate();
-	transformedPoint.add( bonePosition );
+	//wristRotateX, wristRotateY, wristRotateZ
+	transformPoint( transformedPoint, bonePosition, beta[ 4 ], beta[ 5 ], beta[ 6 ], 0, 0, 0 );
 
-	// Tranform
-	// wristRotateX
-	transformedPoint.applyAxisAngle( new THREE.Vector3( 1, 0, 0 ), beta[ 4 ] );
-	// wristRotateY
-	transformedPoint.applyAxisAngle( new THREE.Vector3( 0, 1, 0 ), beta[ 5 ] );
-	// wristRotateZ
-	transformedPoint.applyAxisAngle( new THREE.Vector3( 0, 0, 1 ), beta[ 6 ] );
-	// transformedPoint = rotate( transformedPoint, 'x', beta[ 4 ] );
-	// transformedPoint = rotate( transformedPoint, 'y', beta[ 5 ] );
-	// transformedPoint = rotate( transformedPoint, 'z', beta[ 6 ] );
+  // ////////////////
 
-	// Translate back
-	bonePosition.negate();
-	transformedPoint.add( bonePosition );
+	var bone = bones[ 1 ];
+	bonePosition = getModelWorldPosition( bone );
+
+	transformPoint( transformedPoint, bonePosition, beta[ 1 ], 0, 0, beta[ 2 ], 0, beta[ 3 ] );
+
+  //////////////
+
+	bone = bones[ 0 ];
+	bonePosition = getModelWorldPosition( bone );
+
+	transformPoint( transformedPoint, bonePosition, 0, beta[ 0 ], 0, 0, 0, 0 );
 
   ////////////////////////////////
 
+	// Apply the transformations to the mesh
 	mesh.skeleton.bones[0].rotation.y = beta[0];
 
 	mesh.skeleton.bones[1].rotation.x = beta[1];
@@ -87,9 +51,7 @@ function predictTransform() {
 	mesh.skeleton.bones[2].rotation.y = beta[5];
 	mesh.skeleton.bones[2].rotation.z = beta[6];
 
-	console.log("PREVIOUS TRANSFORM ENDPOINT POSITION:"+ endPointPosition.x + " " + endPointPosition.y + " " + endPointPosition.z);
-	console.log("CURRENT TRANSFORM CALCULATED POSITION: "+ transformedPoint.x + " " + transformedPoint.y + " " + transformedPoint.z);
-
+	// Apply the predicted position of the point to the target point. If I predicted correctly, the target sphere (pink) should be exactly where the endpoint sphere (green) is!
 	target.position.set(transformedPoint.x, transformedPoint.y, transformedPoint.z);
 
 }

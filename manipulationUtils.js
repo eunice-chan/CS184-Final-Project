@@ -20,38 +20,26 @@ function getEndPointWorldPosition() {
 }
 
 
-function rotate( point, axisName, radians ) {
+function transformPoint( point, pivot, rotateX, rotateY, rotateZ, moveX, moveY, moveZ ) {
 
-	// var axis = new THREE.Vector3();
-	var rotation = new THREE.Matrix3();
+	  // Translate to origin
+	  pivot.negate();
+	  point.add( pivot );
 
-	switch ( axisName.toLowerCase() ) {
 
-		case 'x':
-			// axis.x = 1;
-			rotation.set( 1, 0, 0,
-									  0, Math.cos( radians ), - Math.sin( radians ),
-								    0, Math.sin( radians ), Math.cos( radians ) );
-			break;
+	  // Transform
+	  var transform = new THREE.Euler( rotateX, rotateY, rotateZ, 'XYZ' );
+	  point.applyEuler( transform );
 
-		case 'y':
-			// axis.y = 1;
-			rotation.set( Math.cos( radians ), 0, Math.sin( radians ),
-										0, 1, 0,
-									  - Math.sin( radians ), 0, Math.cos( radians ) );
-			break;
+		point.x += moveX;
+		point.y += moveY;
+		point.z += moveZ;
 
-		case 'z':
-			// axis.z = 1;
-			rotation.set( Math.cos( radians ), - Math.sin( radians ), 0,
-								    Math.sin( radians ), Math.cos( radians ), 0,
-										0, 0, 1 );
-			break;
 
-		default:
-			return;
+	  // Translate back
+	  pivot.negate();
+	  point.add( pivot );
 
-	}
-	return point.applyAxisAngle( axis, radians );
+	return point;
 
 }
