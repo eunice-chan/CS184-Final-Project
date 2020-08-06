@@ -94,7 +94,7 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
     pointsPerLayer = pointsPerLayer * ( widthSegments + 1);
 
     // The points in the top and bottom faces
-    var pointsPerTop = ( sizing.segmentCount * 2 );
+    var pointsPerTop = widthSegments + 1;
     pointsPerTop = pointsPerTop * ( widthSegments + 1);
 
     // Total number of layers
@@ -194,7 +194,13 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
 <p>At each iteration, \(\beta\) is updated if the new version has a lower cost, and \(\lambda\) is updated by either multiplying or dividing by a constant \(v\) (typically set to 2), if there is an improvement or deprovement of the cost function respectively.</p>
 <p>The augmented matrix \(J^TJ + \lambda\text{diag}(J^TJ)\) has the property of positive definiteness making \(\delta\) a step in the descent direction. Thus, this algorithm is like gradient descent when \(\lambda\) is large, and like Gauss-Newton when \(\lambda\) is small, which is good because the convergence of the Gauss-Newton method can be almost quadratic near the minimum.</p>
 <p>To simplify things, I will not consider joint constraints.</p>
+<h3>Implementing Levenberg–Marquardt</h3>
+<h3>Setting Up</h3>
+<p>Although the algorithm is relatively straightforward, the computer graphics portion was a bit more complicated, so I had to implement many helper functions so that I could get the values I needed easily.</p>
+<p>One thing I realized was that I needed to get the position of the endpoint and that would require a lot of calculations. Initially I decided to subset the vertices of the geometry and take only the ones on the top plane, then finding the mean position. However, while testing my work, I encountered the issue of it only working if it did not change from the initial pose. After some debugging, I realized that the points did not change when I transformed the bones, so I switched up my tactics.</p>
+<p> Next, I created a sphere and attached it to the last bone, so I can visualize the end point as well as conveniently get it by accessing the sphere's location. When testing this feature, I found out that the position never changes as well. I found out that this was because the points were in object space while I was interested in its position in world space. Because of that, I added a function to transform from object to world space. Finally, I was able to successfullly get the coordinates of the endpoint.</p>
+<p>The next step was to calculate the endpoint's position given the initial position and the transformation on each joint of its parent. To do this, I go through each joint, and apply the transformation relative to the joint on thhe endpoint. To apply translations, I just moved the endpoint the same amount as the joint point on the appropriate axis. To apply rotations, I translated the joint point to the origin, checked which axis to rotate about, applied the appropriate rotation, then translated back.</p>
+<p>In our case, we want to minimize the square error between our guess ( \(\beta\) ) and the goal (the target point).</p>
 <br />
-\(x^2 = \sqrt{y}\)
 </body>
 </html>
