@@ -74,7 +74,7 @@ function initScene() {
 	scene.add( lights[ 1 ] );
 
   // End point
-  endPoint = getSphere(0.5);
+  endPoint = getSphere( 0.5, color='rgb(123, 231, 121 )' );
 	endPoint.position.set(0, 0, 0);
   scene.add( endPoint );
 

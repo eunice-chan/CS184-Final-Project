@@ -2,67 +2,78 @@
 // TODO: move to manipulationUtils, modify for IK.
 function predictTransform() {
 	// shoulderRotateY, elbowRotateX, elbowMoveX, elbowMoveZ, wristRotateX, wristRotateY, wristRotateZ
-	var beta = [ 1, 2, 8, 5, 1, 2, Math.PI ]
+	var beta = [ 0, 0, 0, 0, 1, 0, 1 ];
 	var endPointPosition = getEndPointWorldPosition();
-	var transformedPoint = new THREE.Vector3().copy(endPointPosition);
+	var transformedPoint = new THREE.Vector3().copy( endPointPosition );
 	var bones = mesh.skeleton.bones;
 
 	var bone, bonePosition, negativeBonePosition;
 
   ////////////////////////////////
 
-  bone = bones[ 0 ];
-	bonePosition = getModelWorldPosition( bone );
+	bone = bones[ 0 ];
+	bonePosition = new THREE.Vector3();
+	bone.localToWorld(bonePosition);
 
 
 	// Translate to origin
 	bonePosition.negate();
-	transformedPoint.add(bonePosition);
+	transformedPoint.add( bonePosition );
 
 	// Tranform
-	transformedPoint = rotate(transformedPoint, 'y', beta[0]);
+	// shoulderRotateY
+	transformedPoint.applyAxisAngle( new THREE.Vector3( 0, 1, 0 ), beta[ 0 ] );
 
 	// Translate back
 	bonePosition.negate();
-	transformedPoint.add(bonePosition);
-
-  //////////////
-
-  var bone = bones[ 1 ];
-	bonePosition = getModelWorldPosition( bone );
-
-
-	// Translate to origin
-	bonePosition.negate();
-	transformedPoint.add(bonePosition);
-
-	// Tranform
-	transformedPoint = rotate(transformedPoint, 'y', beta[1]);
-	// transformedPoint.x += beta[2];
-	// transformedPoint.z += beta[3];
-
-	// Translate back
-	bonePosition.negate();
-	transformedPoint.add(bonePosition);
+	transformedPoint.add( bonePosition );
 
   ////////////////
 
-  bone = bones[ 2 ];
+	var bone = bones[ 1 ];
 	bonePosition = getModelWorldPosition( bone );
 
 
 	// Translate to origin
 	bonePosition.negate();
-	transformedPoint.add(bonePosition);
+	transformedPoint.add( bonePosition );
 
 	// Tranform
-	transformedPoint = rotate(transformedPoint, 'x', beta[4]);
-	transformedPoint = rotate(transformedPoint, 'y', beta[5]);
-	transformedPoint = rotate(transformedPoint, 'z', beta[6]);
+	// elbowRotateX
+	transformedPoint.applyAxisAngle( new THREE.Vector3( 1, 0, 0 ), beta[ 1 ] );
+	// elbowMoveX
+	transformedPoint.x += beta[2];
+	// elbowMoveZ
+	transformedPoint.z += beta[3];
 
 	// Translate back
 	bonePosition.negate();
-	transformedPoint.add(bonePosition);
+	transformedPoint.add( bonePosition );
+
+  //////////////
+
+	// Get the world position of the joint
+	bone = bones[ 2 ];
+	bonePosition = getModelWorldPosition( bone );
+
+	// Translate to origin
+	bonePosition.negate();
+	transformedPoint.add( bonePosition );
+
+	// Tranform
+	// wristRotateX
+	transformedPoint.applyAxisAngle( new THREE.Vector3( 1, 0, 0 ), beta[ 4 ] );
+	// wristRotateY
+	transformedPoint.applyAxisAngle( new THREE.Vector3( 0, 1, 0 ), beta[ 5 ] );
+	// wristRotateZ
+	transformedPoint.applyAxisAngle( new THREE.Vector3( 0, 0, 1 ), beta[ 6 ] );
+	// transformedPoint = rotate( transformedPoint, 'x', beta[ 4 ] );
+	// transformedPoint = rotate( transformedPoint, 'y', beta[ 5 ] );
+	// transformedPoint = rotate( transformedPoint, 'z', beta[ 6 ] );
+
+	// Translate back
+	bonePosition.negate();
+	transformedPoint.add( bonePosition );
 
   ////////////////////////////////
 
@@ -71,13 +82,16 @@ function predictTransform() {
 	mesh.skeleton.bones[1].rotation.x = beta[1];
 	mesh.skeleton.bones[1].position.x = beta[2];
 	mesh.skeleton.bones[1].position.z = beta[3];
-	
+
 	mesh.skeleton.bones[2].rotation.x = beta[4];
 	mesh.skeleton.bones[2].rotation.y = beta[5];
 	mesh.skeleton.bones[2].rotation.z = beta[6];
 
 	console.log("PREVIOUS TRANSFORM ENDPOINT POSITION:"+ endPointPosition.x + " " + endPointPosition.y + " " + endPointPosition.z);
 	console.log("CURRENT TRANSFORM CALCULATED POSITION: "+ transformedPoint.x + " " + transformedPoint.y + " " + transformedPoint.z);
+
+	target.position.set(transformedPoint.x, transformedPoint.y, transformedPoint.z);
+
 }
 
 function setupDatGui() {
@@ -379,12 +393,12 @@ function createMesh( geometry, bones ) {
 }
 
 
-function getSphere( size ) {
+function getSphere( size, color='rgb(255, 132, 200)' ) {
 
 	var geometry = new THREE.SphereGeometry( size, 24, 24 );
 
 	var material = new THREE.MeshBasicMaterial({
-		color: 'rgb(255, 132, 200)'
+		color: color
 	});
 
 	var mesh = new THREE.Mesh(

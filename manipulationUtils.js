@@ -1,9 +1,9 @@
 function getModelWorldPosition( model ) {
 
-	var position = new THREE.Vector3();
-	position.setFromMatrixPosition( model.matrixWorld );
-
-	return position;
+	model.updateMatrixWorld();
+  var worldMatrix = model.matrixWorld;
+  var worldPosition  = new THREE.Vector3().setFromMatrixPosition( worldMatrix );
+  return worldPosition;
 
 }
 
@@ -20,32 +20,38 @@ function getEndPointWorldPosition() {
 }
 
 
-function rotate( point, axis, amount ) {
+function rotate( point, axisName, radians ) {
 
+	// var axis = new THREE.Vector3();
 	var rotation = new THREE.Matrix3();
 
-	switch ( axis.toLowerCase() ) {
+	switch ( axisName.toLowerCase() ) {
 
 		case 'x':
+			// axis.x = 1;
 			rotation.set( 1, 0, 0,
-									  0, Math.cos( amount ), - Math.sin( amount ),
-								    0, Math.sin( amount ), Math.cos( amount ) );
+									  0, Math.cos( radians ), - Math.sin( radians ),
+								    0, Math.sin( radians ), Math.cos( radians ) );
 			break;
 
 		case 'y':
-			rotation.set( Math.cos( amount ), 0, Math.sin( amount ),
+			// axis.y = 1;
+			rotation.set( Math.cos( radians ), 0, Math.sin( radians ),
 										0, 1, 0,
-									  - Math.sin( amount ), 0, Math.cos( amount ) );
+									  - Math.sin( radians ), 0, Math.cos( radians ) );
 			break;
 
-
 		case 'z':
-			rotation.set( Math.cos( amount ), - Math.sin( amount ), 0,
-								    Math.sin( amount ), Math.cos( amount ), 0,
+			// axis.z = 1;
+			rotation.set( Math.cos( radians ), - Math.sin( radians ), 0,
+								    Math.sin( radians ), Math.cos( radians ), 0,
 										0, 0, 1 );
 			break;
 
+		default:
+			return;
+
 	}
-	return point.applyMatrix3( rotation );
+	return point.applyAxisAngle( axis, radians );
 
 }
