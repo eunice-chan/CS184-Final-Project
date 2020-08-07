@@ -120,12 +120,13 @@ function jacobian( y_hat ) {
 
 	var bones = mesh.skeleton.bones;
 	var identity = new THREE.Matrix3();
+	var curr_pos = y_hat.clone();
 
 	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
 	// axis * ( y_hat - bone_pos )
-	var shoulder = y_hat.sub( getModelWorldPosition( bones[ 0 ] ) ).y;
-	var elbow = y_hat.sub( getModelWorldPosition( bones[ 1 ] ) ).x;
-	var wrist = y_hat.sub( getModelWorldPosition( bones[ 2 ] ) ).z;
+	var shoulder = curr_pos.sub( getModelWorldPosition( bones[ 0 ] ) ).y;
+	var elbow = curr_pos.sub( getModelWorldPosition( bones[ 1 ] ) ).x;
+	var wrist = curr_pos.sub( getModelWorldPosition( bones[ 2 ] ) ).z;
 
 	return new THREE.Vector3( shoulder, elbow, wrist );
 
@@ -201,26 +202,6 @@ function modelToBeta() {
 	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
 	var beta = [ bones[0].rotation.y, bones[1].rotation.x, bones[2].rotation.z ];
 
-	// Can't be zero!
-	// if ( sum( ...beta ) == 0) {
-	//
-	// 	return [ 1, 1, 1, 1, 1, 1, 1 ];
-	//
-	// } else {
+	return beta;
 
-			return beta;
-
-	// }
-
-}
-
-function sum( array ) {
-
-	var count = 0;
-
-	for ( var i = 0; i < array.length; i ++ ) {
-		count += array[i];
-	}
-
-	return count;
 }

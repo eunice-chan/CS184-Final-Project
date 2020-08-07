@@ -1,15 +1,18 @@
 function DLS( param ) {
 
+	// Initialize Values
+
 	// Set an initial lambda. Can be any value. Should be positive.
-	var lambda = param.lambda? lambda : 0.0001;
+	var lambda = param.lambda? lambda : 1000;
 
 	// Get current transformation of the model joints
-	var beta = param.beta? beta : modelToBeta();
+	var beta = modelToBeta();
 
 	// y is the position in space we want to get to
 	var y = getTargetWorldPosition();
 
 	for ( var i = 0; i < param.maxIter; i ++ ) {
+
 		lambda /= 2;
 
 		// y_hat is the current position in space
@@ -19,7 +22,12 @@ function DLS( param ) {
 
 		var u = helper.jtj;
 		var v = helper.jtd;
+
 		var curr_obj_fn = squaredDistance( y_hat, y );
+		updateMeshKinematics( beta );
+		console.log("OBJ VAL "+curr_obj_fn);
+		console.log("BETA "+beta);
+		console.log("BETA POSITION " +y_hat.toArray());
 
 		for ( var j = 0; j < param.maxIter; j ++ ) {
 
@@ -34,21 +42,26 @@ function DLS( param ) {
 			var delta = helper.jtd.clone().applyMatrix3( new THREE.Matrix3().getInverse( h ) );
 
 			var beta_prime = [ beta[ 0 ] + delta.x, beta[ 1 ] + delta.y, beta[ 2 ] + delta.z ];
+			var y_hat_prime = betaToPoint( beta_prime );
+			console.log("BETA PRIME "+beta_prime);
+			console.log("BETA PRIME POSITION "+y_hat_prime.toArray());
 
-			var next_obj_fn = squaredDistance( betaToPoint( beta_prime ), y );
-			console.log("OBJ VAL "+next_obj_fn);
+			var next_obj_fn = squaredDistance( y_hat_prime, y );
 
 			if ( next_obj_fn <= curr_obj_fn ) {
 
 				beta = beta_prime;
-				updateMeshKinematics( beta );
 
 				// Stopping criteron: Change too small
-				if ( next_obj_fn > 0.9 * curr_obj_fn ) {
+				if ( next_obj_fn > 0.999999999 * curr_obj_fn ) {
+
+					console.log("SMALL CHANGE: \nPREV "+ curr_obj_fn + "\nCURR "+next_obj_fn);
 
 					return beta;
 
 				} else {
+
+					console.log("BIG CHANGE: \nPREV "+ curr_obj_fn + "\nCURR "+next_obj_fn);
 
 					break;
 
@@ -57,6 +70,7 @@ function DLS( param ) {
 			}
 
 		}
+			console.log("\n\n");
 
 	}
 	// // y_hat is the position in space we are at if the beta transformations are applied to the default pose

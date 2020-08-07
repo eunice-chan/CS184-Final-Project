@@ -4,7 +4,7 @@ function setupDatGui() {
 
   ////////////////////////////////
 
-  var folderFK = gui.addFolder("Forward Kinematics");
+  var folderFK = gui.addFolder("Forward Kinematics / Pose");
 
 	var bones = mesh.skeleton.bones;
   var folder;
@@ -16,7 +16,7 @@ function setupDatGui() {
 
   // folder = folderFK.addFolder( "Shoulder" );
 
-  gui.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 1" );
+  folderFK.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 1" );
 
   //////////////
 
@@ -25,7 +25,7 @@ function setupDatGui() {
   // folder = folderFK.addFolder( "Elbow" );
 
   // So that it won't completely bend on itself. It's not a very flexible arm. :)
-  gui.add( bone.rotation, 'x', 0, 2 ).name( "Rotate Joint 2" );
+  folderFK.add( bone.rotation, 'x', 0, 2 ).name( "Rotate Joint 2" );
   // folder.add( bone.position, 'x', -5, 5 ).name( "Move X" );
   // folder.add( bone.position, 'z', -5, 5 ).name( "Move Z" );
 
@@ -37,7 +37,7 @@ function setupDatGui() {
 
   // folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate X" );
   // folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Y" );
-  gui.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 3" );
+  folderFK.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 3" );
 
 
   ////////////////////////////////
@@ -64,12 +64,12 @@ function moveTarget( event ) {
 
     if ( keys[ 87 ] ) {
       // W key
-      target.position.z += moveSpeed;
+      target.position.z -= moveSpeed;
     }
 
     if ( keys[ 83 ] ) {
       // S key
-      target.position.z -= moveSpeed;
+      target.position.z += moveSpeed;
     }
 
     if ( keys[ 65 ] ) {
