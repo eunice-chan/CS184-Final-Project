@@ -23,6 +23,7 @@ This should be about 1 page long if printed. You should briefly summarize what y
 <p>It has been a week since I started this project, meaning I am now at the halfway point of the project. I will now take a step back and assess my current progress.</p>
 
 <h2>Achievements and Preliminary Results</h2>
+
 <h3>Model</h3>
 <p>I went through three iterations of model-creation because of the various challenges I faced.</p>
 <ol>
@@ -47,30 +48,41 @@ This should be about 1 page long if printed. You should briefly summarize what y
     </td>
   </tr>
 </table>
+
 <h3>Demo</h3>
 <p>I implemented the interactive demo interface. Currently, the demo only has forward kinematics and a moveable target.</p>
-<br />
-<div>
+<figure>
   <video style="width:100%;padding:0 10%;" preload controls>
       <source src="./images/FK_demo.mov" />
       <p>Your browser doesn't support my video. Here is a <a href="./images/FK_demo.mov">link to the video</a> instead.</p>
   </video>
   <figcaption style="width:100%;padding:0 10%;">Major feature 1: Posing the model</figcaption>
-</div>
-<br />
-<div>
+</figure>
+<figure>
   <video style="width:100%;padding:0 10%;" preload controls>
       <source src="./images/target_demo.mov" />
       <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
   </video>
   <figcaption style="width:100%;padding:0 10%;">Major feature 2: Moving the target point</figcaption>
-</div>
+</figure>
+
+<h3>IK Helpers</h3>
+<figure>
+<video style="width:100%;padding:0 10%;" preload controls>
+    <source src="./images/point_prediction_demo.mov" />
+    <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
+    <figcaption>Demo of point prediction and walking through the code</figcaption>
+</figure>
+
 <h2>Progress</h2>
-<p>I have managed to achieve everything I have set out to do so my current progress is exactly as planned.</p>
+<p>I started working on an IK method. However, while working on it, I realized I needed more helper functions (such as the calculation of a child element's new position once a set of rotations and translations are applied to the armature of its parents without actually applying the rotations) so I had to take a detour to work on that. I think the first method would take the longest to implement due to such detours. Once I get that done, the rest would probably not take as long.</p>
+<p>I think I would be able to get through the other two IK method goals. However, regarding stylizing it, I would need to do some more research about how to stylize and that may be a little difficult to do.</p>
+
 <h2>Work Plan Updates</h2>
 <p>The most updated version of the work plan is <a href="./proposal.html#schedule">here</a>.</p>
 <br />
 <p>The <a href="./proposal.html#changelog">changes</a> I have made to the plan are:</p>
+<p class="highlight-red_background"><i>August 2 Update</i>: Made forward kinematics a goal. </p>
 <p class="highlight-orange_background"><i>August 4 Update</i>: Made SMCM a [goal] and moved the two models to [reach goal]. </p>
 <br />
 </body>

@@ -1,73 +1,13 @@
-
-// TODO: move to manipulationUtils, modify for IK.
-function predictTransform() {
-	// beta holds an array with each index corresponding to
-	// shoulderRotateY, elbowRotateX, elbowMoveX, elbowMoveZ, wristRotateX, wristRotateY, wristRotateZ
-	// respectively and the value is the value to set that joint + transformation to.
-	var beta = [ 2, 3, 2, 3, 1, 1, 2 ];
-	// The point on the model
-	// Reset to base position
-	mesh.pose();
-	var endPointPosition = getEndPointWorldPosition();
-	// My predicted position for the point on the model (endPoint) after the transformations specified by beta are applied.
-	var transformedPoint = getEndPointWorldPosition();
-	var bones = mesh.skeleton.bones;
-
-	var bone, bonePosition, negativeBonePosition;
-
-  ////////////////////////////////
-
-	// Get the world position of the joint
-	bone = bones[ 2 ];
-	bonePosition = getModelWorldPosition( bone );
-
-	//wristRotateX, wristRotateY, wristRotateZ
-	transformPoint( transformedPoint, bonePosition, beta[ 4 ], beta[ 5 ], beta[ 6 ], 0, 0, 0 );
-
-  // ////////////////
-
-	var bone = bones[ 1 ];
-	bonePosition = getModelWorldPosition( bone );
-
-	transformPoint( transformedPoint, bonePosition, beta[ 1 ], 0, 0, beta[ 2 ], 0, beta[ 3 ] );
-
-  //////////////
-
-	bone = bones[ 0 ];
-	bonePosition = getModelWorldPosition( bone );
-
-	transformPoint( transformedPoint, bonePosition, 0, beta[ 0 ], 0, 0, 0, 0 );
-
-  ////////////////////////////////
-
-	// Apply the transformations to the mesh
-	mesh.skeleton.bones[0].rotation.y = beta[0];
-
-	mesh.skeleton.bones[1].rotation.x = beta[1];
-	mesh.skeleton.bones[1].position.x = beta[2];
-	mesh.skeleton.bones[1].position.z = beta[3];
-
-	mesh.skeleton.bones[2].rotation.x = beta[4];
-	mesh.skeleton.bones[2].rotation.y = beta[5];
-	mesh.skeleton.bones[2].rotation.z = beta[6];
-
-	// Apply the predicted position of the point to the target point. If I predicted correctly, the target sphere (pink) should be exactly where the endpoint sphere (green) is!
-	target.position.set(transformedPoint.x, transformedPoint.y, transformedPoint.z);
-
-}
-
 function setupDatGui() {
 
 	gui.add( mesh , "pose" ).name( "Reset Pose" );
-	// TODO: end me
-	gui.add( methodParametersIK, 'enabled' ).name( "Test Predict" ).onChange((e)=>{predictTransform()});
 
+  ////////////////////////////////
 
   var folderFK = gui.addFolder("Forward Kinematics");
 
 	var bones = mesh.skeleton.bones;
   var folder;
-
 
   ////////////////////////////////
 
@@ -105,14 +45,14 @@ function setupDatGui() {
 
   var folderIK = gui.addFolder( "Inverse Kinematics" );
 
-  folderIK.add( methodParametersIK, 'enabled' ).name( 'Use IK' );
+  folderIK.add( methodParametersIK, 'enabled' ).name( 'Use IK' ).onChange(()=>{DLS(parametersDLS)});
   folderIK.add( methodParametersIK, 'method', Object.keys( methodFunctionsIK ) ).name( 'Method' );
 
-  ////////////////
+  ////////////////////////////////
 
 	folder = folderIK.addFolder( "Levenberg–Marquardt" );
 
-	folder.add( parametersDLS, 'max_iter', 0, 1000 ).name(" Max Iter" );
+	// folder.add( parametersDLS, 'kMax', 0, 1000 ).name(" Max Iter" );
 
   ////////////////
 

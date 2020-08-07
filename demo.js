@@ -8,7 +8,7 @@ var scene, camera, renderer, orbit, lights;
 var target, moveSpeed, keys, prevY, currY;
 
 // End point
-var endPoint;
+var endPoint, endPointDefaultPosition;
 
 // Model
 var mesh, bones, skeletonHelper;
@@ -18,7 +18,20 @@ var methodParametersIK, methodFunctionsIK;
 
 // DLS
 var parametersDLS = {
-  max_iter: 0
+  kMax: 1000,
+  beta: null,
+  lambda: null,
+  v: null
+};
+
+// PIDLS
+var parametersPIDLS = {
+
+};
+
+// SMCM
+var parametersSMCM = {
+
 };
 
 function initScene() {
@@ -33,7 +46,7 @@ function initScene() {
 
   // Scene
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color( 0x444444 );
+	scene.background = new THREE.Color( 0xffffff );
 
   // Camera
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 200 );
@@ -63,8 +76,9 @@ function initScene() {
   // POPULATE SCENE
   // Lighting
 	lights = [];
-	lights[ 0 ] = new THREE.PointLight( 0xffffff, 1, 0 );
-	lights[ 1 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+	lights[ 0 ] = new THREE.PointLight( 0xffffff, 0.5, 0 );
+	lights[ 1 ] = new THREE.PointLight( 0xffffff, 0.5, 0 );
+  lights[ 2 ] = new THREE.AmbientLight(0xffffff, 0.5);
 
   // left, top, back
 	lights[ 0 ].position.set( 0, 200, -100 );
@@ -72,6 +86,7 @@ function initScene() {
 
 	scene.add( lights[ 0 ] );
 	scene.add( lights[ 1 ] );
+	scene.add( lights[ 2 ] );
 
   // End point
   endPoint = getSphere( 0.5, color='rgb(123, 231, 121 )' );
@@ -104,6 +119,7 @@ function initScene() {
 
   // Model
 	initModel();
+  endPointDefaultPosition = getModelWorldPosition( endPoint );
 
   // INTERACTIONS
   // IK parameters
@@ -113,9 +129,18 @@ function initScene() {
   }
 
   methodFunctionsIK = {
-  	"Levenberg–Marquardt": DLS,
-  	"Pseudo-inverse Damped Least Squares": PIDLS,
-  	"Sequential Monte Carlo Method": SMCM
+  	"Levenberg–Marquardt": {
+      function: DLS,
+      parameters: parametersDLS
+    },
+  	"Pseudo-inverse Damped Least Squares": {
+      function: PIDLS,
+      parameters: parametersPIDLS
+    },
+  	"Sequential Monte Carlo Method": {
+      function: SMCM,
+      parameters: parametersSMCM
+    }
   }
 
   // Interaction interface
@@ -135,7 +160,9 @@ function render() {
 
 	if ( methodParametersIK.enabled && methodParametersIK.method != '' ) {
 
-    methodFunctionsIK[ methodParametersIK.method ]();
+    // var method = methodFunctionsIK[ methodParametersIK.method ];
+    //
+    // method.function( method.parameters );
 
 	}
 

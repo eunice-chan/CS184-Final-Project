@@ -198,8 +198,14 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
 <h3>Setting Up</h3>
 <p>Although the algorithm is relatively straightforward, the computer graphics portion was a bit more complicated, so I had to implement many helper functions so that I could get the values I needed easily.</p>
 <p>One thing I realized was that I needed to get the position of the endpoint and that would require a lot of calculations. Initially I decided to subset the vertices of the geometry and take only the ones on the top plane, then finding the mean position. However, while testing my work, I encountered the issue of it only working if it did not change from the initial pose. After some debugging, I realized that the points did not change when I transformed the bones, so I switched up my tactics.</p>
-<p> Next, I created a sphere and attached it to the last bone, so I can visualize the end point as well as conveniently get it by accessing the sphere's location. When testing this feature, I found out that the position never changes as well. I found out that this was because the points were in object space while I was interested in its position in world space. Because of that, I added a function to transform from object to world space. Finally, I was able to successfullly get the coordinates of the endpoint.</p>
-<p>The next step was to calculate the endpoint's position given the initial position and the transformation on each joint of its parent. To do this, I go through each joint, and apply the transformation relative to the joint on thhe endpoint. To apply translations, I just moved the endpoint the same amount as the joint point on the appropriate axis. To apply rotations, I translated the joint point to the origin, checked which axis to rotate about, applied the appropriate rotation, then translated back.</p>
+<p> Next, I created a sphere and attached it to the last bone, so I can visualize the end point as well as conveniently get it by accessing the sphere's location. When testing this feature, I found out that the position never changes as well. I found out that this was because the points were in object space while I was interested in its position in world space. Because of that, I added a function to transform from object to world space. Finally, I was able to successfullly get the coordinates of the endpoint. However, after much testing, I realized I needed the default position as beta is relative to that value, so I saved the default position of the endpoint without any transformations applied, and accessed the world coordinates of that.</p>
+<p>The next step was to calculate the endpoint's position given the initial position and the transformation on each joint of its parent. To do this, I go through each joint, and apply the transformation relative to the joint on thhe endpoint.</p>
+<figure>
+<video style="width:100%;padding:0 10%;" preload controls>
+    <source src="./images/point_prediction_demo.mov" />
+    <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
+    <figcaption>Demo of point prediction and walking through the code</figcaption>
+</figure>
 <p>In our case, we want to minimize the square error between our guess ( \(\beta\) ) and the goal (the target point).</p>
 <br />
 </body>
