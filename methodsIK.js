@@ -20,7 +20,7 @@ function DLS( param ) {
 	for ( var k = 0; k < param.kMax; k ++ ) {
 
 		// Stopping criterion: if we're close enough to the target, stop.
-		if ( MSE( y_hat, y ) > 0.1 ) {
+		if ( MSE( y_hat, y ) > 1000000 ) {
 			var u = jacobian.matrixJTJ;
 			u.elements[ 0 ] += lambda * jacobian.squaredError.x;
 			u.elements[ 4 ] += lambda * jacobian.squaredError.y;
@@ -29,11 +29,11 @@ function DLS( param ) {
 			// delta = inv( JTJ + lambda * diag( JTJ ) )JTF
 			var delta = new THREE.Matrix3().getInverse( jacobian.matrixJTJ );
 			console.log(delta.toArray());
-			delta.multiply( jacobian.squaredError );
-			console.log(delta.toArray());
+			// delta.multiply( jacobian.squaredError );
+			// console.log(delta.toArray());
 
 			// beta_prime = beta + delta
-			var beta_prime = beta.add(delta);
+			// var beta_prime = beta.add(delta);
 
 			// if beta_prime is closer than beta
 			if ( MSE( beta_prime, y ) < MSE( beta, y ) ) {
