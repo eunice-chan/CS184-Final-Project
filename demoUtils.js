@@ -14,30 +14,30 @@ function setupDatGui() {
 
   var bone = bones[ 0 ];
 
-  folder = folderFK.addFolder( "Shoulder" );
+  // folder = folderFK.addFolder( "Shoulder" );
 
-  folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate" );
+  gui.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 1" );
 
   //////////////
 
   var bone = bones[ 1 ];
 
-  folder = folderFK.addFolder( "Elbow" );
+  // folder = folderFK.addFolder( "Elbow" );
 
   // So that it won't completely bend on itself. It's not a very flexible arm. :)
-  folder.add( bone.rotation, 'x', 0, 2 ).name( "Rotate" );
-  folder.add( bone.position, 'x', -5, 5 ).name( "Move X" );
-  folder.add( bone.position, 'z', -5, 5 ).name( "Move Z" );
+  gui.add( bone.rotation, 'x', 0, 2 ).name( "Rotate Joint 2" );
+  // folder.add( bone.position, 'x', -5, 5 ).name( "Move X" );
+  // folder.add( bone.position, 'z', -5, 5 ).name( "Move Z" );
 
   ////////////////
 
   var bone = bones[ 2 ];
 
-  folder = folderFK.addFolder( "Wrist" );
+  // folder = folderFK.addFolder( "Wrist" );
 
-  folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate X" );
-  folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Y" );
-  folder.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Z" );
+  // folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate X" );
+  // folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Y" );
+  gui.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 3" );
 
 
   ////////////////////////////////
@@ -52,7 +52,7 @@ function setupDatGui() {
 
 	folder = folderIK.addFolder( "Levenberg–Marquardt" );
 
-	// folder.add( parametersDLS, 'kMax', 0, 1000 ).name(" Max Iter" );
+	folder.add( parametersDLS, 'maxIter', 0, 1000 ).name(" Max Iter" ).onChange( ()=>{ parametersDLS.maxIter = Math.floor( parametersDLS.maxIter ) } );
 
   ////////////////
 

@@ -1,7 +1,9 @@
-function predictTransform( beta ) {
+function betaToPoint( beta ) {
 	// beta holds an array with each index corresponding to
 	// shoulderRotateY, elbowRotateX, elbowMoveX, elbowMoveZ, wristRotateX, wristRotateY, wristRotateZ
 	// respectively and the value is the value to set that joint + transformation to.
+
+	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
 
 	// My predicted position for the point on the model (endPoint) after the transformations specified by beta are applied.
 	var predictedPoint = new THREE.Vector3().copy( endPointDefaultPosition );
@@ -89,52 +91,106 @@ function getEndPointWorldPosition() {
 
 }
 
-function gradientMSE(y_hat, y) {
+function DLShelper( y_hat, y ) {
 
-	var error = new THREE.Vector3( y_hat.x - y.x, y_hat.y - y.y, y_hat.z - y.z ).multiplyScalar( 2 / 3 );
-	var squaredError = error.clone().multiply(error);
+	var j = jacobian( y_hat );
 
-	var diagonalJTJ = new THREE.Matrix3().set( squaredError.x, 0, 0,
-																						 0, squaredError.y, 0,
-																					   0, 0, squaredError.z );
+	var squaredJ = j.clone().multiply(j);
 
-	var xy = error.x * error.y;
-	var xz = error.x * error.z;
-	var yz = error.y * error.z;
+	var xy = j.x * j.y;
+	var xz = j.x * j.z;
+	var yz = j.y * j.z;
 
- 	var matrixJTJ =  new THREE.Matrix3().set( squaredError.x, xy, xz,
-																						 xy, squaredError.y, yz,
-																					   xz, yz, squaredError.z );
+	// U
+ 	var jtj = new THREE.Matrix3().set( squaredJ.x, xy, xz,
+																	 	 xy, squaredJ.y, yz,
+																	 	 xz, yz, squaredJ.z );
+	// -v
+	var jtd = j.multiplyScalar( distance( y_hat, y ) ).multiplyScalar( -1 );
 
- return {
-	 squaredError: squaredError,
-	 matrixJTJ: matrixJTJ
- };
-
-}
-
-function MSE(y_hat, y) {
-
-	// The objective function
-	var error = new THREE.Vector3( y_hat.x - y.x, y_hat.y - y.y, y_hat.z - y.z );
-	console.log("y_hat "+y_hat);
-	console.log("y "+y);
-	console.log("error "+error.toArray());
-	var squaredError = error.clone().multiply(error);
-	console.log("MSE "+squaredError.toArray());
-	return ( squaredError.x + squaredError.y + squaredError.z ) / 3;
+	return {
+		squaredJ: squaredJ, // Vector3
+		jtj: jtj, // Matrix3
+		jtd: jtd // Vector3
+	}
 
 }
 
+function jacobian( y_hat ) {
 
+	var bones = mesh.skeleton.bones;
+	var identity = new THREE.Matrix3();
+
+	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
+	// axis * ( y_hat - bone_pos )
+	var shoulder = y_hat.sub( getModelWorldPosition( bones[ 0 ] ) ).y;
+	var elbow = y_hat.sub( getModelWorldPosition( bones[ 1 ] ) ).x;
+	var wrist = y_hat.sub( getModelWorldPosition( bones[ 2 ] ) ).z;
+
+	return new THREE.Vector3( shoulder, elbow, wrist );
+
+}
+
+function distance( y_hat, y ) {
+
+	return y.distanceTo( y_hat );
+
+}
+
+function squaredDistance( y_hat, y ) {
+
+	return y.distanceToSquared( y_hat );
+
+}
+
+// function gradientMSE(y_hat, y) {
+//
+// 	var error = new THREE.Vector3( y_hat.x - y.x, y_hat.y - y.y, y_hat.z - y.z ).multiplyScalar( 2 / 3 );
+// 	var squaredError = error.clone().multiply(error);
+//
+// 	var diagonalJTJ = new THREE.Matrix3().set( squaredError.x, 0, 0,
+// 																						 0, squaredError.y, 0,
+// 																					   0, 0, squaredError.z );
+//
+// 	var xy = error.x * error.y;
+// 	var xz = error.x * error.z;
+// 	var yz = error.y * error.z;
+//
+//  	var matrixJTJ =  new THREE.Matrix3().set( squaredError.x, xy, xz,
+// 																						 xy, squaredError.y, yz,
+// 																					   xz, yz, squaredError.z );
+//
+//  return {
+// 	 squaredError: squaredError,
+// 	 matrixJTJ: matrixJTJ
+//  };
+//
+// }
+//
+// function MSE(y_hat, y) {
+//
+// 	// The objective function
+// 	var error = new THREE.Vector3( y_hat.x - y.x, y_hat.y - y.y, y_hat.z - y.z );
+// 	console.log("y_hat "+y_hat);
+// 	console.log("y "+y);
+// 	console.log("error "+error.toArray());
+// 	var squaredError = error.clone().multiply(error);
+// 	console.log("MSE "+squaredError.toArray());
+// 	return ( squaredError.x + squaredError.y + squaredError.z ) / 3;
+//
+// }
+//
+//
 function updateMeshKinematics( beta ) {
 
+	var bones = mesh.skeleton.bones;
 	// Apply the transformations to the mesh
-	mesh.skeleton.bones[0].rotation.y = beta[0];
+	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
+	bones[0].rotation.y = beta[0];
 
-	mesh.skeleton.bones[1].rotation.x = beta[1];
+	bones[1].rotation.x = beta[1];
 
-	mesh.skeleton.bones[2].rotation.z = beta[2];
+	bones[2].rotation.z = beta[2];
 
 }
 
@@ -142,18 +198,19 @@ function modelToBeta() {
 
 	var bones = mesh.skeleton.bones;
 	// shoulderRotateY, elbowRotateX, elbowMoveX, elbowMoveZ, wristRotateX, wristRotateY, wristRotateZ
-	var beta = [ bones[0].rotation.y, bones[1].rotation.x, bones[1].position.x, bones[1].position.z, bones[2].rotation.x, bones[2].rotation.y, bones[2].rotation.z  ];
+	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
+	var beta = [ bones[0].rotation.y, bones[1].rotation.x, bones[2].rotation.z ];
 
 	// Can't be zero!
-	if ( sum( ...beta ) == 0) {
-
-		return [ 1, 1, 1, 1, 1, 1, 1 ];
-
-	} else {
+	// if ( sum( ...beta ) == 0) {
+	//
+	// 	return [ 1, 1, 1, 1, 1, 1, 1 ];
+	//
+	// } else {
 
 			return beta;
 
-	}
+	// }
 
 }
 

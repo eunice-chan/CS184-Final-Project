@@ -18,7 +18,7 @@ var methodParametersIK, methodFunctionsIK;
 
 // DLS
 var parametersDLS = {
-  kMax: 1000,
+  maxIter: 5,
   beta: null,
   lambda: null,
   v: null

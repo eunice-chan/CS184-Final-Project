@@ -1,71 +1,125 @@
 function DLS( param ) {
 
+	// Set an initial lambda. Can be any value. Should be positive.
+	var lambda = param.lambda? lambda : 0.0001;
+
 	// Get current transformation of the model joints
 	var beta = param.beta? beta : modelToBeta();
 
 	// y is the position in space we want to get to
 	var y = getTargetWorldPosition();
-	// y_hat is the position in space we are at if the beta transformations are applied to the default pose
-	var y_hat = predictTransform( beta );
 
-	// Find the error-related stuff
-	var jacobian = gradientMSE( y_hat, y );
+	for ( var i = 0; i < param.maxIter; i ++ ) {
+		lambda /= 2;
 
-	// Set an initial lambda. Can be any value. Kind of the "step size." Should be positive.
-	var lambda = param.lambda? lambda : Math.max( jacobian.squaredError.x, jacobian.squaredError.y, jacobian.squaredError.z );
+		// y_hat is the current position in space
+		var y_hat = betaToPoint( beta );
 
-	// Set an initial v. Also doesn't really matter what it is. Just needs to be positive.
-	var v = param.v? v : 2;
+		var helper = DLShelper( y_hat, y );
 
-	for ( var k = 0; k < param.kMax; k ++ ) {
+		var u = helper.jtj;
+		var v = helper.jtd;
+		var curr_obj_fn = squaredDistance( y_hat, y );
 
-		// Stopping criterion: if we're close enough to the target, stop.
-		if ( MSE( y_hat, y ) > 1000000 ) {
-			var u = jacobian.matrixJTJ;
-			u.elements[ 0 ] += lambda * jacobian.squaredError.x;
-			u.elements[ 4 ] += lambda * jacobian.squaredError.y;
-			u.elements[ 8 ] += lambda * jacobian.squaredError.z;
+		for ( var j = 0; j < param.maxIter; j ++ ) {
 
-			// delta = inv( JTJ + lambda * diag( JTJ ) )JTF
-			var delta = new THREE.Matrix3().getInverse( jacobian.matrixJTJ );
-			console.log(delta.toArray());
-			// delta.multiply( jacobian.squaredError );
-			// console.log(delta.toArray());
+			lambda *= 2;
 
-			// beta_prime = beta + delta
-			// var beta_prime = beta.add(delta);
+			// System of equations
+			var h = helper.jtj;
+			h.elements[ 0 ] += 1 + ( lambda * helper.squaredJ.x );
+			h.elements[ 4 ] += 1 + ( lambda * helper.squaredJ.y );
+			h.elements[ 8 ] += 1 + ( lambda * helper.squaredJ.z );
 
-			// if beta_prime is closer than beta
-			if ( MSE( beta_prime, y ) < MSE( beta, y ) ) {
+			var delta = helper.jtd.clone().applyMatrix3( new THREE.Matrix3().getInverse( h ) );
 
-			  // Update beta to the better value
+			var beta_prime = [ beta[ 0 ] + delta.x, beta[ 1 ] + delta.y, beta[ 2 ] + delta.z ];
+
+			var next_obj_fn = squaredDistance( betaToPoint( beta_prime ), y );
+			console.log("OBJ VAL "+next_obj_fn);
+
+			if ( next_obj_fn <= curr_obj_fn ) {
+
 				beta = beta_prime;
-				// Calculate the new value of beta
-				y_hat = predictTransform( beta );
+				updateMeshKinematics( beta );
 
-				// Closer to minimum, so behave more like Gauss-Newton
-				lambda /= v;
+				// Stopping criteron: Change too small
+				if ( next_obj_fn > 0.9 * curr_obj_fn ) {
 
-			} else {
+					return beta;
 
-				lambda *= v;
+				} else {
+
+					break;
+
+				}
 
 			}
-
-		} else {
-
-			break;
 
 		}
 
 	}
-
-	console.log("MSE: " + MSE( y_hat, y ));
-	console.log("TARGET VALUE: " + y.toArray());
-	console.log("ENDPOINT VALUE: " + y_hat.toArray());
-	updateMeshKinematics( beta );
-
-	return beta;
+	// // y_hat is the position in space we are at if the beta transformations are applied to the default pose
+	// var y_hat = betaToPoint( beta );
+	//
+	// // Find the error-related stuff
+	// var jacobian = gradientMSE( y_hat, y );
+	//
+	// // Set an initial lambda. Can be any value. Kind of the "step size." Should be positive.
+	// var lambda = param.lambda? lambda : Math.max( jacobian.squaredError.x, jacobian.squaredError.y, jacobian.squaredError.z );
+	//
+	// // Set an initial v. Also doesn't really matter what it is. Just needs to be positive.
+	// var v = param.v? v : 2;
+	//
+	// for ( var k = 0; k < param.kMax; k ++ ) {
+	//
+	// 	// Stopping criterion: if we're close enough to the target, stop.
+	// 	if ( MSE( y_hat, y ) > 1000000 ) {
+	// 		var u = jacobian.matrixJTJ;
+	// 		u.elements[ 0 ] += lambda * jacobian.squaredError.x;
+	// 		u.elements[ 4 ] += lambda * jacobian.squaredError.y;
+	// 		u.elements[ 8 ] += lambda * jacobian.squaredError.z;
+	//
+	// 		// delta = inv( JTJ + lambda * diag( JTJ ) )JTF
+	// 		var delta = new THREE.Matrix3().getInverse( jacobian.matrixJTJ );
+	// 		console.log(delta.toArray());
+	// 		// delta.multiply( jacobian.squaredError );
+	// 		// console.log(delta.toArray());
+	//
+	// 		// beta_prime = beta + delta
+	// 		// var beta_prime = beta.add(delta);
+	//
+	// 		// if beta_prime is closer than beta
+	// 		if ( MSE( beta_prime, y ) < MSE( beta, y ) ) {
+	//
+	// 		  // Update beta to the better value
+	// 			beta = beta_prime;
+	// 			// Calculate the new value of beta
+	// 			y_hat = betaToPoint( beta );
+	//
+	// 			// Closer to minimum, so behave more like Gauss-Newton
+	// 			lambda /= v;
+	//
+	// 		} else {
+	//
+	// 			lambda *= v;
+	//
+	// 		}
+	//
+	// 	} else {
+	//
+	// 		break;
+	//
+	// 	}
+	//
+	// }
+	//
+	// console.log("MSE: " + MSE( y_hat, y ));
+	// console.log("TARGET VALUE: " + y.toArray());
+	// console.log("ENDPOINT VALUE: " + y_hat.toArray());
+	// updateMeshKinematics( beta );
+	//
+	// return beta;
 
 }
 
