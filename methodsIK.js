@@ -9,14 +9,14 @@ function DLS( param ) {
 	var beta = modelToBeta();
 
 	// y is the position in space we want to get to
-	var y = getTargetWorldPosition().normalize();
+	var y = getTargetWorldPosition();
 
 	for ( var i = 0; i < param.maxIter; i ++ ) {
 
 		lambda /= 2;
 
 		// y_hat is the current position in space
-		var y_hat = betaToPoint( beta ).normalize();
+		var y_hat = betaToPoint( beta );
 
 		var helper = DLShelper( y_hat, y );
 
@@ -42,7 +42,7 @@ function DLS( param ) {
 			var delta = helper.jtd.clone().applyMatrix3( new THREE.Matrix3().getInverse( h ) );
 
 			var beta_prime = [ beta[ 0 ] + delta.x, beta[ 1 ] + delta.y, beta[ 2 ] + delta.z ];
-			var y_hat_prime = betaToPoint( beta_prime ).normalize();
+			var y_hat_prime = betaToPoint( beta_prime );
 			console.log("BETA PRIME "+beta_prime);
 			console.log("BETA PRIME POSITION "+y_hat_prime.toArray());
 
