@@ -74,9 +74,30 @@ This should be about 1 page long if printed. You should briefly summarize what y
     <figcaption>Demo of point prediction and walking through the code</figcaption>
 </figure>
 
+<h3>IK Method: Damped Least Squares</h3>
+My Descent into Madness, a 4-part comedy
+
+<figure>
+  <img src="./images/mydescentintomadnesspt1.jpg" />
+  <figcaption>Act 1: Following the verion of the Levenberg-Marquardt algorithm as discussed in <a href="http://www.brnt.eu/publications/brunet2010phd.pdf">here</a>. Got confused and switched to <a href="https://www.researchgate.net/figure/Levenberg-Marquardt-algorithm_fig1_271100201">this</a>.</figcaption>
+</figure>
+<figure>
+  <img src="./images/mydescentintomadnesspt2.png" />
+  <figcaption>Act 2: Got frustrated because the details did not seem to be explained clearly enough in the thesis I read, so I read the paper's description more thoroughly.</figcaption>
+</figure>
+<figure>
+  <img src="./images/mydescentintomadnesspt3.png" />
+  <figcaption>Manual positioning</figcaption>
+</figure>
+<figure>
+  <img src="./images/mydescentintomadnesspt4.png" />
+  <figcaption>Manual positioning</figcaption>
+</figure>
+
 <h2>Progress</h2>
 <p>I started working on an IK method. However, while working on it, I realized I needed more helper functions (such as the calculation of a child element's new position once a set of rotations and translations are applied to the armature of its parents without actually applying the rotations) so I had to take a detour to work on that. I think the first method would take the longest to implement due to such detours. Once I get that done, the rest would probably not take as long.</p>
-<p>I think I would be able to get through the other two IK method goals. However, regarding stylizing it, I would need to do some more research about how to stylize and that may be a little difficult to do.</p>
+<p>It was a little rough understanding it because the way people explained it was oftentimes very ambigious because there was a lot of flexibility in how to implement it. However, this also meant I wasn't 100% sure about the terms or how to specifically calculate things (such as for the Jacobian, since everything was interweaved and I didn't have a mathematical formula for the total effect, I ended up searching online for an example and scaling down my implementation so it would be easier to calculate the Jacobian of the joints) and I had to look at several articles to understand what was necessary and what was specific to each implementation (one of them normalized the parameters. which I wasn't sure if I wanted because I wanted to reach the target point, not be in the direction of the target point.)</p>
+<p>It took about three days to do the research for this method. The high level idea was easy to understand, but once I started trying to implement it, a lot of the details tripped me up. From the state I am right now, I may need to implement Cholesky decomposition, which would end up eating up more time. For the other IK goals I had initially planned on doing, depending on how long this one takes, I may one get to one of them. One of them is a selectively damped version so hopefully it won't take as long to understand and the other is SMCM, which is completely different so I would need to look into it more. However, regarding stylizing it, I would need to do much more research into how to stylize and that may be a little difficult to do within the timeframe provided.</p>
 
 <h2>Work Plan Updates</h2>
 <p>The most updated version of the work plan is <a href="./proposal.html#schedule">here</a>.</p>

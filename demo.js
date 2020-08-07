@@ -24,8 +24,8 @@ var parametersDLS = {
   v: null
 };
 
-// PIDLS
-var parametersPIDLS = {
+// SDLS
+var parametersSDLS = {
 
 };
 
@@ -133,9 +133,9 @@ function initScene() {
       function: DLS,
       parameters: parametersDLS
     },
-  	"Pseudo-inverse Damped Least Squares": {
-      function: PIDLS,
-      parameters: parametersPIDLS
+  	"Selectively Damped Least Squares": {
+      function: SDLS,
+      parameters: parametersSDLS
     },
   	"Sequential Monte Carlo Method": {
       function: SMCM,

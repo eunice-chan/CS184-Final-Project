@@ -21,6 +21,7 @@ Eunice Chan | <i>August 1, 2020</i>
 <h2 id="changelog">Changelog</h2>
 <p class="highlight-red_background"><i>August 2 Update</i>: Made forward kinematics a goal. </p>
 <p class="highlight-orange_background"><i>August 4 Update</i>: Made SMCM a goal and moved the two models to reach goal. </p>
+<p class="highlight-yellow_background"><i>August 6 Update</i>: I didn't explicitly state it, but I had been operating under the assumption I would have both translation and rotation. I've decided to narrow down my IK implementations to only deal with rotational joints with one degree of freedom.</p>
 <h2>Summary</h2>
 <p>In this project, I will explore and implement the common techniques to tackle inverse kinematics (IK). I am particularly interested in IK algorithms that allow a greater degree of ability to control stylistic variations of the animation. Because of this, I will primarily be looking at the iterative methods using a cost function to be minimized and Sequential Monte Carlo methods (SMCM) for solving IK problems.</p>
 <h2>Problem Description</h2>
@@ -52,14 +53,14 @@ Eunice Chan | <i>August 1, 2020</i>
 <h3>Goal 2: IK</h3>
 <p>Implement basic IK.</p>
 <ul>
-  <li>Implement damped Least Squares / Levenberg–Marquardt algorithm</li>
-  <li>Implement pseudo-inverse damped least squares OR selectively damped least squares</li>
+  <li>Implement damped least squares / Levenberg–Marquardt algorithm</li>
+  <li>Implement selectively damped least squares</li>
   <li class="highlight-orange">SMCM</li>
 </ul>
 <h3>Reach Goal: IK</h3>
 <p>Implement...</p>
 <ul>
-  <li>Pseudo-inverse damped least squares / selectively damped least squares</li>
+  <li>Selectively damped least squares </li>
   <strike class="highlight-orange"><li>SMCM</li></strike>
   <li>SMCM with interpolation for trajectory smoothing</li>
   <li>Forward And Backward Reaching Inverse Kinematics (FABRIK) heuristic method</li>
@@ -182,8 +183,8 @@ Add style to the movements and wrap up project.
     <span class="to-do-children-unchecked">Implement IK methods for arm model: Damped least squares / Levenberg–Marquardt algorithm</span>
   </li>
   <li>
-  <div class="checkbox checkbox-off"></div>
-  <span class="to-do-children-unchecked">Write milestone report</span>
+  <div class="checkbox checkbox-on"></div>
+  <span class="to-do-children-checked">Write milestone report</span>
   </li>
 </ul>
 <h3>Week 2: August 8 - August 14</h3>
@@ -198,13 +199,21 @@ Add style to the movements and wrap up project.
       </li>
       <li>
         <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">Pseudo-inverse damped least squares</span>
+        <span class="to-do-children-unchecked">Selectively damped least squares</span>
       </li>
       <li>
         <div class="checkbox checkbox-off"></div>
         <span class="to-do-children-unchecked">SMCM</span>
       </li>
     </ul>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">[Reach Goal] Add multiple degrees of freedom</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">[Reach Goal] Include more joints (rotational and otherwise)</span>
   </li>
   <li>
     <div class="checkbox checkbox-off"></div>
@@ -267,7 +276,7 @@ Add style to the movements and wrap up project.
       </li>
       <li>
         <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] Pseudo-inverse damped least squares</span>
+        <span class="to-do-children-unchecked">[Reach Goal] Selectively damped least squares</span>
       </li>
       <li>
         <div class="checkbox checkbox-off"></div>

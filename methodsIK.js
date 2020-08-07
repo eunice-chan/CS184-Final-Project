@@ -17,12 +17,7 @@ function DLS( param ) {
 	// Set an initial v. Also doesn't really matter what it is. Just needs to be positive.
 	var v = param.v? v : 2;
 
-	console.log("BETA", beta);
-	console.log("ENDPOINT", getModelWorldPosition( endPoint ).toArray() );
-	console.log("jacobian", jacobian);
-	console.log("lambda", lambda);
-
-	for ( var k = 0; k < param.k_max; k ++ ) {
+	for ( var k = 0; k < param.kMax; k ++ ) {
 
 		// Stopping criterion: if we're close enough to the target, stop.
 		if ( MSE( y_hat, y ) > 0.1 ) {
@@ -32,7 +27,10 @@ function DLS( param ) {
 			u.elements[ 8 ] += lambda * jacobian.squaredError.z;
 
 			// delta = inv( JTJ + lambda * diag( JTJ ) )JTF
-			var delta = new THREE.Vector3.getInverse( jacobian.matrixJTJ ).multiply( jacobian.squaredError );
+			var delta = new THREE.Matrix3().getInverse( jacobian.matrixJTJ );
+			console.log(delta.toArray());
+			delta.multiply( jacobian.squaredError );
+			console.log(delta.toArray());
 
 			// beta_prime = beta + delta
 			var beta_prime = beta.add(delta);
@@ -54,9 +52,6 @@ function DLS( param ) {
 
 			}
 
-			// Update the error-related stuff
-			var jacobian = gradientMSE( beta, y );
-
 		} else {
 
 			break;
@@ -64,16 +59,18 @@ function DLS( param ) {
 		}
 
 	}
-	console.log("DONE: " + y_hat.toArray());
-	console.log("DONE: " + y.toArray());
+
+	console.log("MSE: " + MSE( y_hat, y ));
+	console.log("TARGET VALUE: " + y.toArray());
+	console.log("ENDPOINT VALUE: " + y_hat.toArray());
 	updateMeshKinematics( beta );
 
 	return beta;
 
 }
 
-function PIDLS( param ) {
-	console.log("PIDLS");
+function SDLS( param ) {
+	console.log("SDLS");
 }
 
 function SMCM( param ) {

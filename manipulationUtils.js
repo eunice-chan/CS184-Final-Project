@@ -16,14 +16,14 @@ function predictTransform( beta ) {
 	bonePosition = getModelWorldPosition( bone );
 
 	//wristRotateX, wristRotateY, wristRotateZ
-	transformPoint( predictedPoint, bonePosition, beta[ 4 ], beta[ 5 ], beta[ 6 ], 0, 0, 0 );
+	transformPoint( predictedPoint, bonePosition, 0, 0, beta[ 2 ], 0, 0, 0 );
 
   // ////////////////
 
 	bone = bones[ 1 ];
 	bonePosition = getModelWorldPosition( bone );
 
-	transformPoint( predictedPoint, bonePosition, beta[ 1 ], 0, 0, beta[ 2 ], 0, beta[ 3 ] );
+	transformPoint( predictedPoint, bonePosition, beta[ 1 ], 0, 0, 0, 0, 0 );
 
   //////////////
 
@@ -117,7 +117,11 @@ function MSE(y_hat, y) {
 
 	// The objective function
 	var error = new THREE.Vector3( y_hat.x - y.x, y_hat.y - y.y, y_hat.z - y.z );
+	console.log("y_hat "+y_hat);
+	console.log("y "+y);
+	console.log("error "+error.toArray());
 	var squaredError = error.clone().multiply(error);
+	console.log("MSE "+squaredError.toArray());
 	return ( squaredError.x + squaredError.y + squaredError.z ) / 3;
 
 }
@@ -129,12 +133,8 @@ function updateMeshKinematics( beta ) {
 	mesh.skeleton.bones[0].rotation.y = beta[0];
 
 	mesh.skeleton.bones[1].rotation.x = beta[1];
-	mesh.skeleton.bones[1].position.x = beta[2];
-	mesh.skeleton.bones[1].position.z = beta[3];
 
-	mesh.skeleton.bones[2].rotation.x = beta[4];
-	mesh.skeleton.bones[2].rotation.y = beta[5];
-	mesh.skeleton.bones[2].rotation.z = beta[6];
+	mesh.skeleton.bones[2].rotation.z = beta[2];
 
 }
 
