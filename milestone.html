@@ -125,8 +125,54 @@ My Descent into Madness, a 4-part comedy
 <p class="highlight-orange_background"><i>August 4 Update</i>: Made SMCM a [goal] and moved the two models to [reach goal]. </p>
 
 <h2>Looking Forward</h2>
-<p>I have underestimated how long implementation of the algorithms would take. In my current iteration of the LM algorithm implementation, I have reduced the complexity to three joints with a single degree of freedom each and have managed to get a running but not working-as-expected implementation. Because of this difficulty, I do not think I will be able to reach the stylization part of my initial proposal. I have to be mindful of time as I would need to wrap up as well as create the deliverables which means I ought to spend the last few days polishing the appearance and functionality of the demo, writing the report, and creating the video. Essentially, I have four more days to work on additional functionality as I plan on taking the last two days to wrap up. My plan moving forward is to finish a simple, functional implementation of LM and then if I have extra time, begin implementation of SMCM. Drawing from my experience debugging my implementations for LM, I am not confident I could get it to a functional state before it is due, but I would like to take the time to work on it.</p>
+<p>I have underestimated how long implementation of the algorithms would take. In my current iteration of the LM algorithm implementation, I have reduced the complexity to three joints with a single degree of freedom each and have managed to get a running but not working-as-expected implementation. Because of this difficulty, I do not think I will be able to reach the stylization part of my initial proposal. I have to be mindful of time as I would need to wrap up as well as create the deliverables which means I ought to spend the last few days polishing the appearance and functionality of the demo, writing the report, and creating the video. Essentially, I have four more days to work on additional functionality as I plan on taking the last two days to wrap up. My plan moving forward is to finish a simple, functional implementation of LM and then, if things progress very smoothly and I have the time, begin implementation of SMCM. Drawing from my experience debugging my implementations for LM, I am not confident I could get it to a functional state before it is due, but I would like to take the time to work on it.</p>
 <p>More immediately, looking a few steps ahead, I can see myself working on debugging my implementation of LM while implementing additional functionality on the GUI such as drawing a line between the target and end points so I can more visually see when the algorithm is working correctly, because if it has fallen into a local minimum, it can be difficult to see sometimes.</p>
+<p>Here are my next steps for the rest of this section (debugging and visualizing LM)</p>
+
+<ul class="to-do-list">
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Debug/get working for arm model: Damped least squares / Levenberg–Marquardt algorithm</span>
+  </li>
+</ul>
+<ul>
+<li>
+  Debug/get working for arm model: Damped least squares / Levenberg–Marquardt algorithm
+</li>
+<li>
+  Draw line between target and endpoint to display distance
+</li>
+<li>
+  Toggle distance line display in GUI
+</li>
+<li>
+  Make outer for loop part of the render cycle (so render each iteration's change)
+</li>
+<li>
+  Reset target pose in GUI
+</li>
+<li>
+  Allow setting pink with XYZ slider in GUI
+</li>
+<li>
+  Console.log target and endpoint positions
+</li>
+<li>
+  Remove WASD + trackpad controls
+</li>
+<li>
+  Move console.log messages to a side panel?
+</li>
+<li>
+  Allow user to set lambda change values in GUI
+</li>
+<li>
+  Button to reset target position in GUI
+</li>
+<li>
+  Update notes for arm model: Damped least squares / Levenberg–Marquardt algorithm
+</li>
+</ul>
 <br />
 </body>
 </html>

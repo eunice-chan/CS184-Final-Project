@@ -25,7 +25,6 @@ function DLS( param ) {
 		var v = helper.jtd;
 
 		var curr_obj_fn = squaredDistance( y_hat, y );
-		updateMeshKinematics( beta );
 		console.log("OBJ VAL "+curr_obj_fn);
 		console.log("BETA "+beta);
 		console.log("BETA POSITION " +y_hat.toArray());
