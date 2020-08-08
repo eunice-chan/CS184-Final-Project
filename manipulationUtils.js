@@ -119,7 +119,6 @@ function DLShelper( y_hat, y ) {
 function jacobian( y_hat ) {
 
 	var bones = mesh.skeleton.bones;
-	var identity = new THREE.Matrix3();
 	var curr_pos = y_hat.clone();
 
 	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ

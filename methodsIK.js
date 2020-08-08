@@ -3,17 +3,18 @@ function DLS( param ) {
 	// Initialize Values
 
 	// Set an initial lambda. Can be any value. Should be positive.
-	var lambda = param.lambda? lambda : 1000;
-
+	var lambda = param.lambda? lambda : 0.0001;
+   console.log("lamba "+lambda);
 	// Get current transformation of the model joints
 	var beta = modelToBeta();
+	console.log("beta "+beta);
 
 	// y is the position in space we want to get to
 	var y = getTargetWorldPosition();
 
 	for ( var i = 0; i < param.maxIter; i ++ ) {
 
-		lambda /= 2;
+		lambda *= 0.04;
 
 		// y_hat is the current position in space
 		var y_hat = betaToPoint( beta );
@@ -31,13 +32,18 @@ function DLS( param ) {
 
 		for ( var j = 0; j < param.maxIter; j ++ ) {
 
-			lambda *= 2;
+			lambda *= 10;
+			console.log("lambda2: "+ lambda)
+			if (lambda == Infinity) {
+				console.log("Lambda reached infinity! Resetting to 0.0001");
+				lambda = 0.0001;
+			}
 
 			// System of equations
 			var h = helper.jtj;
-			h.elements[ 0 ] += 1 + ( lambda * helper.squaredJ.x );
-			h.elements[ 4 ] += 1 + ( lambda * helper.squaredJ.y );
-			h.elements[ 8 ] += 1 + ( lambda * helper.squaredJ.z );
+			h.elements[ 0 ] += lambda * ( 1 + helper.squaredJ.x );
+			h.elements[ 4 ] += lambda * ( 1 + helper.squaredJ.y );
+			h.elements[ 8 ] += lambda * ( 1 + helper.squaredJ.z );
 
 			var delta = helper.jtd.clone().applyMatrix3( new THREE.Matrix3().getInverse( h ) );
 
@@ -49,14 +55,13 @@ function DLS( param ) {
 			var next_obj_fn = squaredDistance( y_hat_prime, y );
 
 			if ( next_obj_fn <= curr_obj_fn ) {
-
 				beta = beta_prime;
-
+				updateMeshKinematics( beta );
 				// Stopping criteron: Change too small
 				if ( next_obj_fn > 0.999999999 * curr_obj_fn || next_obj_fn < 0.000000001) {
 
 					console.log("SMALL CHANGE: \nPREV "+ curr_obj_fn + "\nCURR "+next_obj_fn);
-
+          console.log("i = "+ i +"\nj = "+ j + "\n");
 					return beta;
 
 				} else {
@@ -66,12 +71,9 @@ function DLS( param ) {
 					break;
 
 				}
-
 			}
-
 		}
 			console.log("\n\n");
-
 	}
 	// // y_hat is the position in space we are at if the beta transformations are applied to the default pose
 	// var y_hat = betaToPoint( beta );

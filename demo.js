@@ -123,9 +123,10 @@ function initScene() {
   // INTERACTIONS
   // IK parameters
   methodParametersIK = {
-    method:"",
-    enabled:true
-  }
+    method: "Levenberg–Marquardt",
+    enabled: false,
+    run: function(){ methodFunctionsIK[ methodParametersIK.method ].function( methodFunctionsIK[ methodParametersIK.method ].parameters )}
+  };
 
   methodFunctionsIK = {
   	"Levenberg–Marquardt": {
@@ -159,9 +160,9 @@ function render() {
 
 	if ( methodParametersIK.enabled && methodParametersIK.method != '' ) {
 
-    // var method = methodFunctionsIK[ methodParametersIK.method ];
-    //
-    // method.function( method.parameters );
+    var method = methodFunctionsIK[ methodParametersIK.method ];
+
+    method.function( method.parameters );
 
 	}
 

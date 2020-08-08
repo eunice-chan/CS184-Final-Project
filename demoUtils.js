@@ -45,7 +45,8 @@ function setupDatGui() {
 
   var folderIK = gui.addFolder( "Inverse Kinematics" );
 
-  folderIK.add( methodParametersIK, 'enabled' ).name( 'Use IK' ).onChange(()=>{DLS(parametersDLS)});
+  folderIK.add( methodParametersIK, 'enabled' ).name( 'Repeat' );
+  folderIK.add( methodParametersIK, 'run' ).name( 'Run once' );
   folderIK.add( methodParametersIK, 'method', Object.keys( methodFunctionsIK ) ).name( 'Method' );
 
   ////////////////////////////////
