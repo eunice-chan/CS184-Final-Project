@@ -1,8 +1,23 @@
 function setupDatGui() {
 
-	gui.add( mesh , "pose" ).name( "Reset Pose" );
+	gui.add( mesh , "randomPose" ).name( "Reset Mesh" );
+	gui.add( target , "pose" ).name( "Reset Target" );
+	gui.add( line , "visible" ).name( "Hide Line" );
+
+	////////////////////////////////
+
+  var folderTarget = gui.addFolder("Target");
+
+	folderTarget.add( target.position, 'x', -20, 20 ).name( "X Position" );
+	folderTarget.add( target.position, 'y', -20, 20 ).name( "Y Position" );
+	folderTarget.add( target.position, 'z', -20, 20 ).name( "Z Position" );
+
+	////////////////////////////////
+
+  folderTarget.add( target, 'predict').name( "Predict Current" );
 
   ////////////////////////////////
+
 
   var folderFK = gui.addFolder("Forward Kinematics / Pose");
 
@@ -16,7 +31,8 @@ function setupDatGui() {
 
   // folder = folderFK.addFolder( "Shoulder" );
 
-  folderFK.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 1" );
+	folderFK.add( bone.rotation, 'y', 0, 2 ).name( "Rotate Joint 1" );
+  // folderFK.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 1" );
 
   //////////////
 
@@ -37,7 +53,8 @@ function setupDatGui() {
 
   // folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate X" );
   // folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Y" );
-  folderFK.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 3" );
+  folderFK.add( bone.rotation, 'z', 0, 2 ).name( "Rotate Joint 3" );
+  // folderFK.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 3" );
 
 
   ////////////////////////////////
@@ -46,76 +63,37 @@ function setupDatGui() {
   var folderIK = gui.addFolder( "Inverse Kinematics" );
 
   folderIK.add( methodParametersIK, 'enabled' ).name( 'Repeat' );
-  folderIK.add( methodParametersIK, 'run' ).name( 'Run once' );
+  folderIK.add( methodParametersIK, 'run' ).name( 'One Step' );
   folderIK.add( methodParametersIK, 'method', Object.keys( methodFunctionsIK ) ).name( 'Method' );
 
   ////////////////////////////////
 
 	folder = folderIK.addFolder( "Levenberg–Marquardt" );
 
-	folder.add( parametersDLS, 'maxIter', 0, 1000 ).name(" Max Iter" ).onChange( ()=>{ parametersDLS.maxIter = Math.floor( parametersDLS.maxIter ) } );
+	folder.add( parametersDLS, 'maxIter', 1, 1000 ).name( 'Max Iter' ).onChange( ()=>{ parametersDLS.maxIter = Math.floor( parametersDLS.maxIter ) } );
+	folderLambda = folder.addFolder( "Lambda" );
+	folderLambda.add( parametersDLS, 'lambda', 0, 1000 ).name( 'Lambda' );
+	folderLambda.add( parametersDLS, 'lambda', 0, 300 ).name( 'Increment' );folderLambda.add( parametersDLS, 'lambda', 0, 300 ).name( 'Decrement' );
 
   ////////////////
 
 }
 
-function moveTarget( event ) {
+function updateLine() {
+  points = [];
+  points.push( getEndPointWorldPosition() );
+  points.push( getTargetWorldPosition() );
 
-    var keyCode = event.which;
-
-    if ( keys[ 87 ] ) {
-      // W key
-      target.position.z -= moveSpeed;
-    }
-
-    if ( keys[ 83 ] ) {
-      // S key
-      target.position.z += moveSpeed;
-    }
-
-    if ( keys[ 65 ] ) {
-      // A key
-      target.position.x -= moveSpeed;
-    }
-
-    if ( keys[ 68 ] ) {
-      // D key
-      target.position.x += moveSpeed;
-    }
-
-    if ( keys[ 32 ] ) {
-      // space bar
-      resetTargetPostion();
-    }
-
-    target.verticesNeedUpdate = true;
-
-}
-
-function moveTargetY( event ) {
-
-    currY = - ( event.clientY / window.innerHeight ) * 2 + 1;
-    if ( keys [ 16 ] ) {
-      // shift
-      if ( prevY ) {
-        if ( currY - prevY > 0 ) {
-          // Moved up
-          target.position.y += moveSpeed / 2;
-        } else {
-          // Moved down
-          target.position.y -= moveSpeed / 2;
-
-        }
-        target.verticesNeedUpdate = true;
-      }
-    }
-    prevY = currY;
+  lineGeometry.vertices = points;
+  lineGeometry.verticesNeedUpdate = true;
 }
 
 function resetTargetPostion() {
-  target.position.set(0, 15, 0);
+  target.position.set( ...getEndPointWorldPosition().toArray() );
+	target.position.x += ( Math.random() * 2 ) - 1;
+	target.position.y += ( Math.random() * 2 ) - 1;
+	target.position.z += ( Math.random() * 2 ) - 1;
 }
-
 
 function initModel( wireframe = true ) {
   // Number of bones
@@ -139,7 +117,15 @@ function initModel( wireframe = true ) {
 	mesh = createMesh( geometry, bones );
   mesh.position.set( 0, 0, 0) ;
 	scene.add( mesh );
+
 	mesh.skeleton.bones[ mesh.skeleton.bones.length - 1 ].add( endPoint );
+	defaultEndPoint = getEndPointWorldPosition();
+
+}
+
+function randomPose() {
+
+	updateMeshKinematics( [ ( Math.random() * 2 * Math.PI ) - Math.PI, ( Math.random() * 2 * Math.PI ) - Math.PI, ( Math.random() * 2 * Math.PI ) - Math.PI ] );
 
 }
 

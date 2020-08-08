@@ -6,35 +6,12 @@ function betaToPoint( beta ) {
 	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
 
 	// My predicted position for the point on the model (endPoint) after the transformations specified by beta are applied.
-	var predictedPoint = new THREE.Vector3().copy( endPointDefaultPosition );
+	var predictedPoint = new THREE.Vector3().copy( defaultEndPoint );
 	var bones = mesh.skeleton.bones;
 
-	var bone, bonePosition;
-
-  ////////////////////////////////
-
-	// Get the world position of the joint
-	bone = bones[ 2 ];
-	bonePosition = getModelWorldPosition( bone );
-
-	//wristRotateX, wristRotateY, wristRotateZ
-	transformPoint( predictedPoint, bonePosition, 0, 0, beta[ 2 ], 0, 0, 0 );
-
-  // ////////////////
-
-	bone = bones[ 1 ];
-	bonePosition = getModelWorldPosition( bone );
-
-	transformPoint( predictedPoint, bonePosition, beta[ 1 ], 0, 0, 0, 0, 0 );
-
-  //////////////
-
-	bone = bones[ 0 ];
-	bonePosition = getModelWorldPosition( bone );
-
-	transformPoint( predictedPoint, bonePosition, 0, beta[ 0 ], 0, 0, 0, 0 );
-
-  ////////////////////////////////
+  transformPoint( predictedPoint, defaultBone[ 2 ], 0, 0, beta[ 2 ], 0, 0, 0 );
+	transformPoint( predictedPoint, defaultBone[ 1 ], beta[ 1 ], 0, 0, 0, 0, 0 );
+	transformPoint( predictedPoint, defaultBone[ 0 ], 0, beta[ 0 ], 0, 0, 0, 0 );
 
 	return predictedPoint;
 
@@ -76,12 +53,6 @@ function getModelWorldPosition( model ) {
 function getTargetWorldPosition() {
 
 	return getModelWorldPosition( target );
-
-}
-
-function getEndPointWorldPosition() {
-
-	return getModelWorldPosition( endPoint );
 
 }
 

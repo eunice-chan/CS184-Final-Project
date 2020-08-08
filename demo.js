@@ -5,13 +5,16 @@ var stats, gui;
 var scene, camera, renderer, orbit, lights;
 
 // Target
-var target, moveSpeed, keys, prevY, currY;
+var target;
 
 // End point
-var endPoint, endPointDefaultPosition;
+var endPoint, defaultEndPoint;
+
+// Line
+var line, lineGeometry;
 
 // Model
-var mesh, bones, skeletonHelper;
+var mesh, bones, defaultBone, skeletonHelper;
 
 // IK
 var methodParametersIK, methodFunctionsIK;
@@ -19,7 +22,9 @@ var methodParametersIK, methodFunctionsIK;
 // DLS
 var parametersDLS = {
   maxIter: 5,
-  lambda: null,
+  lambda: 0.0001,
+  increment: 10,
+  decrement: 250,
   v: null
 };
 
@@ -92,33 +97,31 @@ function initScene() {
 	endPoint.position.set(0, 0, 0);
   scene.add( endPoint );
 
+  // Model
+  defaultBone = [];
+	initModel();
+
+  // Todo: make more flexible
+  scene.updateMatrixWorld(true);
+  bones = mesh.skeleton.bones;
+  defaultBone.push( getModelWorldPosition( bones[ 0 ] ) );
+  defaultBone.push( getModelWorldPosition( bones[ 1 ] ) );
+  defaultBone.push( getModelWorldPosition( bones[ 2 ] ) );
+
+  mesh.randomPose = randomPose;
+	mesh.randomPose();
+  scene.updateMatrixWorld(true);
+
+
   // Target point
   target = getSphere( 0.5 );
-  resetTargetPostion();
+  target.pose = resetTargetPostion;
+  target.pose();
+  target.predict = () => {
+    console.log("BETA: " + modelToBeta());
+    target.position.set( ...betaToPoint( modelToBeta() ).toArray() );
+  }
   scene.add( target );
-  // Move target point
-  moveSpeed = 1;
-  keys = [];
-
-  top.document.documentElement.addEventListener( 'keydown',
-      function( event ) {
-          event.preventDefault();
-          keys[ event.keyCode ] = true;
-          moveTarget( event );
-      },
-  false );
-
-  top.document.documentElement.addEventListener( 'keyup',
-      function( event ){
-          keys[ event.keyCode ] = false;
-      },
-  false );
-
-  document.getElementById("demo").addEventListener('mousemove', moveTargetY, false);
-
-  // Model
-	initModel();
-  endPointDefaultPosition = getModelWorldPosition( endPoint );
 
   // INTERACTIONS
   // IK parameters
@@ -143,6 +146,23 @@ function initScene() {
     }
   }
 
+
+  // Line that points between target and endpoint
+  var material = new THREE.LineBasicMaterial( {
+    color: 0xa9a9a9,
+    // color: 0x000000
+   } );
+
+  points = [];
+  points.push( getEndPointWorldPosition() );
+  points.push( getTargetWorldPosition() );
+
+  lineGeometry = new THREE.Geometry();
+  lineGeometry.vertices = points;
+
+  line = new THREE.Line( lineGeometry, material );
+  scene.add( line );
+
   // Interaction interface
 	setupDatGui();
 
@@ -152,17 +172,22 @@ function initScene() {
 }
 
 function render() {
-  // endPointPosition = getEndPointWorldPosition();
-  // console.log("PREVIOUS TRANSFORM ENDPOINT POSITION:"+ endPointPosition.x + " " + endPointPosition.y + " " + endPointPosition.z);
+
   stats.update();
+
+  updateLine();
 
   requestAnimationFrame( render );
 
-	if ( methodParametersIK.enabled && methodParametersIK.method != '' ) {
+	if ( methodParametersIK.enabled ) {
 
     var method = methodFunctionsIK[ methodParametersIK.method ];
 
     method.function( method.parameters );
+
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    console.log("RUN "+time);
 
 	}
 
