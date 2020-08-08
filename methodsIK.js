@@ -53,7 +53,7 @@ function DLS( param ) {
 				beta = beta_prime;
 
 				// Stopping criteron: Change too small
-				if ( next_obj_fn > 0.999999999 * curr_obj_fn ) {
+				if ( next_obj_fn > 0.999999999 * curr_obj_fn || next_obj_fn < 0.000000001) {
 
 					console.log("SMALL CHANGE: \nPREV "+ curr_obj_fn + "\nCURR "+next_obj_fn);
 
