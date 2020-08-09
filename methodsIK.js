@@ -28,7 +28,7 @@ function DLS( param ) {
 			}
 
 			if (param.lambda === 0) {
-				console.warn("Lambda == 0\nResetting to 1000.");
+				console.warn("Lambda is 0\nResetting to 1000.");
 				param.lambda = 1000;
 			}
 
@@ -44,43 +44,30 @@ function DLS( param ) {
 			var delta = helper.jtd.clone().applyMatrix3( new THREE.Matrix3().getInverse( h ) );
 
 			var beta_prime = [ beta[ 0 ] + delta.x, beta[ 1 ] + delta.y, beta[ 2 ] + delta.z ];
-			//console.log("Beta: "+ beta + "\nBeta_prime: "+ beta_prime+ "\n");
-			console.log("lambda: "+ param.lambda +
-				"\nincrement: "+ param.increment+
-				"\ndecrement: "+ param.decrement+"\n");
 			var y_hat_prime = betaToPoint( beta_prime );
 
 			var next_obj_fn = squaredDistance( y_hat_prime, y );
-//console.log("curr_obj_fn: "+ curr_obj_fn + "\next_obj_fn: "+ next_obj_fn+ "\n");
+
 			if ( next_obj_fn < curr_obj_fn || curr_obj_fn == 0 ) {
 				beta = beta_prime;
-				updateMeshKinematics( beta );
+				updateMeshKinematics( beta, methodParametersIK.speed );
 
 				// Stopping criteron: Change too small
 				if ( next_obj_fn > 0.999999999 * curr_obj_fn || next_obj_fn < 0.000000001) {
 
-					console.log("SMALL CHANGE: \nPREV "+ curr_obj_fn + "\nCURR "+next_obj_fn);
-          console.log("j = "+ j + "\n");
 					return beta;
 
 				} else {
-
-					console.log("BIG CHANGE: \nPREV "+ curr_obj_fn + "\nCURR "+next_obj_fn);
-					//
-					//
-					// console.log("PRIME POINT"+y_hat.toArray());
 
 					break;
 
 				}
 			} else if ( curr_obj_fn > 0.999999999 * next_obj_fn ) {
 
-					// console.log("SMALL CHANGE: \nPREV "+ curr_obj_fn + "\nCURR "+next_obj_fn);
-					// console.log("i = "+ i +"\nj = "+ j + "\n");
 					return beta;
 			}
 		}
-		console.log("\n\n");
+		
 }
 
 function SDLS( param ) {

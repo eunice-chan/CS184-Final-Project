@@ -8,6 +8,7 @@ function setupDatGui() {
 
   var folderTarget = gui.addFolder("Target");
 
+	folderTarget.add( methodParametersIK, "mouseTarget" ).name( "Follow Mouse" );
 	folderTarget.add( target.position, 'x', -20, 20 ).name( "X Position" );
 	folderTarget.add( target.position, 'y', -20, 20 ).name( "Y Position" );
 	folderTarget.add( target.position, 'z', -20, 20 ).name( "Z Position" );
@@ -31,7 +32,8 @@ function setupDatGui() {
 
   // folder = folderFK.addFolder( "Shoulder" );
 
-	folderFK.add( bone.rotation, 'y', 0, 2 ).name( "Rotate Joint 1" );
+	folderFK.add( bone.position, 'x', -10, 10 ).name( "Move Joint 1" );
+		// folderFK.add( bone.rotation, 'y', 0, 2 ).name( "Rotate Joint 1" );
   // folderFK.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 1" );
 
   //////////////
@@ -41,7 +43,8 @@ function setupDatGui() {
   // folder = folderFK.addFolder( "Elbow" );
 
   // So that it won't completely bend on itself. It's not a very flexible arm. :)
-  folderFK.add( bone.rotation, 'x', 0, 2 ).name( "Rotate Joint 2" );
+		folderFK.add( bone.position, 'y', 0, 20 ).name( "Move Joint 2" );
+  // folderFK.add( bone.rotation, 'x', 0, 2 ).name( "Rotate Joint 2" );
   // folder.add( bone.position, 'x', -5, 5 ).name( "Move X" );
   // folder.add( bone.position, 'z', -5, 5 ).name( "Move Z" );
 
@@ -53,7 +56,8 @@ function setupDatGui() {
 
   // folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate X" );
   // folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Y" );
-  folderFK.add( bone.rotation, 'z', 0, 2 ).name( "Rotate Joint 3" );
+	folderFK.add( bone.position, 'z', -10, 10 ).name( "Move Joint 3" );
+  // folderFK.add( bone.rotation, 'z', 0, 2 ).name( "Rotate Joint 3" );
   // folderFK.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( "Rotate Joint 3" );
 
 
@@ -62,6 +66,7 @@ function setupDatGui() {
 
   var folderIK = gui.addFolder( "Inverse Kinematics" );
 
+	folderIK.add( methodParametersIK, "speed", 0, 1 ).name( "Update Speed" );
   folderIK.add( methodParametersIK, 'enabled' ).name( 'Repeat' );
   folderIK.add( methodParametersIK, 'run' ).name( 'One Step' );
   folderIK.add( methodParametersIK, 'method', Object.keys( methodFunctionsIK ) ).name( 'Method' );
@@ -71,9 +76,11 @@ function setupDatGui() {
 	folder = folderIK.addFolder( "Levenberg–Marquardt" );
 
 	folder.add( parametersDLS, 'maxIter', 1, 1000 ).name( 'Max Iter' ).onChange( ()=>{ parametersDLS.maxIter = Math.floor( parametersDLS.maxIter ) } );
+
 	folderLambda = folder.addFolder( "Lambda" );
 	folderLambda.add( parametersDLS, 'lambda', 0, 1000 ).name( 'Lambda' );
-	folderLambda.add( parametersDLS, 'increment', 0, 300 ).name( 'Increment' );folderLambda.add( parametersDLS, 'decrement', 0, 300 ).name( 'Decrement' );
+	folderLambda.add( parametersDLS, 'increment', 0, 300 ).name( 'Increment' );
+	folderLambda.add( parametersDLS, 'decrement', 0, 300 ).name( 'Decrement' );
 
   ////////////////
 
@@ -119,13 +126,13 @@ function initModel( wireframe = true ) {
 	scene.add( mesh );
 
 	mesh.skeleton.bones[ mesh.skeleton.bones.length - 1 ].add( endPoint );
-	defaultEndPoint = getEndPointWorldPosition();
 
 }
 
 function randomPose() {
 
-	updateMeshKinematics( [ ( Math.random() * 2 * Math.PI ) - Math.PI, ( Math.random() * 2 * Math.PI ) - Math.PI, ( Math.random() * 2 * Math.PI ) - Math.PI ] );
+	updateMeshKinematics( [ ( Math.random() * 20 ) - 10, ( Math.random() * 20 ), ( Math.random() * 20 ) - 10 ], 1 );
+	// updateMeshKinematics( [ ( Math.random() * 2 * Math.PI ) - Math.PI, ( Math.random() * 2 * Math.PI ) - Math.PI, ( Math.random() * 2 * Math.PI ) - Math.PI ] );
 
 }
 
@@ -274,8 +281,9 @@ function createMesh( geometry, bones ) {
 
 	mesh.bind( skeleton );
 
-	skeletonHelper = new THREE.SkeletonHelper( mesh );
-	scene.add( skeletonHelper );
+	// Don't display skeleton visual
+	// skeletonHelper = new THREE.SkeletonHelper( mesh );
+	// scene.add( skeletonHelper );
 
 	return mesh;
 

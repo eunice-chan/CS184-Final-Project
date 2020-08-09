@@ -24,8 +24,7 @@ var parametersDLS = {
   maxIter: 5,
   lambda: 0.0001,
   increment: 10,
-  decrement: 250,
-  v: null
+  decrement: 250
 };
 
 // SDLS
@@ -103,6 +102,7 @@ function initScene() {
 
   // Todo: make more flexible
   scene.updateMatrixWorld(true);
+	defaultEndPoint = getEndPointWorldPosition();
   bones = mesh.skeleton.bones;
   defaultBone.push( getModelWorldPosition( bones[ 0 ] ) );
   defaultBone.push( getModelWorldPosition( bones[ 1 ] ) );
@@ -118,7 +118,6 @@ function initScene() {
   target.pose = resetTargetPostion;
   target.pose();
   target.predict = () => {
-    console.log("BETA: " + modelToBeta());
     target.position.set( ...betaToPoint( modelToBeta() ).toArray() );
   }
   scene.add( target );
@@ -127,8 +126,10 @@ function initScene() {
   // IK parameters
   methodParametersIK = {
     method: "Levenberg–Marquardt",
-    enabled: false,
-    run: function(){ methodFunctionsIK[ methodParametersIK.method ].function( methodFunctionsIK[ methodParametersIK.method ].parameters )}
+    enabled: true,
+    run: function(){ methodFunctionsIK[ methodParametersIK.method ].function( methodFunctionsIK[ methodParametersIK.method ].parameters )},
+    speed: 0.1,
+    mouseTarget: true
   };
 
   methodFunctionsIK = {
@@ -136,14 +137,14 @@ function initScene() {
       function: DLS,
       parameters: parametersDLS
     },
-  	"Selectively Damped Least Squares": {
-      function: SDLS,
-      parameters: parametersSDLS
-    },
-  	"Sequential Monte Carlo Method": {
-      function: SMCM,
-      parameters: parametersSMCM
-    }
+  	// "Selectively Damped Least Squares": {
+    //   function: SDLS,
+    //   parameters: parametersSDLS
+    // },
+  	// "Sequential Monte Carlo Method": {
+    //   function: SMCM,
+    //   parameters: parametersSMCM
+    // }
   }
 
 
@@ -169,7 +170,30 @@ function initScene() {
   // Update scene matrix
   scene.updateMatrixWorld(true);
 
+  // When the mouse moves, call the given function
+  document.addEventListener('mousemove', onMouseMove, false);
 }
+
+  // Follows the mouse event
+  // Adapted from https://jsfiddle.net/atwfxdpd/10/
+  function onMouseMove(event) {
+
+    if ( methodParametersIK.mouseTarget ) {
+      // Update the mouse variable
+      event.preventDefault();
+
+     // Make the sphere follow the mouse
+      var vector = new THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1, 0.5 );
+      vector.unproject( camera );
+      var direction = vector.sub( camera.position ).normalize();
+      var distance = -camera.position.z / direction.z;
+      var position = camera.position.clone().add( direction.multiplyScalar( distance ) );
+
+      target.position.set( position.x, position.y, target.position.z );
+      
+    }
+
+  };
 
 function render() {
 
@@ -180,10 +204,6 @@ function render() {
   requestAnimationFrame( render );
 
 	if ( methodParametersIK.enabled ) {
-
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    console.log("RUN "+time);
 
     var method = methodFunctionsIK[ methodParametersIK.method ];
 
