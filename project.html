@@ -206,9 +206,26 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
     <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
     <figcaption>Demo of point prediction and walking through the code</figcaption>
 </figure>
-<h3>Parameters</h3>
+<h3>Implementation</h3>
+<p>I had an incredibly difficult time implementing it as the wording of the documents required very careful reading to get all the details. Additionally, the wording was vague around some terms, so I had to cross reference the papers to make educated guesses about what the authors meant.</p>
+<p>I kept debugging and paring down the complexity of my implementation until I got a working implementation. This occurred when I used three translational joints with 1 degree of freedom each. The epiphany I had was while reading yet anotehr survey of IK methods. I read the Jacobian can be interpreted as an m by n matrix of positions or a 3k by n matrix of points where m = 3k. That finally answered my question about how to store a position as a single value in a matrix. Initially I was incredibly confused about how to matrix multiplication would work out, and I ended up assuming I had to put the positions in the matrix as a scalar, so I used Euclidean distance for residuals and for the Jacobian, took only the x, y, or z value, depending on the associated axis (essentially, treating the gradiant's cross product as a dot product because I thought they were using the cross loosely to mean any kind of multiplication) and put it in as the position to the matrix.</p>
 <!-- <p>In our case, we want to minimize the square error between our guess ( \(\beta\) ) and the goal (the target point).</p> -->
 <p>In the specific case of the arm model, there is one end effector as identified with the green sphere that is associated with the target point identified by the pink sphere.</p>
+<p>The objective function is sum of squares. In this case, it is just one square because there is only one end effector. I am trying to minimize the squared distance between the target and the end effector.</p>
+<p>\(J\) is the Jacobian matrix with each row being the position of the end effector and each element in the row being the partial deriviative of the end effector with respect to an element of the parameter. In the arm model case, since there is only one end effector, the Jacobian matrix is just a row vector.</p>
+<p>Since I was using Three.js's <code>Vector3</code> and <code>Matrix3</code> instead of a dedicated linear algebra library, the functionality was very limited and I had to do a lot of manual calculations as well as was limited to vectors of length three and matrices of length three by three. This was part of the reason why I decided to limit my parameters to three. However, now that I've finished this implementation, I do not think these restrictions is worth the easy integration with the rest of the Three.js parts of my code.</p>
 <!-- Does not handle arbitrary intial guesses well -->
+<figure>
+<video style="width:100%;padding:0 10%;" preload controls>
+    <source src="./images/IK_translation_LM.mov" />
+    <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
+    <figcaption>Using LM to perform IK</figcaption>
+</figure>
+<p>Some notes about the demo:</p>
+<ul>
+  <li>The black line is there to visualize the distance between the target point and the endpoint (associated end effector).</li>
+  <li>The <code>One Step</code> button specifically divides \(\lambda\) once and multiplies \(\lambda\) <code>maxIter</code> times or until an improvement to the objective function is made, whichever comes first.</li>
+  <li><code>Repeat</code> runs <code>One Step</code> once every render cycle. Seeing the mesh exactly follow the target is a little underwhelming, so I linearly interpolate the current mesh joint parameters and the joint parameters calculated by LM so it would smoothly follow the target.</li>
+</ul>
 </body>
 </html>
