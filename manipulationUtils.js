@@ -73,9 +73,9 @@ function DLShelper( y_hat, y ) {
 	var yz = j.y * j.z;
 
 	// U
- 	var jtj = new THREE.Matrix3().set( squaredJ.x, xy, xz,
-																	 	 xy, squaredJ.y, yz,
-																	 	 xz, yz, squaredJ.z );
+ 	var jtj = new THREE.Matrix3().set( squaredJ.x, xy+0.00000001, xz+0.00000001,
+																	 	 xy+0.00000001, squaredJ.y, yz+0.00000001,
+																	 	 xz+0.00000001, yz+0.00000001, squaredJ.z );
 	// -v
 	var jtd = j.multiplyScalar( distance( y_hat, y ) ).multiplyScalar( -1 );
 
@@ -90,13 +90,12 @@ function DLShelper( y_hat, y ) {
 function jacobian( y_hat ) {
 
 	var bones = mesh.skeleton.bones;
-	var curr_pos = y_hat.clone();
 
 	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
 	// axis * ( y_hat - bone_pos )
-	var shoulder = curr_pos.sub( getModelWorldPosition( bones[ 0 ] ) ).y;
-	var elbow = curr_pos.sub( getModelWorldPosition( bones[ 1 ] ) ).x;
-	var wrist = curr_pos.sub( getModelWorldPosition( bones[ 2 ] ) ).z;
+	var shoulder = y_hat.clone().sub( getModelWorldPosition( bones[ 0 ] ) ).y;
+	var elbow = y_hat.clone().sub( getModelWorldPosition( bones[ 1 ] ) ).x;
+	var wrist = y_hat.clone().sub( getModelWorldPosition( bones[ 2 ] ) ).z;
 
 	return new THREE.Vector3( shoulder, elbow, wrist );
 

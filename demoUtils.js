@@ -1,7 +1,7 @@
 function setupDatGui() {
 
-	gui.add( mesh , "randomPose" ).name( "Reset Mesh" );
-	gui.add( target , "pose" ).name( "Reset Target" );
+	gui.add( mesh , "randomPose" ).name( "Pose Model" );
+	gui.add( target , "pose" ).name( "Random Target" );
 	gui.add( line , "visible" ).name( "Hide Line" );
 
 	////////////////////////////////
@@ -14,7 +14,7 @@ function setupDatGui() {
 
 	////////////////////////////////
 
-  folderTarget.add( target, 'predict').name( "Predict Current" );
+  folderTarget.add( target, 'predict').name( "To Endpoint" );
 
   ////////////////////////////////
 
@@ -73,7 +73,7 @@ function setupDatGui() {
 	folder.add( parametersDLS, 'maxIter', 1, 1000 ).name( 'Max Iter' ).onChange( ()=>{ parametersDLS.maxIter = Math.floor( parametersDLS.maxIter ) } );
 	folderLambda = folder.addFolder( "Lambda" );
 	folderLambda.add( parametersDLS, 'lambda', 0, 1000 ).name( 'Lambda' );
-	folderLambda.add( parametersDLS, 'lambda', 0, 300 ).name( 'Increment' );folderLambda.add( parametersDLS, 'lambda', 0, 300 ).name( 'Decrement' );
+	folderLambda.add( parametersDLS, 'increment', 0, 300 ).name( 'Increment' );folderLambda.add( parametersDLS, 'decrement', 0, 300 ).name( 'Decrement' );
 
   ////////////////
 

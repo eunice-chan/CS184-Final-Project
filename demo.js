@@ -181,13 +181,13 @@ function render() {
 
 	if ( methodParametersIK.enabled ) {
 
-    var method = methodFunctionsIK[ methodParametersIK.method ];
-
-    method.function( method.parameters );
-
     var today = new Date();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     console.log("RUN "+time);
+
+    var method = methodFunctionsIK[ methodParametersIK.method ];
+
+    method.function( method.parameters );
 
 	}
 
