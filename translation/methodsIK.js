@@ -72,19 +72,22 @@ function DLS( param ) {
 
 function initSMCM( ) {
 
-	 parametersSMCM.n = [];
-	 parametersSMCM.weights = [];
+	 var n = [];
+	 var weights = [];
 
 	 // TODO: change modeltobeta to return array
 	 var beta = modelToBeta();
 
 	 for ( var i = 0; i < parametersSMCM.numParticles; i ++ ) {
 
-		 parametersSMCM.n.push( sampleNewBeta( beta ) );
-		 parametersSMCM.weights.push( 1 / parametersSMCM.numParticles );
+		 n.push( sampleNewBeta( beta ) );
+		 weights.push( 1 / parametersSMCM.numParticles );
 
 	 }
 
+
+	 parametersSMCM.n = n;
+	 parametersSMCM.weights = normalize( weights );
 }
 
 function SMCM( param ) {
@@ -95,33 +98,38 @@ function SMCM( param ) {
 
 	 var target = getTargetWorldPosition();
 
-	 for ( var i = 0; i < parameterSMCM.n.length; i ++ ) {
+	 for ( var i = 0; i < parametersSMCM.n.length; i ++ ) {
 
 		 // draw x_t from a distribution given the previous value x_(t-1)
-		 var betaPrime = sampleNewBeta( parameterSMCM.n[ i ] );
+		 var betaPrime = sampleNewBeta( parametersSMCM.n[ i ] );
 
 		 n.push( betaPrime );
 
 	 	 // calulate weight
 	 	 // Supposed to be p( y_t | x_t ). I'm going make the probability = 1 / distance
+		 console.log("TARGET", target);
+		 console.log("DIST", distance( betaToPoint( betaPrime ), target ));
 	 	 weights.push( 1 / distance( betaToPoint( betaPrime ), target ) );
 
 	 }
 
-	 parameterSMCM.weights = normalize( weights );
+
+	 parametersSMCM.weights = normalize( weights );
 
 	 // Resample
 	 // To prevent particle degeneracy
  	 var n = [];
 
-	 for ( var i = 0; i < parameterSMCM.n.length; i ++ ) {
+	 for ( var i = 0; i < parametersSMCM.n.length; i ++ ) {
 
 		 n.push( sampleParticle() );
 
 	 }
-	 parameterSMCM.n = n;
+	 parametersSMCM.n = n;
+	 console.log(parametersSMCM);
 
  	 // Update mesh
  	 // Set mesh to max probability particle
+	 updateMeshKinematics( parametersSMCM.n[ maxIndex( parametersSMCM.weights ) ], methodParametersIK.speed );
 
 }

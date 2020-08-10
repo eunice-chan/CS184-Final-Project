@@ -120,11 +120,11 @@ function updateMeshKinematics( beta, speed ) {
 	var bones = mesh.skeleton.bones;
 	// Apply the transformations to the mesh
 	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
-	bones[0].position.x = linear_interpolation( beta[0], bones[0].position.x, speed );
+	bones[ 0 ].position.x = linear_interpolation( beta[ 0 ], bones[ 0 ].position.x, speed );
 
-	bones[1].position.y = linear_interpolation( beta[1], bones[1].position.y, speed );
+	bones[ 1 ].position.y = linear_interpolation( beta[ 1 ], bones[ 1 ].position.y, speed );
 
-	bones[2].position.z = linear_interpolation( beta[2], bones[2].position.z, speed );
+	bones[ 2 ].position.z = linear_interpolation( beta[ 2 ], bones[ 2 ].position.z, speed );
 	// bones[0].rotation.y = beta[0];
 	//
 	// bones[1].rotation.x = beta[1];
@@ -157,7 +157,8 @@ function sampleNewBeta( beta ) {
 
 	// TODO: replace with a Gaussian? Exponential? distribution
 	var beta_prime = [];
-	beta.forEach( ( value ) => { beta_prime.push( value + ( Math.random() - 0.5 ) ) } );
+
+	beta.forEach( ( value ) => { beta_prime.push( value + ( ( Math.random() - 0.5 ) * 5 ) ) } );
 
 	return beta_prime;
 
@@ -165,7 +166,7 @@ function sampleNewBeta( beta ) {
 
 function normalize( array ) {
 
-	var magnitude = Math.sqrt( funcSum( ( val ) => { val * val }, array ) );
+	var magnitude = Math.sqrt( funcSum( ( val ) => { return val * val }, array ) );
 	var unitArray = [];
 
 	for ( var i = 0; i < array.length; i ++ ) {
@@ -194,18 +195,40 @@ function funcSum( fn, array ) {
 
 function maxIndex( array ) {
 
-	array = [];
+	var index = 0;
+	var value = array[ 0 ];
 
-	for ( var i = 0; i < array.length; i ++ ) {
+	for ( var i = 1; i < array.length; i ++ ) {
 
-		s += fn( array[ i ] );
+		if ( array[ i ] > value ) {
+			index = i;
+			value = array[ i ];
+		}
 
 	}
+
+	return index;
 
 }
 
 function sampleParticle() {
 
 	// according to weight
+	var probability = 0;
+	var select = Math.random();
+
+	for ( var i = 0; i < parametersSMCM.numParticles; i ++ ) {
+
+		probability += parametersSMCM.weights[ i ];
+
+		if (select < probability) {
+
+			return parametersSMCM.n[ i ];
+
+		}
+
+	}
+
+	console.warn("Weights invalid.");
 
 }

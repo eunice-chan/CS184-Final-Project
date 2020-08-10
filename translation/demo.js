@@ -31,7 +31,7 @@ var parametersDLS = {
 
 // SMCM
 var parametersSMCM = {
-  numParticles: 5,
+  numParticles: 50,
   n: null,
   weights: null
 };
@@ -140,10 +140,10 @@ function initScene() {
     //   function: SDLS,
     //   parameters: parametersSDLS
     // },
-  	// "Sequential Monte Carlo Method": {
-    //   function: SMCM,
-    //   parameters: parametersSMCM
-    // }
+  	"Sequential Monte Carlo Method": {
+      function: SMCM,
+      parameters: parametersSMCM
+    }
   }
 
 
@@ -171,6 +171,9 @@ function initScene() {
 
   // When the mouse moves, call the given function
   document.addEventListener('mousemove', onMouseMove, false);
+
+  // Initialize values for SMCM
+  initSMCM();
 
 }
 

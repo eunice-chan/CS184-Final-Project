@@ -99,7 +99,7 @@ function resetTargetPostion() {
   target.position.set( ...getEndPointWorldPosition().toArray() );
 	target.position.x += ( Math.random() * 2 ) - 1;
 	target.position.y += ( Math.random() * 2 ) - 1;
-	target.position.z += ( Math.random() * 2 ) - 1;
+	target.position.z = 0;
 }
 
 function initModel( wireframe = true ) {
@@ -131,7 +131,7 @@ function initModel( wireframe = true ) {
 
 function randomPose() {
 
-	updateMeshKinematics( [ ( Math.random() * 20 ) - 10, ( Math.random() * 20 ), ( Math.random() * 20 ) - 10 ], 1 );
+	updateMeshKinematics( [ ( Math.random() * 20 ) - 10, ( Math.random() * 20 ), 0 ], 1 );
 	// updateMeshKinematics( [ ( Math.random() * 2 * Math.PI ) - Math.PI, ( Math.random() * 2 * Math.PI ) - Math.PI, ( Math.random() * 2 * Math.PI ) - Math.PI ] );
 
 }
