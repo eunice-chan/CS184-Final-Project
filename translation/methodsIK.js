@@ -67,13 +67,61 @@ function DLS( param ) {
 					return beta;
 			}
 		}
-		
+
 }
 
-function SDLS( param ) {
-	console.log("SDLS");
+function initSMCM( ) {
+
+	 parametersSMCM.n = [];
+	 parametersSMCM.weights = [];
+
+	 // TODO: change modeltobeta to return array
+	 var beta = modelToBeta();
+
+	 for ( var i = 0; i < parametersSMCM.numParticles; i ++ ) {
+
+		 parametersSMCM.n.push( sampleNewBeta( beta ) );
+		 parametersSMCM.weights.push( 1 / parametersSMCM.numParticles );
+
+	 }
+
 }
 
 function SMCM( param ) {
-	console.log("SMCM");
+
+	 // Importance sample
+ 	 var n = [];
+	 var weights = [];
+
+	 var target = getTargetWorldPosition();
+
+	 for ( var i = 0; i < parameterSMCM.n.length; i ++ ) {
+
+		 // draw x_t from a distribution given the previous value x_(t-1)
+		 var betaPrime = sampleNewBeta( parameterSMCM.n[ i ] );
+
+		 n.push( betaPrime );
+
+	 	 // calulate weight
+	 	 // Supposed to be p( y_t | x_t ). I'm going make the probability = 1 / distance
+	 	 weights.push( 1 / distance( betaToPoint( betaPrime ), target ) );
+
+	 }
+
+	 parameterSMCM.weights = normalize( weights );
+
+	 // Resample
+	 // To prevent particle degeneracy
+ 	 var n = [];
+
+	 for ( var i = 0; i < parameterSMCM.n.length; i ++ ) {
+
+		 n.push( sampleParticle() );
+
+	 }
+	 parameterSMCM.n = n;
+
+ 	 // Update mesh
+ 	 // Set mesh to max probability particle
+
 }

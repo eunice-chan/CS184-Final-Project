@@ -1,3 +1,5 @@
+// import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.118.2/examples/jsm/controls/OrbitControls.js";
+
 // User auxillary
 var stats, gui;
 
@@ -27,14 +29,11 @@ var parametersDLS = {
   decrement: 250
 };
 
-// SDLS
-var parametersSDLS = {
-
-};
-
 // SMCM
 var parametersSMCM = {
-
+  numParticles: 5,
+  n: null,
+  weights: null
 };
 
 function initScene() {
@@ -63,7 +62,7 @@ function initScene() {
 	document.getElementById("demo").appendChild( renderer.domElement );
 
   // View controls
-	orbit = new THREE.OrbitControls( camera, renderer.domElement );
+	orbit = new OrbitControls( camera, renderer.domElement );
 
   // Set camera & renderer resize behavior
   window.addEventListener( 'resize', function () {
@@ -172,6 +171,7 @@ function initScene() {
 
   // When the mouse moves, call the given function
   document.addEventListener('mousemove', onMouseMove, false);
+
 }
 
   // Follows the mouse event
@@ -190,7 +190,7 @@ function initScene() {
       var position = camera.position.clone().add( direction.multiplyScalar( distance ) );
 
       target.position.set( position.x, position.y, target.position.z );
-      
+
     }
 
   };

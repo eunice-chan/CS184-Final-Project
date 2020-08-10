@@ -227,5 +227,19 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
   <li>The <code>One Step</code> button specifically divides \(\lambda\) once and multiplies \(\lambda\) <code>maxIter</code> times or until an improvement to the objective function is made, whichever comes first.</li>
   <li><code>Repeat</code> runs <code>One Step</code> once every render cycle. Seeing the mesh exactly follow the target is a little underwhelming, so I linearly interpolate the current mesh joint parameters and the joint parameters calculated by LM so it would smoothly follow the target.</li>
 </ul>
+<p>In the first example in the demo, LM takes 3 steps. You can see that each time I run one step, it modifies the bone parameters (joint 1x-translation, joint 2 y-translation, joint 3 z-translation) to the end effector closer to the target point until it reached that target point/minimum.</p>
+<p>In the second example, it reaches the target point immediately in one step.</p>
+<p>The example after that, I sent multiple target points and it is able to follow along smoothly, meaning that the IK calculations are able to be done in a real-time environment (if speed is set to 1, it will always overlap the target point. However, for illustrative purposes, I set the speed to 0.1, which allows the target and end effector point to be clearly seen.)<p>
+<p>The parameters such as <code>lambda</code> and <code>maxIter</code> is in the GUI for anyone to manipulate. However, as it converges very quickly, it makes no notable difference.</p>
+
+<h2>Using Particle Filters / Sequential Monte Carlo for IK</h2>
+<p>Paarticle filters, also known as sequential Monte Carlo methods are simulation-based methods for calculating approximations to posterior distributions. The are preferred to related methods, such as Kalman filter because they avoid making linearity or normality assumptions which may not be true.</p>
+<p>The algorithm has roughly three major steps:</p>
+<ol>
+  <li>Initialization. Draw N particles from a probability distribution.</li>
+  <li>Importance sampling. Add \(\tilde x_t^{(i)}\) drawn from a probability distribution \(p(x_t^{(i)}|x_{t-1}^{(i)})\) to a set \(\tilde x_{0:t}^{(i)}\). Then, calculate the importance weights and normalize them.</li>
+  <li>Resampling. Draw N samples with replacement from the weighted set \(\tilde x_{0:t}^{(i)}\).</li>
+</ol>
+<p>To use this algorithm for IK, each render runs one iteration of this and take the parameter that has the heaviest weight associated with it.</p>
 </body>
 </html>

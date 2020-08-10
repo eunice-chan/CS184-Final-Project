@@ -150,3 +150,62 @@ function modelToBeta() {
 	return beta;
 
 }
+
+
+
+function sampleNewBeta( beta ) {
+
+	// TODO: replace with a Gaussian? Exponential? distribution
+	var beta_prime = [];
+	beta.forEach( ( value ) => { beta_prime.push( value + ( Math.random() - 0.5 ) ) } );
+
+	return beta_prime;
+
+}
+
+function normalize( array ) {
+
+	var magnitude = Math.sqrt( funcSum( ( val ) => { val * val }, array ) );
+	var unitArray = [];
+
+	for ( var i = 0; i < array.length; i ++ ) {
+
+		unitArray.push( array[ i ] / magnitude );
+
+	}
+
+	return unitArray
+
+}
+
+function funcSum( fn, array ) {
+
+	var s = 0;
+
+	for ( var i = 0; i < array.length; i ++ ) {
+
+		s += fn( array[ i ] );
+
+	}
+
+	return s;
+
+}
+
+function maxIndex( array ) {
+
+	array = [];
+
+	for ( var i = 0; i < array.length; i ++ ) {
+
+		s += fn( array[ i ] );
+
+	}
+
+}
+
+function sampleParticle() {
+
+	// according to weight
+
+}

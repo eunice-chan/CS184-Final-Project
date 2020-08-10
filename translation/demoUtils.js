@@ -67,7 +67,7 @@ function setupDatGui() {
   var folderIK = gui.addFolder( "Inverse Kinematics" );
 
 	folderIK.add( methodParametersIK, "speed", 0, 1 ).name( "Update Speed" );
-  folderIK.add( methodParametersIK, 'enabled' ).name( 'Repeat' );
+  folderIK.add( methodParametersIK, 'enabled' ).name( 'Repeat' ).onChange( () => { if ( methodParametersIK.method === "Sequential Monte Carlo Method" ) { initSMCM() } } );
   folderIK.add( methodParametersIK, 'run' ).name( 'One Step' );
   folderIK.add( methodParametersIK, 'method', Object.keys( methodFunctionsIK ) ).name( 'Method' );
 
