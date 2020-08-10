@@ -67,7 +67,7 @@ function setupDatGui() {
   var folderIK = gui.addFolder( "Inverse Kinematics" );
 
 	folderIK.add( methodParametersIK, "speed", 0, 1 ).name( "Update Speed" );
-  folderIK.add( methodParametersIK, 'enabled' ).name( 'Repeat' ).onChange( () => { if ( methodParametersIK.method === "Sequential Monte Carlo Method" ) { initSMCM() } } );
+  folderIK.add( methodParametersIK, 'enabled' ).name( 'Repeat' ).onChange( () => { if ( methodParametersIK.method === "Sequential Monte Carlo" ) { initSMCM() } } );
   folderIK.add( methodParametersIK, 'run' ).name( 'One Step' );
   folderIK.add( methodParametersIK, 'method', Object.keys( methodFunctionsIK ) ).name( 'Method' );
 
@@ -83,6 +83,16 @@ function setupDatGui() {
 	folderLambda.add( parametersDLS, 'decrement', 0, 300 ).name( 'Decrement' );
 
   ////////////////
+
+	folder = folderIK.addFolder( "Sequential Monte Carlo" );
+
+	folder.add( parametersSMCM, 'numParticles', 5, 10000 ).name( '# of Particles' ).onChange( ()=>{
+
+		parametersSMCM.numParticles = Math.floor( parametersSMCM.numParticles );
+		initSMCM( );
+
+	 } );
+	 folder.add( parametersSMCM, 'distribution', 1, 50 ).name( 'Distribution' )
 
 }
 

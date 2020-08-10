@@ -31,9 +31,10 @@ var parametersDLS = {
 
 // SMCM
 var parametersSMCM = {
-  numParticles: 50,
+  numParticles: 5,
   n: null,
-  weights: null
+  weights: null,
+  distribution: 5
 };
 
 function initScene() {
@@ -140,7 +141,7 @@ function initScene() {
     //   function: SDLS,
     //   parameters: parametersSDLS
     // },
-  	"Sequential Monte Carlo Method": {
+  	"Sequential Monte Carlo": {
       function: SMCM,
       parameters: parametersSMCM
     }

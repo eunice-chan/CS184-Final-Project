@@ -158,7 +158,7 @@ function sampleNewBeta( beta ) {
 	// TODO: replace with a Gaussian? Exponential? distribution
 	var beta_prime = [];
 
-	beta.forEach( ( value ) => { beta_prime.push( value + ( ( Math.random() - 0.5 ) * 5 ) ) } );
+	beta.forEach( ( value ) => { beta_prime.push( value + ( ( Math.random() - 0.5 ) * parametersSMCM.distribution ) ) } );
 
 	return beta_prime;
 
@@ -214,7 +214,7 @@ function maxIndex( array ) {
 function sampleParticle() {
 
 	// according to weight
-	var probability = 0;
+	var probability = 0.0;
 	var select = Math.random();
 
 	for ( var i = 0; i < parametersSMCM.numParticles; i ++ ) {

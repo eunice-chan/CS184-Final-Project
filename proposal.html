@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>Inverse Kinematics | CS 184 Final Project Proposal</title>
+<title>Kinematics | CS 184 Final Project Proposal</title>
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="penrosetriangle.svg">
 </head>
@@ -13,7 +13,7 @@
 <br />
 <br />
 <br />
-<h1 class="page-title">Inverse Kinematics</h1>
+<h1 class="page-title">Kinematics</h1>
 <h1>CS 184 Final Project Proposal</h1>
 Eunice Chan | <i>August 1, 2020</i>
 <br />
@@ -22,6 +22,7 @@ Eunice Chan | <i>August 1, 2020</i>
 <p class="highlight-red_background"><i>August 2 Update</i>: Made forward kinematics a goal. </p>
 <p class="highlight-orange_background"><i>August 4 Update</i>: Made SMCM a goal and moved the two models to reach goal. </p>
 <p class="highlight-yellow_background"><i>August 6 Update</i>: I didn't explicitly state it, but I had been operating under the assumption I would have both translation and rotation. I've decided to narrow down my IK implementations to only deal with rotational joints with one degree of freedom.</p>
+<p class="highlight-teal_background"><i>August 10 Update</i>: With class ending soon, I won't be able to start stylization, or at least implement something as complex as I would like to. As a result, I'm shifting my focus to rewriting the code to be more flexible so that I could put in more / complex constraints. </p>
 <h2>Summary</h2>
 <p>In this project, I will explore and implement the common techniques to tackle inverse kinematics (IK). I am particularly interested in IK algorithms that allow a greater degree of ability to control stylistic variations of the animation. Because of this, I will primarily be looking at the iterative methods using a cost function to be minimized and Sequential Monte Carlo methods (SMCM) for solving IK problems.</p>
 <h2>Problem Description</h2>
@@ -55,13 +56,12 @@ Eunice Chan | <i>August 1, 2020</i>
 <ul>
   <li>Implement damped least squares / Levenberg–Marquardt algorithm</li>
   <li>Implement selectively damped least squares</li>
-  <li class="highlight-orange">SMCM</li>
+  <li class="highlight-orange">Implement SMCM</li>
 </ul>
 <h3>Reach Goal: IK</h3>
 <p>Implement...</p>
 <ul>
-  <li>Selectively damped least squares </li>
-  <strike class="highlight-orange"><li>SMCM</li></strike>
+  <li><strike class="highlight-orange">SMCM</strike></li>
   <li>SMCM with interpolation for trajectory smoothing</li>
   <li>Forward And Backward Reaching Inverse Kinematics (FABRIK) heuristic method</li>
 </ul>
@@ -69,7 +69,8 @@ Eunice Chan | <i>August 1, 2020</i>
 <ul>
   <li>For each IK method implemented, demo video of the movements.</li>
 </ul>
-<h3>Goal 3: Style</h3>
+
+<h3><strike class="highlight-teal">Goal 3</strike> <span class="highlight-teal">Reach Goal</span>: Style</h3>
 Add style to the movements and wrap up project.
 <ul>
   <li>Modify IK methods to account for stylized movement</li>
@@ -78,6 +79,7 @@ Add style to the movements and wrap up project.
 <ul>
   <li>For each of the IK methods, modify the constraints such that the movement is stylized in some way. Compare the movements with and without the additional style constraints.</li>
 </ul>
+
 <h2 id="schedule">Schedule</h2>
 <p>Updated as I go along.</p>
 <h3>Week 1: August 1 - August 7</h3>
@@ -206,7 +208,6 @@ Add style to the movements and wrap up project.
   <span class="to-do-children-checked">Update milestone report</span>
   </li>
 </ul>
-<ul class="to-do-list">
 <h3>Week 2: August 8 - August 14</h3>
 <!-- <ul class="to-do-list">
 </ul> -->
@@ -256,20 +257,16 @@ Add style to the movements and wrap up project.
     <span class="to-do-children-checked">Update notes for arm model: Damped least squares / Levenberg–Marquardt algorithm</span>
   </li>
   <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Implement SMCM IK methods for arm model</span>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Implement SMCM IK methods for arm model</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Reach Goal] Implement IK methods for arm model: SMCM with interpolation for trajectory smoothing</span>
   </li>
   <li>
     <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Create Array class</span>
-  </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Create Matrix class?</span>
-  </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Rewrite to not use Three.js Vector3/Matrix3 + greater flexibility in number of DoF + joints</span>
+    <span class="to-do-children-unchecked">SMCM writeup</span>
   </li>
   <li>
     <div class="checkbox checkbox-off"></div>
@@ -277,7 +274,27 @@ Add style to the movements and wrap up project.
   </li>
   <li>
     <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Rewrite to not use Three.js Vector3/Matrix3 + greater flexibility in number of DoF + joints</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Create Vector class</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Create Matrix class?</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">Add explanations about GUI options</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">[Reach Goal] Implement IK methods for arm model: Selectively damped least squares</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">Stylization</span>
   </li>
   <li>
     <div class="checkbox checkbox-off"></div>
@@ -306,20 +323,6 @@ Add style to the movements and wrap up project.
   <li>
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">[Reach Goal] Limit movement range for IK (Show can reach if near. Otherwise, constrained by distance)</span>
-  </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Implement IK methods for arm model</span>
-    <ul class="to-do-list">
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] Selectively damped least squares</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] SMCM with interpolation for trajectory smoothing</span>
-      </li>
-    </ul>
   </li>
   <li>
     <div class="checkbox checkbox-off"></div>

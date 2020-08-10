@@ -78,22 +78,37 @@ function initSMCM( ) {
 	 // TODO: change modeltobeta to return array
 	 var beta = modelToBeta();
 
+	 var target = getTargetWorldPosition();
+
 	 for ( var i = 0; i < parametersSMCM.numParticles; i ++ ) {
 
 		 n.push( sampleNewBeta( beta ) );
-		 weights.push( 1 / parametersSMCM.numParticles );
+		 weights.push( Math.exp( 1 / distance( betaToPoint( beta ), target ) ) );
 
 	 }
 
 
 	 parametersSMCM.n = n;
 	 parametersSMCM.weights = normalize( weights );
+	 console.log("INIT");
+	 console.log(parametersSMCM);
 }
 
 function SMCM( param ) {
 
+		// Resample
+		// To prevent particle degeneracy
+		var n = [];
+
+		for ( var i = 0; i < parametersSMCM.n.length; i ++ ) {
+
+			n.push( sampleNewBeta( sampleParticle() ) );
+
+		}
+		parametersSMCM.n = n;
+
 	 // Importance sample
- 	 var n = [];
+ 	 n = [];
 	 var weights = [];
 
 	 var target = getTargetWorldPosition();
@@ -107,26 +122,12 @@ function SMCM( param ) {
 
 	 	 // calulate weight
 	 	 // Supposed to be p( y_t | x_t ). I'm going make the probability = 1 / distance
-		 console.log("TARGET", target);
-		 console.log("DIST", distance( betaToPoint( betaPrime ), target ));
-	 	 weights.push( 1 / distance( betaToPoint( betaPrime ), target ) );
+	 	 weights.push( Math.exp( 1 / distance( betaToPoint( betaPrime ), target ) ) );
 
 	 }
 
 
 	 parametersSMCM.weights = normalize( weights );
-
-	 // Resample
-	 // To prevent particle degeneracy
- 	 var n = [];
-
-	 for ( var i = 0; i < parametersSMCM.n.length; i ++ ) {
-
-		 n.push( sampleParticle() );
-
-	 }
-	 parametersSMCM.n = n;
-	 console.log(parametersSMCM);
 
  	 // Update mesh
  	 // Set mesh to max probability particle
