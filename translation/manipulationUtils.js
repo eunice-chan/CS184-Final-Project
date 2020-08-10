@@ -214,7 +214,7 @@ function maxIndex( array ) {
 function sampleParticle() {
 
 	// according to weight
-	var probability = 0.0;
+	var probability = 0;
 	var select = Math.random();
 
 	for ( var i = 0; i < parametersSMCM.numParticles; i ++ ) {

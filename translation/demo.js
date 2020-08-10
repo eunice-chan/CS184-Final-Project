@@ -31,10 +31,10 @@ var parametersDLS = {
 
 // SMCM
 var parametersSMCM = {
-  numParticles: 5,
+  numParticles: 5000,
   n: null,
   weights: null,
-  distribution: 5
+  distribution: 10
 };
 
 function initScene() {

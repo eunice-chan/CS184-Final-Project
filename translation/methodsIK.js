@@ -106,6 +106,7 @@ function SMCM( param ) {
 
 		}
 		parametersSMCM.n = n;
+		console.log(parametersSMCM);
 
 	 // Importance sample
  	 n = [];
