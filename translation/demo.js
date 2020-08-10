@@ -62,7 +62,7 @@ function initScene() {
 	document.getElementById("demo").appendChild( renderer.domElement );
 
   // View controls
-	orbit = new OrbitControls( camera, renderer.domElement );
+	orbit = new THREE.OrbitControls( camera, renderer.domElement );
 
   // Set camera & renderer resize behavior
   window.addEventListener( 'resize', function () {
