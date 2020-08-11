@@ -25,6 +25,8 @@ function getEndPointWorldPosition() {
 // BETA POINT CONVERSION
 function betaToPoint( beta ) {
 
+	// Scale -> Rotate -> Translate
+
 	var bones = mesh.skeleton.bones;
 
 	var predictedPoint = defaultEndPoint.clone();

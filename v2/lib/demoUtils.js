@@ -373,26 +373,30 @@ function setDatGui() {
 
 function jointGUI( folder, bone ) {
 
-	folder.add( bone.position, 'x', 0, 20 ).name( 'Move X' );
-	folder.add( bone.position, 'y', 0, 20 ).name( 'Move Y' );
-	folder.add( bone.position, 'z', 0, 20 ).name( 'Move Z' );
+	var moveFolder = folder.addFolder( 'Move' );
+	moveFolder.add( bone.position, 'x', 0, 20 ).name( 'Move X' );
+	moveFolder.add( bone.position, 'y', 0, 20 ).name( 'Move Y' );
+	moveFolder.add( bone.position, 'z', 0, 20 ).name( 'Move Z' );
 
-	folder.add( bone.rotation, 'x', - Math.PI, Math.PI ).name( 'Rotate X' );
-	folder.add( bone.rotation, 'y', - Math.PI, Math.PI ).name( 'Rotate Y' );
-	folder.add( bone.rotation, 'z', - Math.PI, Math.PI ).name( 'Rotate Z' );
+	var rotateFolder = folder.addFolder( 'Rotate' );
+	rotateFolder.add( bone.rotation, 'x', - Math.PI, Math.PI ).name( 'Rotate X' );
+	rotateFolder.add( bone.rotation, 'y', - Math.PI, Math.PI ).name( 'Rotate Y' );
+	rotateFolder.add( bone.rotation, 'z', - Math.PI, Math.PI ).name( 'Rotate Z' );
 
 
 }
 
 function constraintsGUI( folder, i ) {
 
-	folder.add( parameters.constraints[`b${ i }`], 'px' ).name( 'Move X' );
-	folder.add( parameters.constraints[`b${ i }`], 'py' ).name( 'Move Y' );
-	folder.add( parameters.constraints[`b${ i }`], 'pz' ).name( 'Move Z' );
+	var moveFolder = folder.addFolder( 'Move' );
+	moveFolder.add( parameters.constraints[`b${ i }`], 'px' ).name( 'Move X' );
+	moveFolder.add( parameters.constraints[`b${ i }`], 'py' ).name( 'Move Y' );
+	moveFolder.add( parameters.constraints[`b${ i }`], 'pz' ).name( 'Move Z' );
 
-	folder.add( parameters.constraints[`b${ i }`], 'rx' ).name( 'Rotate X' );
-	folder.add( parameters.constraints[`b${ i }`], 'ry' ).name( 'Rotate Y' );
-	folder.add( parameters.constraints[`b${ i }`], 'rz' ).name( 'Rotate Z' );
+	var rotateFolder = folder.addFolder( 'Rotate' );
+	rotateFolder.add( parameters.constraints[`b${ i }`], 'rx' ).name( 'Rotate X' );
+	rotateFolder.add( parameters.constraints[`b${ i }`], 'ry' ).name( 'Rotate Y' );
+	rotateFolder.add( parameters.constraints[`b${ i }`], 'rz' ).name( 'Rotate Z' );
 
 }
 
