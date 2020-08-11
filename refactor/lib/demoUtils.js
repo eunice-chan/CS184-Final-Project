@@ -305,7 +305,10 @@ function setDatGui() {
 	var bones = mesh.skeleton.bones;
   var bone, folder;
 
-	Object.keys( parameters.constraints ).forEach( ( key1 ) => {
+	var constraints = Object.keys( parameters.constraints );
+	constraints.sort();
+
+	constraints.forEach( ( key1 ) => {
 
 		jointNumber = parseInt( key1[ 1 ] );
 
@@ -329,13 +332,17 @@ function setDatGui() {
   ////////////////////////////////
 
 	folder = folderIK.addFolder( 'Parameters' );
+	var folderParam;
 
-	folder.add( parametersDLS, 'maxIter', 1, 1000 ).name( 'Max Iter' ).onChange( ()=>{ parametersDLS.maxIter = Math.floor( parametersDLS.maxIter ) } );
+	constraints.forEach( ( key1 ) => {
 
-	folderLambda = folder.addFolder( 'Lambda' );
-	folderLambda.add( parametersDLS, 'lambda', 0, 1000 ).name( 'Lambda' );
-	folderLambda.add( parametersDLS, 'increment', 0, 300 ).name( 'Increment' );
-	folderLambda.add( parametersDLS, 'decrement', 0, 300 ).name( 'Decrement' );
+		jointNumber = parseInt( key1[ 1 ] );
+
+		folderParam = folder.addFolder( `Joint ${ jointNumber }` );
+		constraintsGUI( folderParam, jointNumber );
+
+	} );
+
 
   ////////////////
 
@@ -363,7 +370,7 @@ function setDatGui() {
 }
 
 
-function jointGUI( folder, bone ){
+function jointGUI( folder, bone ) {
 
 	folder.add( bone.position, 'x', 0, 20 ).name( 'Move X' );
 	folder.add( bone.position, 'y', 0, 20 ).name( 'Move Y' );
@@ -373,6 +380,18 @@ function jointGUI( folder, bone ){
 	folder.add( bone.rotation, 'y', - Math.PI, Math.PI ).name( 'Rotate Y' );
 	folder.add( bone.rotation, 'z', - Math.PI, Math.PI ).name( 'Rotate Z' );
 
+
+}
+
+function constraintsGUI( folder, i ) {
+
+	folder.add( parameters.constraints[`b${ i }`], 'px' ).name( 'Move X' );
+	folder.add( parameters.constraints[`b${ i }`], 'py' ).name( 'Move Y' );
+	folder.add( parameters.constraints[`b${ i }`], 'pz' ).name( 'Move Z' );
+
+	folder.add( parameters.constraints[`b${ i }`], 'rx' ).name( 'Rotate X' );
+	folder.add( parameters.constraints[`b${ i }`], 'ry' ).name( 'Rotate Y' );
+	folder.add( parameters.constraints[`b${ i }`], 'rz' ).name( 'Rotate Z' );
 
 }
 
