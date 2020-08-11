@@ -7,7 +7,7 @@ function setupDatGui() {
 
   var folderTarget = gui.addFolder("Target");
 
-	folderTarget.add( parameters, "mouseTarget" ).name( "Follow Mouse" );
+	folderTarget.add( methodParametersIK, "mouseTarget" ).name( "Follow Mouse" );
 
   folderTarget.add( target, 'predict').name( "To Endpoint" );
 	folderTarget.add( target , "pose" ).name( "Near Endpoint" );

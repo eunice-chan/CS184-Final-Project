@@ -172,7 +172,7 @@ function initScene() {
   methodParametersIK = {
 
     method: 'Levenberg–Marquardt',
-    enabled: false,
+    enabled: true,
     run: function() { methodFunctionsIK[ methodParametersIK.method ].function( methodFunctionsIK[ methodParametersIK.method ].parameters ) },
     speed: 0.1
 
