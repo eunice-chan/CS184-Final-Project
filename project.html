@@ -166,7 +166,7 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
 <p>Implementing forward kinematics was straightforward. Forward kinematics is defined as the process of obtaining the velocity and position of the end effectors given the input of the joint angles and angular velocities. In this case, I take in the user input which is the rotation or position of the joint and apply it to the model, transforming it from one pose to another.</p>
 <p>In the demo, I constrained the user input so it won't be too overwhelming. I anchored the model in one position and gave it the approximate constraints of an arm.</p>
 <br />
-<video style="width:100%;padding:0 10%;" preload controls>
+<video style="width:100%;padding:0 10%;" muted playsinline autoplay loop>
     <source src="./images/FK_demo.mov" />
     <p>Your browser doesn't support my video. Here is a <a href="./images/FK_demo.mov">link to the video</a> instead.</p>
 </video>
@@ -175,7 +175,7 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
 <p>In the end, I decided to implement the controls to be WASD & <code>shift</code> + mouseMoveDirection (calculated by storing the previous mouse location and the current) with <code>space</code> being the key that resets its position.</p>
 <p>I find it a little clunky, but it's much better than tediously dragging sliders around, so I decided to stick with this approach unless I think of something better.</p>
 <br />
-<video style="width:100%;padding:0 10%;" preload controls>
+<video style="width:100%;padding:0 10%;" muted playsinline autoplay loop>
     <source src="./images/target_demo.mov" />
     <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
 </video>
@@ -216,7 +216,7 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
 <p>Since I was using Three.js's <code>Vector3</code> and <code>Matrix3</code> instead of a dedicated linear algebra library, the functionality was very limited and I had to do a lot of manual calculations as well as was limited to vectors of length three and matrices of length three by three. This was part of the reason why I decided to limit my parameters to three. However, now that I've finished this implementation, I do not think these restrictions is worth the easy integration with the rest of the Three.js parts of my code.</p>
 <!-- Does not handle arbitrary intial guesses well -->
 <figure>
-<video style="width:100%;padding:0 10%;" preload controls>
+<video style="width:100%;padding:0 10%;" muted playsinline autoplay loop>
     <source src="./images/IK_translation_LM.mov" />
     <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
     <figcaption>Using LM to perform IK</figcaption>
@@ -242,7 +242,7 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
 </ol>
 <p>To use this algorithm for IK, each render runs one iteration of this and take the parameter that has the heaviest weight associated with it.</p>
 <p>The steps are as follows:</p>
-<p>(Heavily inspired by <a href="http://perception.inrialpes.fr/Publications/2008/CA08/amdo08.pdf">this</a>.)</p>
+<p>(Heavily inspired by <a href="http://perception.inrialpes.fr/Publications/2008/CA08/amdo08.pdf">this</a> and <a href="https://jblevins.org/notes/smc-intro">this</a>, major modifications include simplified sampling and target vs end  point difference calculation scheme)</p>
 <ol>
   <li>Explore the state space with N copies of the system (particles). For \(i = 1...N\), draw \(Q^{(i)}_k \sim p(Q_k|Q^{(i)}_{k−1})\) where \(p(Q_k|Q^{(i)}_{k−1})\) is the evolution prior. We do this by rejection sampling from a distribution (centered at Q^{(i)}_{k−1}) if there's no a prior knowledge. Otherwise, change the mean to reflect the knowledge) until the sample is accepted. Put hard constraints like joint limits or self-intersection avoidance here. The main advantage of using SMCM is that it deals with inequality constraints simply--either accepting or rejecting.</li>
   <ul>
@@ -253,36 +253,41 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
   <li>Mutate and reselect the particles.</li>
 </ol>
 <p>Since these are random samples, it's very Here, the speed slider's linear interpolations serves to smooth the trajectory.</p>
-<table>
+<br />
+<table style="width:80vw;margin:0 -10vw">
   <tr>
-    <td>
-      <video preload controls>
-          <source src="./images/SMCM_nosmooth_5.mov" />
+    <td style="padding:1% 1%">
+      <video style="width:100%" muted playsinline autoplay loop>
+          <source src="./images/SMCM_nosmooth_100.mov" />
           <p>Your browser doesn't support my video. Here is a <a href="./images/SMCM_nosmooth_5.mov">link to the video</a> instead.</p>
-      <figcaption>Particle count n = 5, no smoothing</figcaption>
+      </video>
+      <figcaption>Particle count n = 100, no smoothing</figcaption>
     </td>
-    <td>
-      <video preload controls>
-          <source src="./images/IK_translation_LM.mov" />
+    <td style="padding:1% 1%">
+      <video style="width:100%" muted playsinline autoplay loop>
+          <source src="./images/SMCM_nosmooth_10000.mov" />
           <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
+      </video>
       <figcaption>Particle count n = 10000, no smoothing</figcaption>
     </td>
   </tr>
 
-    <tr>
-      <td>
-        <video preload controls>
-            <source src="./images/SMCM_smooth_5.mov" />
-            <p>Your browser doesn't support my video. Here is a <a href="./images/SMCM_smooth_5.mov">link to the video</a> instead.</p>
-        <figcaption>Particle count n = 5, smoothing</figcaption>
-      </td>
-      <td>
-        <video preload controls>
-            <source src="./images/IK_translation_LM.mov" />
-            <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
-        <figcaption>Particle count n = 10000, smoothing</figcaption>
-      </td>
-    </tr>
+  <tr>
+    <td style="padding:1% 1%">
+      <video style="width:100%" muted playsinline autoplay loop>
+          <source src="./images/SMCM_smooth_100.mov" />
+          <p>Your browser doesn't support my video. Here is a <a href="./images/SMCM_smooth_5.mov">link to the video</a> instead.</p>
+      </video>
+      <figcaption>Particle count n = 100, smoothing</figcaption>
+    </td>
+    <td style="padding:1% 1%">
+      <video style="width:100%" muted playsinline autoplay loop>
+          <source src="./images/SMCM_smooth_10000.mov" />
+          <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
+      </video>
+      <figcaption>Particle count n = 10000, smoothing</figcaption>
+    </td>
+  </tr>
 </table>
 </body>
 </html>

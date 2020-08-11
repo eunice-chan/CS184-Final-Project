@@ -31,7 +31,7 @@ var parametersDLS = {
 
 // SMCM
 var parametersSMCM = {
-  numParticles: 5000,
+  numParticles: 100,
   n: null,
   weights: null,
   distribution: 10
@@ -115,7 +115,7 @@ function initScene() {
 
   // Target point
   target = getSphere( 0.5 );
-  target.pose = resetTargetPostion;
+  target.pose = resetTargetPosition;
   target.pose();
   target.predict = () => {
     target.position.set( ...betaToPoint( modelToBeta() ).toArray() );

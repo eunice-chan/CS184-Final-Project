@@ -1,0 +1,27 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+
+  <style>
+    g { fill: #000000; }
+    @media (prefers-color-scheme: dark) {
+      g { fill: #ffffff; }
+    }
+  </style>
+
+ <g>
+  <title>Penrose Triangle</title>
+  <!-- Outer Triangle -->
+  <line stroke="#000" stroke-linecap="round"  x1="10" y1="190" x2="190" y2="190" stroke-width="8"/>
+  <line transform="rotate(60 190 190)" stroke="#000" stroke-linecap="round" x1="10" y1="190" x2="190" y2="190" stroke-width="8"/>
+  <line transform="rotate(-60 10 190)" stroke="#000" stroke-linecap="round" x1="10" y1="190" x2="190" y2="190" stroke-width="8"/>
+
+  <!-- Offset Middle Triangle -->
+  <line stroke="#000" stroke-linecap="round"  x1="21" y1="170" x2="140" y2="170" stroke-width="8"/>
+  <line transform="rotate(60 150 150)" stroke="#000" stroke-linecap="round" x1="70" y1="150" x2="190" y2="150" stroke-width="8"/>
+  <line transform="rotate(-60 70 120)" stroke="#000" stroke-linecap="round" x1="40" y1="120" x2="150" y2="120" stroke-width="8"/>
+
+   <!-- Inner Triangle -->
+   <line stroke="#000" stroke-linecap="round" x1="55" y1="150" x2="130" y2="150" stroke-width="8"/>
+   <line transform="rotate(60 130 150)" stroke="#000" stroke-linecap="round" x1="70" y1="150" x2="150" y2="150" stroke-width="8"/>
+   <line transform="rotate(-60 70 150)" stroke="#000" stroke-linecap="round" x1="70" y1="150" x2="150" y2="150" stroke-width="8"/>
+  </g>
+</svg>

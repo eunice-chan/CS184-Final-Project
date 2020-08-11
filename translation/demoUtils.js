@@ -7,7 +7,7 @@ function setupDatGui() {
 
   var folderTarget = gui.addFolder("Target");
 
-	folderTarget.add( methodParametersIK, "mouseTarget" ).name( "Follow Mouse" );
+	folderTarget.add( parameters, "mouseTarget" ).name( "Follow Mouse" );
 
   folderTarget.add( target, 'predict').name( "To Endpoint" );
 	folderTarget.add( target , "pose" ).name( "Near Endpoint" );
@@ -86,7 +86,7 @@ function setupDatGui() {
 
 	folder = folderIK.addFolder( "Sequential Monte Carlo" );
 
-	folder.add( parametersSMCM, 'numParticles', 5, 10000 ).name( '# of Particles' ).onChange( ()=>{
+	folder.add( parametersSMCM, 'numParticles', 100, 10000 ).name( '# of Particles' ).onChange( ()=>{
 
 		parametersSMCM.numParticles = Math.floor( parametersSMCM.numParticles );
 		initSMCM( );
@@ -105,7 +105,7 @@ function updateLine() {
   lineGeometry.verticesNeedUpdate = true;
 }
 
-function resetTargetPostion() {
+function resetTargetPosition() {
   target.position.set( ...getEndPointWorldPosition().toArray() );
 	target.position.x += ( Math.random() * 2 ) - 1;
 	target.position.y += ( Math.random() * 2 ) - 1;

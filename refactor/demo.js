@@ -1,0 +1,240 @@
+// User interface auxillary
+var stats, gui;
+
+// Scene render
+var scene, camera, renderer, orbit;
+
+// Scene objects
+var lights;
+
+// Model
+var mesh, bones, defaultBone;
+
+// End point
+var endPoint, defaultEndPoint;
+
+// Target
+var target;
+
+// Target to end point line
+var line, lineGeometry;
+
+// Parameters
+var parameters;
+
+// IK parameters
+var methodParametersIK, methodFunctionsIK;
+
+// IK -- DLS
+var parametersDLS;
+
+// IK -- SMCM
+var parametersSMCM;
+
+
+
+
+function initScene() {
+
+  // USER INTERFACE AUXILLARY
+
+  // Performance indicator
+	stats = new Stats();
+	document.body.appendChild( stats.dom );
+
+  // Variable controls
+	gui = new dat.GUI();
+
+
+
+  // SCENE RENDER
+
+  // Scene
+  var sceneColor = 0xffffff;
+
+	scene = new THREE.Scene();
+	scene.background = new THREE.Color( sceneColor );
+
+  // Camera
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 200 );
+	camera.position.z = 30;
+	camera.position.y = 30;
+
+  // Renderer
+	renderer = new THREE.WebGLRenderer( { antialias: true } );
+	renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.getElementById('demo').appendChild( renderer.domElement );
+
+  // View controls
+	orbit = new OrbitControls( camera, renderer.domElement );
+
+  // Camera & renderer resize behavior
+  window.addEventListener( 'resize', resize, false );
+
+
+
+  // POPULATE SCENE
+
+  // Lighting
+	initLights( sceneColor )
+
+	// Model
+	var modelParameters = {
+
+	  numBones: 3,
+	  boneHeight: 8,
+
+		width:5,
+		depth: 5,
+
+		widthSegments: 5,
+	  depthSegments: 5
+
+	}
+
+	initModel( modelParameters );
+
+  // End point
+	var endPointColor = 0x7be779;
+
+  endPoint = getSphere( 0.5, endPointColor );
+  scene.add( endPoint );
+	mesh.skeleton.bones[ mesh.skeleton.bones.length - 1 ].add( endPoint );
+
+
+	// Save default end position for calculations
+  scene.updateMatrixWorld( true );
+	defaultEndPoint = getEndPointWorldPosition();
+
+	// Bones
+	// Save default bone positions for calculations
+  defaultBone = [];
+
+  bones = mesh.skeleton.bones;
+	bones.forEach( ( bone ) => { defaultBone.push( getModelWorldPosition( bone ) ) } );
+
+	// Randomly pose the model
+  mesh.randomPose = randomPose;
+	mesh.randomPose();
+
+  // Target point
+  target = getSphere( 0.5 );
+  target.pose = resetTargetPosition;
+  target.predict = () => {
+    target.position.set( ...betaToPoint( modelToBeta() ).toArray() );
+  }
+  scene.add( target );
+
+  scene.updateMatrixWorld( true );
+  target.pose();
+
+	// Line
+	// Points between target and endpoint
+	var material = new THREE.LineBasicMaterial( {
+
+		color: 0xa9a9a9
+
+	 } );
+
+	points = [ getEndPointWorldPosition(), getTargetWorldPosition() ];
+
+	lineGeometry = new THREE.Geometry();
+	lineGeometry.vertices = points;
+
+	line = new THREE.Line( lineGeometry, material );
+	scene.add( line );
+
+
+
+
+  // INTERACTIONS
+
+	// General parameters
+  parameters = {
+
+    mouseTarget: true
+
+  }
+
+  // IK parameters (default)
+  methodParametersIK = {
+
+    method: 'Levenberg–Marquardt',
+    enabled: false,
+    run: function(){ methodFunctionsIK[ methodParametersIK.method ].function( methodFunctionsIK[ methodParametersIK.method ].parameters )},
+    speed: 0.1
+
+  };
+
+	// IK -- DLS parameters
+  parametersDLS = {
+
+		maxIter: 5,
+		lambda: 0.0001,
+		increment: 10,
+		decrement: 250
+
+ 	};
+
+	// IK -- SMCM parameters
+	parametersSMCM = {
+
+		numParticles: 100,
+		distribution: 10,
+		n: null,
+		weights: null
+
+	};
+
+	
+	methodFunctionsIK = {
+
+  	'Levenberg–Marquardt': {
+      function: DLS,
+      parameters: parametersDLS
+    },
+
+  	'Sequential Monte Carlo': {
+      function: SMCM,
+      parameters: parametersSMCM
+    }
+
+  }
+
+
+
+	// MISC
+
+	// When the mouse moves, call the given function
+	document.addEventListener('mousemove', targetMouse, false);
+
+	// Interaction interface
+	setDatGui();
+	scene.updateMatrixWorld( true );
+
+	// Initialize values for SMCM
+	initSMCM();
+
+}
+
+function render() {
+
+  stats.update();
+
+  requestAnimationFrame( render );
+
+	if ( methodParametersIK.enabled ) {
+
+    methodParametersIK.run();
+
+	}
+
+  updateLine();
+
+	renderer.render( scene, camera );
+
+}
+
+initScene();
+render();
