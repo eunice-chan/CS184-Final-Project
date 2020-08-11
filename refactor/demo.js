@@ -191,7 +191,7 @@ function initScene() {
 	// IK -- SMCM parameters
 	parametersSMCM = {
 
-		numParticles: 100,
+		numParticles: 10000,
 		distribution: 10,
 		n: null,
 		weights: null

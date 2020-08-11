@@ -331,17 +331,17 @@ function setDatGui() {
 
   ////////////////////////////////
 
-	folder = folderIK.addFolder( 'Parameters' );
-	var folderParam;
-
-	constraints.forEach( ( key1 ) => {
-
-		jointNumber = parseInt( key1[ 1 ] );
-
-		folderParam = folder.addFolder( `Joint ${ jointNumber }` );
-		constraintsGUI( folderParam, jointNumber );
-
-	} );
+	// folder = folderIK.addFolder( 'Parameters' );
+	// var folderParam;
+	//
+	// constraints.forEach( ( key1 ) => {
+	//
+	// 	jointNumber = parseInt( key1[ 1 ] );
+	//
+	// 	folderParam = folder.addFolder( `Joint ${ jointNumber }` );
+	// 	constraintsGUI( folderParam, jointNumber );
+	//
+	// } );
 
 
   ////////////////

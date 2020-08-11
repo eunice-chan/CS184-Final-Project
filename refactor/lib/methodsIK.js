@@ -76,7 +76,6 @@ function initSMCM() {
 	 var n = [];
 	 var weights = [];
 
-	 // TODO: change modeltobeta to return array
 	 var beta = modelToBeta();
 
 	 var target = getTargetWorldPosition();
