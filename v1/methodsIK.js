@@ -10,51 +10,50 @@ function DLS( param ) {
 
 		param.lambda /= param.decrement;
 
-		// yHat is the current position in space
-		var yHat = betaToPoint( beta );
+		// y_hat is the current position in space
+		var y_hat = betaToPoint( beta );
 
-		var helper = DLShelper( yHat, y );
+		var helper = DLShelper( y_hat, y );
 
 		var u = helper.jtj;
-		var v = helper.njtd;
+		var v = helper.jtd;
 
-		var betaObjFn = squaredDistance( yHat, y );
+		var curr_obj_fn = squaredDistance( y_hat, y );
 
 		for ( var j = 0; j < param.maxIter; j ++ ) {
 
-			if ( param.lambda === Infinity ) {
-				console.warn( "Lambda reached infinity! Try a different initial pose." );
+			if (param.lambda === Infinity) {
+				console.warn("Lambda reached infinity! Try a different initial pose.");
 				return;
-			} else if ( param.lambda === 0 ) {
-				console.warn( "Lambda is 0\nResetting to 1000." );
+			}
+
+			if (param.lambda === 0) {
+				console.warn("Lambda is 0\nResetting to 1000.");
 				param.lambda = 1000;
 			}
+
 
 			param.lambda /= param.increment;
 
 			// System of equations
-			var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size() ), helper.jtjDiag ) ) );
+			var h = helper.jtj;
+			h.elements[ 0 ] += param.lambda * ( 1 + helper.squaredJ.x );
+			h.elements[ 4 ] += param.lambda * ( 1 + helper.squaredJ.y );
+			h.elements[ 8 ] += param.lambda * ( 1 + helper.squaredJ.z );
 
-			var delta = math.lusolve( h, helper.njtd );
-			delta = math.transpose( delta );
-			delta = delta._data[ 0 ];
+			var delta = helper.jtd.clone().applyMatrix3( new THREE.Matrix3().getInverse( h ) );
 
-			var betaPrime = math.add( beta, math.transpose( delta ) );
+			var beta_prime = [ beta[ 0 ] + delta.x, beta[ 1 ] + delta.y, beta[ 2 ] + delta.z ];
+			var y_hat_prime = betaToPoint( beta_prime );
 
-			var yHatPrime = betaToPoint( betaPrime );
-			console.log(beta);
-			console.log(yHat);
-			console.log(betaPrime);
-			console.log(yHatPrime);
+			var next_obj_fn = squaredDistance( y_hat_prime, y );
 
-			var betaPrimeObjFn = squaredDistance( yHatPrime, y );
-
-			if ( betaPrimeObjFn < betaObjFn || betaObjFn == 0 ) {
-				beta = betaPrime;
+			if ( next_obj_fn < curr_obj_fn || curr_obj_fn == 0 ) {
+				beta = beta_prime;
 				updateMeshKinematics( beta, methodParametersIK.speed );
 
 				// Stopping criteron: Change too small
-				if ( betaPrimeObjFn > 0.999999999 * betaObjFn || betaPrimeObjFn < 0.000000001 ) {
+				if ( next_obj_fn > 0.999999999 * curr_obj_fn || next_obj_fn < 0.000000001) {
 
 					return beta;
 
@@ -63,7 +62,7 @@ function DLS( param ) {
 					break;
 
 				}
-			} else if ( betaObjFn > 0.999999999 * betaPrimeObjFn ) {
+			} else if ( curr_obj_fn > 0.999999999 * next_obj_fn ) {
 
 					return beta;
 			}
@@ -71,11 +70,12 @@ function DLS( param ) {
 
 }
 
-function initSMCM() {
+function initSMCM( ) {
 
 	 var n = [];
 	 var weights = [];
 
+	 // TODO: change modeltobeta to return array
 	 var beta = modelToBeta();
 
 	 var target = getTargetWorldPosition();
@@ -95,12 +95,6 @@ function initSMCM() {
 
 function SMCM( param ) {
 
-		if ( parametersSMCM.n.length == 0 ) {
-
-			initSMCM();
-
-		}
-
 		// Resample
 		// To prevent particle degeneracy
 		var n = [];
@@ -111,6 +105,7 @@ function SMCM( param ) {
 
 		}
 		parametersSMCM.n = n;
+		console.log(parametersSMCM);
 
 	 // Importance sample
  	 n = [];
