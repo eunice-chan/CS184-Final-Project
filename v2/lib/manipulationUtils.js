@@ -38,7 +38,7 @@ function betaToPoint( beta ) {
 
 		transformValues = [ predictedPoint, defaultWorldBone[ i ] ];
 
-		if ( parameters.constraints[`b${ i }`].px ) {
+		if ( parameters.constraints[ `b${ i }` ].px ) {
 
 			transformValues.push( beta[ j ] );
 			j ++;
@@ -50,7 +50,7 @@ function betaToPoint( beta ) {
 		}
 
 
-		if ( parameters.constraints[`b${ i }`].py ) {
+		if ( parameters.constraints[ `b${ i }` ].py ) {
 
 			transformValues.push( beta[ j ] );
 			j ++;
@@ -62,7 +62,7 @@ function betaToPoint( beta ) {
 		}
 
 
-		if ( parameters.constraints[`b${ i }`].pz ) {
+		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
 			transformValues.push( beta[ j ] );
 			j ++;
@@ -75,7 +75,7 @@ function betaToPoint( beta ) {
 
 
 
-		if ( parameters.constraints[`b${ i }`].rx ) {
+		if ( parameters.constraints[ `b${ i }` ].rx ) {
 
 			transformValues.push( beta[ j ] );
 			j ++;
@@ -87,7 +87,7 @@ function betaToPoint( beta ) {
 		}
 
 
-		if ( parameters.constraints[`b${ i }`].ry ) {
+		if ( parameters.constraints[ `b${ i }` ].ry ) {
 
 			transformValues.push( beta[ j ] );
 			j ++;
@@ -99,7 +99,8 @@ function betaToPoint( beta ) {
 		}
 
 
-		if ( parameters.constraints[`b${ i }`].rz ) {
+		console.log(beta[ j ], bones[ i ].rotation.z );
+		if ( parameters.constraints[ `b${ i }` ].rz ) {
 
 			transformValues.push( beta[ j ] );
 			j ++;
@@ -110,11 +111,14 @@ function betaToPoint( beta ) {
 
 		}
 
-		transformPoint( ...transformValues );
+
+		console.log( transformValues );
+
+		predictedPoint = transformPoint( ...transformValues );
 
 	}
-	// TODO: idk why : | figure out why
-	predictedPoint.y -= modelParameters.boneHeight / 2 * modelParameters.numBones;
+
+	// predictedPoint.y -= modelParameters.boneHeight / 2 * modelParameters.numBones;
 	// console.log( distance( predictedPoint, getEndPointWorldPosition() ) );
 
 	return predictedPoint;
@@ -132,9 +136,9 @@ function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, ro
   var transform = new THREE.Euler( rotateX, rotateY, rotateZ, 'XYZ' );
   point.applyEuler( transform );
 
-	point.x += moveX;
-	point.y += moveY;
-	point.z += moveZ;
+	// point.x += moveX;
+	// point.y += moveY;
+	// point.z += moveZ;
 
 
   // Translate back
@@ -400,63 +404,45 @@ function modelToBeta() {
 
 	var beta = [];
 
-	var jointNumber, constraints;
+	for ( var i = bones.length - 1; i >= 0; i -- ) {
 
-	var constraintKeys = Object.keys( parameters.constraints );
-	constraintKeys.sort();
+		if ( parameters.constraints[ `b${ i }` ].px ) {
 
-	constraintKeys.forEach( ( key1 ) => {
+			beta.push( bones[ i ].position.x );
 
-		jointNumber = parseInt( key1[ 1 ] );
+		}
 
-		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
-		paramKeys.sort();
+		if ( parameters.constraints[ `b${ i }` ].py ) {
 
-		paramKeys.forEach( ( key2 ) => {
+			beta.push( bones[ i ].position.y );
 
-			if ( parameters.constraints[ key1 ][ key2 ] ) {
+		}
 
-				switch ( key2[ 0 ] ) {
+		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
-					case 'p':
+			beta.push( bones[ i ].position.x );
 
-						constraints = bones[ jointNumber ].position;
-						break;
+		}
 
-					case 'r':
+		if ( parameters.constraints[ `b${ i }` ].rx ) {
 
-						constraints = bones[ jointNumber ].rotation;
-						break;
+			beta.push( bones[ i ].rotation.x );
 
-				}
+		}
 
-				switch ( key2[ 1 ] ) {
+		if ( parameters.constraints[ `b${ i }` ].ry ) {
 
-					case 'x':
+			beta.push( bones[ i ].rotation.y );
 
-						constraints = constraints.x;
-						break;
+		}
 
-					case 'y':
+		if ( parameters.constraints[ `b${ i }` ].rz ) {
 
-						constraints = constraints.y;
-						break;
+			beta.push( bones[ i ].rotation.z );
 
-					case 'z':
+		}
 
-						constraints = constraints.z;
-						break;
-
-				}
-
-				beta.push( constraints );
-
-			}
-
-		} );
-
-	} );
-
+	}
 
 	return beta;
 

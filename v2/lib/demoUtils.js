@@ -271,7 +271,7 @@ function setTargetPosition() {
 
 	target.position.x += ( Math.random() - 0.5 ) * 2;
 	target.position.y += ( Math.random() - 0.5 ) * 2;
-	target.position.z = 0;
+	target.position.z += ( Math.random() - 0.5 ) * 2;
 
 }
 
@@ -411,8 +411,8 @@ function updateConstraints() {
 			pz: false,
 
 			rx: true,
-			ry: false,
-			rz: false
+			ry: true,
+			rz: true
 
 		}
 
