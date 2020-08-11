@@ -8,7 +8,7 @@ var scene, camera, renderer, orbit;
 var lights;
 
 // Model
-var mesh, bones, defaultBone;
+var mesh, modelParameters, bones, defaultBone;
 
 // End point
 var endPoint, defaultEndPoint;
@@ -64,7 +64,7 @@ function initScene() {
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
-	document.getElementById('demo').appendChild( renderer.domElement );
+	document.getElementById( 'demo' ).appendChild( renderer.domElement );
 
   // View controls
 	orbit = new OrbitControls( camera, renderer.domElement );
@@ -80,7 +80,7 @@ function initScene() {
 	initLights( sceneColor )
 
 	// Model
-	var modelParameters = {
+	modelParameters = {
 
 	  numBones: 3,
 	  boneHeight: 8,
@@ -112,19 +112,37 @@ function initScene() {
   defaultBone = [];
 
   bones = mesh.skeleton.bones;
-	bones.forEach( ( bone ) => { defaultBone.push( getModelWorldPosition( bone ) ) } );
+	bones.forEach( ( bone ) => {
 
-	// Randomly pose the model
-  mesh.randomPose = randomPose;
-	mesh.randomPose();
+		defaultBone.push( getModelWorldPosition( bone ) );
+
+	} );
 
   // Target point
   target = getSphere( 0.5 );
   target.pose = resetTargetPosition;
   target.predict = () => {
+
     target.position.set( ...betaToPoint( modelToBeta() ).toArray() );
+
   }
   scene.add( target );
+
+	// Target interaction
+	document.addEventListener( 'mousemove', targetMouse, false );
+
+	// General parameters
+	parameters = {
+
+		mouseTarget: true,
+
+		constraints: updateConstraints()
+
+	}
+
+	// Randomly pose
+  mesh.randomPose = randomPose;
+	mesh.randomPose();
 
   scene.updateMatrixWorld( true );
   target.pose();
@@ -150,19 +168,12 @@ function initScene() {
 
   // INTERACTIONS
 
-	// General parameters
-  parameters = {
-
-    mouseTarget: true
-
-  }
-
   // IK parameters (default)
   methodParametersIK = {
 
     method: 'Levenberg–Marquardt',
     enabled: false,
-    run: function(){ methodFunctionsIK[ methodParametersIK.method ].function( methodFunctionsIK[ methodParametersIK.method ].parameters )},
+    run: function() { methodFunctionsIK[ methodParametersIK.method ].function( methodFunctionsIK[ methodParametersIK.method ].parameters ) },
     speed: 0.1
 
   };
@@ -180,14 +191,14 @@ function initScene() {
 	// IK -- SMCM parameters
 	parametersSMCM = {
 
-		numParticles: 100,
+		numParticles: 10000,
 		distribution: 10,
 		n: null,
 		weights: null
 
 	};
 
-	
+
 	methodFunctionsIK = {
 
   	'Levenberg–Marquardt': {
@@ -205,9 +216,6 @@ function initScene() {
 
 
 	// MISC
-
-	// When the mouse moves, call the given function
-	document.addEventListener('mousemove', targetMouse, false);
 
 	// Interaction interface
 	setDatGui();

@@ -1,18 +1,129 @@
+// WORLD POSITION
+function getModelWorldPosition( model ) {
+
+	model.updateMatrixWorld();
+
+  var worldMatrix = model.matrixWorld;
+  var worldPosition  = new THREE.Vector3().setFromMatrixPosition( worldMatrix );
+
+  return worldPosition;
+
+}
+
+function getTargetWorldPosition() {
+
+	return getModelWorldPosition( target );
+
+}
+
+function getEndPointWorldPosition() {
+
+	return getModelWorldPosition( endPoint );
+
+}
+
+
+
+
+// BETA POINT CONVERSION
 function betaToPoint( beta ) {
-	
-	var predictedPoint = new THREE.Vector3().copy( defaultEndPoint );
+
 	var bones = mesh.skeleton.bones;
 
-  transformPoint( predictedPoint, defaultBone[ 2 ], 0, 0, 0, 0, 0, beta[ 2 ] );
-	transformPoint( predictedPoint, defaultBone[ 1 ], 0, 0, 0, 0, beta[ 1 ], 0 );
-	transformPoint( predictedPoint, defaultBone[ 0 ], 0, 0, 0, beta[ 0 ], 0, 0 );
-	// TODO: figure out why it is off by 8
-	predictedPoint.y -= 8;
+	var predictedPoint = new THREE.Vector3().copy( defaultEndPoint );
+
+	var j = 0;
+
+	for ( var i = defaultBone.length - 1; i >= 0; i -- ) {
+
+		transformValues = [ predictedPoint, defaultBone[ i ] ];
+
+		if ( parameters.constraints[`b${ i }`].px ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].position.x );
+
+		}
+
+
+		if ( parameters.constraints[`b${ i }`].py ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].position.y );
+
+		}
+
+
+		if ( parameters.constraints[`b${ i }`].pz ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].position.z );
+
+		}
+
+
+
+		if ( parameters.constraints[`b${ i }`].rx ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].rotation.x );
+
+		}
+
+
+		if ( parameters.constraints[`b${ i }`].ry ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].rotation.y );
+
+		}
+
+
+		if ( parameters.constraints[`b${ i }`].rz ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].rotation.z );
+
+		}
+
+		transformPoint( ...transformValues );
+
+	}
+
+	// TODO: idk why : | figure out why
+	predictedPoint.y -= 4 * modelParameters.numBones;
+
+	var bones = [];
+
 	return predictedPoint;
 
 }
 
-function transformPoint( point, pivot, rotateX, rotateY, rotateZ, moveX, moveY, moveZ ) {
+function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, rotateZ ) {
 
 	  // Translate to origin
 	  pivot.negate();
@@ -36,110 +147,318 @@ function transformPoint( point, pivot, rotateX, rotateY, rotateZ, moveX, moveY, 
 
 }
 
-function getModelWorldPosition( model ) {
 
-	model.updateMatrixWorld();
-  var worldMatrix = model.matrixWorld;
-  var worldPosition  = new THREE.Vector3().setFromMatrixPosition( worldMatrix );
-  return worldPosition;
 
-}
 
-function getTargetWorldPosition() {
+// GENERIC
 
-	return getModelWorldPosition( target );
+// POINT FUNCTIONS
+function distance( yHat, y ) {
+
+	return y.distanceTo( yHat );
 
 }
 
-function getEndPointWorldPosition() {
+function squaredDistance( yHat, y ) {
 
-	return getModelWorldPosition( endPoint );
+	return y.distanceToSquared( yHat );
 
 }
 
-function DLShelper( y_hat, y ) {
+// VECTOR FUNCTIONS
+function normalize( vector ) {
 
-	var j = jacobian( y_hat );
+	var magnitude = Math.sqrt( funcSum( ( val ) => { return val * val }, vector ) );
+	var unitVector = [];
 
-	// U
- 	var jtj = j.clone().transpose().multiply(j);
+	for ( var i = 0; i < vector.length; i ++ ) {
 
-	var squaredJ = new THREE.Vector3( jtj.elements[ 0 ], jtj.elements[ 4 ], jtj.elements[ 8 ] );
+		unitVector.push( vector[ i ] / magnitude );
 
-	// -v
-	var jtd = y_hat.clone().sub( y ).applyMatrix3( j ).multiplyScalar( -1 );
-
-	return {
-		squaredJ: squaredJ, // Vector3
-		jtj: jtj, // Matrix3
-		jtd: jtd // Vector3
 	}
 
+	return unitVector;
+
 }
 
-function jacobian( y_hat ) {
+function funcSum( fn, vector ) {
+
+	var s = 0;
+
+	for ( var i = 0; i < vector.length; i ++ ) {
+
+		s += fn( vector[ i ] );
+
+	}
+
+	return s;
+
+}
+
+function maxIndex( vector ) {
+
+	var index = 0;
+	var value = vector[ 0 ];
+
+	for ( var i = 1; i < vector.length; i ++ ) {
+
+		if ( vector[ i ] > value ) {
+			index = i;
+			value = vector[ i ];
+		}
+
+	}
+
+	return index;
+
+}
+
+
+
+
+// DLS
+function DLShelper( yHat, y ) {
+
+	// paramLength x numDimensions
+	var jt = jacobianTranspose( yHat );
+	// numDimensions x paramLength
+	var j = math.transpose( jt );
+
+	// paramLength x numDimensions * numDimensions x paramLength =  paramLength x paramLength
+ 	var jtj = math.multiply( jt, j );
+
+	// numDimensions x numEndEffectors
+	var d = yHat.clone().sub( y ).toArray();
+
+	// paramLength x numDimensions  * numDimensions x numEndEffectors = paramLength x numEndEffectors
+	var jtd = math.multiply( jt, d );
+
+	var njtd = math.multiply( jtd, -1 );
+
+	return {
+		jtjDiag: math.matrix( diagMatrix( jtj ) ), // Matrix
+		jtj: math.matrix( jtj ), // Matrix
+		njtd: njtd // Vector
+
+	};
+
+}
+
+function jacobianTranspose( yHat ) {
+
+	var jt = [];
 
 	var bones = mesh.skeleton.bones;
 
-	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
-	// // axis * ( y_hat - bone_pos )
-	// var shoulder = y_hat.clone().sub( getModelWorldPosition( bones[ 0 ] ) ).y;
-	// var elbow = y_hat.clone().sub( getModelWorldPosition( bones[ 1 ] ) ).x;
-	// var wrist = y_hat.clone().sub( getModelWorldPosition( bones[ 2 ] ) ).z;
+	var row, jointNumber, constraints;
 
-	// Jacobian for translational joints
-	var identity = new THREE.Matrix3();
-	var shoulder = new THREE.Vector3().setFromMatrixColumn( identity, 0 );
-	var elbow = new THREE.Vector3().setFromMatrixColumn( identity, 1 );
-	var wrist = new THREE.Vector3().setFromMatrixColumn( identity, 2 );
+	var constraintKeys = Object.keys( parameters.constraints );
+	constraintKeys.sort();
 
-	return identity;
+	constraintKeys.forEach( ( key1 ) => {
+
+		jointNumber = parseInt( key1[ 1 ] );
+
+		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
+		paramKeys.sort();
+
+		paramKeys.forEach( ( key2 ) => {
+
+			if ( parameters.constraints[ key1 ][ key2 ] ) {
+
+				switch ( key2[ 1 ] ) {
+
+					case 'x':
+
+						row = [1, 0, 0];
+						break;
+
+					case 'y':
+
+						row = [0, 1, 0];
+						break;
+
+					case 'z':
+
+						row = [0, 0, 1];
+						break;
+
+				}
+
+				switch ( key2[ 0 ] ) {
+
+					case 'p':
+
+						break;
+
+					case 'r':
+
+						row = yHat.clone().sub( bone[ jointNumber ] ).multiply( new THREE.Vector3( ...row ) ).toArray();
+						break;
+
+				}
+
+				jt.push( row );
+
+			}
+
+		} );
+
+	} );
+
+	return jt;
 
 }
 
-function distance( y_hat, y ) {
+function diagMatrix( matrix ) {
 
-	return y.distanceTo( y_hat );
+	return matrix.map( function ( value, index, matrix ) {
+
+      var row = [];
+
+      value.forEach( ( v, i )=>{ index == i? row.push( v ) : row.push( 0 ) } );
+
+      return row
+
+    } );
 
 }
 
-function squaredDistance( y_hat, y ) {
 
-	return y.distanceToSquared( y_hat );
+function linearInterpolation( x, y, alpha ) {
+
+	return ( alpha * x ) + ( ( 1 - alpha ) * y );
 
 }
 
 function updateMeshKinematics( beta, speed ) {
 
 	var bones = mesh.skeleton.bones;
-	// Apply the transformations to the mesh
-	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
-	bones[ 0 ].position.x = linear_interpolation( beta[ 0 ], bones[ 0 ].position.x, speed );
 
-	bones[ 1 ].position.y = linear_interpolation( beta[ 1 ], bones[ 1 ].position.y, speed );
+	var i = 0;
 
-	bones[ 2 ].position.z = linear_interpolation( beta[ 2 ], bones[ 2 ].position.z, speed );
-	// bones[0].rotation.y = beta[0];
-	//
-	// bones[1].rotation.x = beta[1];
-	//
-	// bones[2].rotation.z = beta[2];
+	var jointNumber, constraints;
 
-}
+	var constraintKeys = Object.keys( parameters.constraints );
+	constraintKeys.sort();
 
-function linear_interpolation( x, y, alpha ) {
+	constraintKeys.forEach( ( key1 ) => {
 
-	return ( alpha * x ) + ( ( 1 - alpha ) * y );
+		jointNumber = parseInt( key1[ 1 ] );
+
+		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
+		paramKeys.sort();
+
+		paramKeys.forEach( ( key2 ) => {
+
+			if ( parameters.constraints[ key1 ][ key2 ] ) {
+
+				switch ( key2[ 0 ] ) {
+
+					case 'p':
+
+						constraints = bones[ jointNumber ].position;
+						break;
+
+					case 'r':
+
+						constraints = bones[ jointNumber ].rotation;
+						break;
+
+				}
+
+				switch ( key2[ 1 ] ) {
+
+					case 'x':
+
+						constraints.x = linearInterpolation( beta[ i ], constraints.x, speed );
+						break;
+
+					case 'y':
+
+						constraints.y = linearInterpolation( beta[ i ], constraints.y, speed );
+						break;
+
+					case 'z':
+
+						constraints.z = linearInterpolation( beta[ i ], constraints.z, speed );
+						break;
+
+				}
+
+				i ++;
+
+			}
+
+		} );
+
+	} );
 
 }
 
 function modelToBeta() {
 
 	var bones = mesh.skeleton.bones;
-	// shoulderRotateY, elbowRotateX, elbowMoveX, elbowMoveZ, wristRotateX, wristRotateY, wristRotateZ
-	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
-	var beta = [ bones[0].position.x, bones[1].position.y, bones[2].position.z ];
-	// var beta = [ bones[0].rotation.y, bones[1].rotation.x, bones[2].rotation.z ];
+
+	var beta = [];
+
+	var jointNumber, constraints;
+
+	var constraintKeys = Object.keys( parameters.constraints );
+	constraintKeys.sort();
+
+	constraintKeys.forEach( ( key1 ) => {
+
+		jointNumber = parseInt( key1[ 1 ] );
+
+		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
+		paramKeys.sort();
+
+		paramKeys.forEach( ( key2 ) => {
+
+			if ( parameters.constraints[ key1 ][ key2 ] ) {
+
+				switch ( key2[ 0 ] ) {
+
+					case 'p':
+
+						constraints = bones[ jointNumber ].position;
+						break;
+
+					case 'r':
+
+						constraints = bones[ jointNumber ].rotation;
+						break;
+
+				}
+
+				switch ( key2[ 1 ] ) {
+
+					case 'x':
+
+						constraints = constraints.x;
+						break;
+
+					case 'y':
+
+						constraints = constraints.y;
+						break;
+
+					case 'z':
+
+						constraints = constraints.z;
+						break;
+
+				}
+
+				beta.push( constraints );
+
+			}
+
+		} );
+
+	} );
+
 
 	return beta;
 
@@ -150,64 +469,16 @@ function modelToBeta() {
 function sampleNewBeta( beta ) {
 
 	// TODO: replace with a Gaussian? Exponential? distribution
-	var beta_prime = [];
+	var betaPrime = [];
 
-	beta.forEach( ( value ) => { beta_prime.push( value + ( ( Math.random() - 0.5 ) * parametersSMCM.distribution ) ) } );
+	beta.forEach( ( value ) => { betaPrime.push( value + ( ( Math.random() - 0.5 ) * parametersSMCM.distribution ) ) } );
 
-	return beta_prime;
-
-}
-
-function normalize( array ) {
-
-	var magnitude = Math.sqrt( funcSum( ( val ) => { return val * val }, array ) );
-	var unitArray = [];
-
-	for ( var i = 0; i < array.length; i ++ ) {
-
-		unitArray.push( array[ i ] / magnitude );
-
-	}
-
-	return unitArray
-
-}
-
-function funcSum( fn, array ) {
-
-	var s = 0;
-
-	for ( var i = 0; i < array.length; i ++ ) {
-
-		s += fn( array[ i ] );
-
-	}
-
-	return s;
-
-}
-
-function maxIndex( array ) {
-
-	var index = 0;
-	var value = array[ 0 ];
-
-	for ( var i = 1; i < array.length; i ++ ) {
-
-		if ( array[ i ] > value ) {
-			index = i;
-			value = array[ i ];
-		}
-
-	}
-
-	return index;
+	return betaPrime;
 
 }
 
 function sampleParticle() {
 
-	// according to weight
 	var probability = 0;
 	var select = Math.random();
 
@@ -215,7 +486,7 @@ function sampleParticle() {
 
 		probability += parametersSMCM.weights[ i ];
 
-		if (select < probability) {
+		if ( select < probability ) {
 
 			return parametersSMCM.n[ i ];
 
@@ -223,6 +494,6 @@ function sampleParticle() {
 
 	}
 
-	console.warn("Weights invalid.");
+	console.warn( "Weights invalid." );
 
 }

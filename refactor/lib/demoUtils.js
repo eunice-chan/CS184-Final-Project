@@ -9,9 +9,9 @@ function resize() {
 }
 
 // Adapted from https://jsfiddle.net/atwfxdpd/10/
-function targetMouse(event) {
+function targetMouse( event ) {
 
-	if ( methodParametersIK.mouseTarget ) {
+	if ( parameters.mouseTarget ) {
 
 		event.preventDefault();
 
@@ -91,10 +91,10 @@ function createGeometry( param, sizing ) {
   var vertex = new THREE.Vector3();
 
 	var pointsPerLayer = ( sizing.segmentCount * 2 ) + 1;
-	pointsPerLayer = pointsPerLayer * ( param.widthSegments + 1);
+	pointsPerLayer = pointsPerLayer * ( param.widthSegments + 1 );
 
 	var pointsPerTop = param.widthSegments + 1;
-	pointsPerTop = pointsPerTop * ( param.widthSegments + 1);
+	pointsPerTop = pointsPerTop * ( param.widthSegments + 1 );
 
 	var maxLayer = ( sizing.segmentCount ) * 2 + 1;
 	var layer;
@@ -103,7 +103,7 @@ function createGeometry( param, sizing ) {
 
     vertex.fromBufferAttribute( position, i );
 
-    if (i < 2 * ( pointsPerLayer + pointsPerTop ) ) {
+    if ( i < 2 * ( pointsPerLayer + pointsPerTop ) ) {
 
       layer = ( Math.floor( i / ( param.widthSegments + 1 ) ) ) % maxLayer;
 
@@ -213,6 +213,8 @@ function createMesh( geometry, bones ) {
 	mesh.add( bones[ 0 ] );
 
 	mesh.bind( skeleton );
+	skeletonHelper = new THREE.SkeletonHelper( mesh );
+	scene.add( skeletonHelper );
 
 	return mesh;
 
@@ -220,7 +222,11 @@ function createMesh( geometry, bones ) {
 
 function randomPose() {
 
-	updateMeshKinematics( [ ( Math.random() * 20 ) - 10, ( Math.random() * 20 ), 0 ], 1 );
+	var betaPrime = [];
+	modelToBeta().forEach( ( beta ) => { betaPrime.push( beta + ( Math.random() * 2 * Math.PI ) - Math.PI ) } );
+
+	updateMeshKinematics( betaPrime, 1 );
+
 }
 
 
@@ -231,9 +237,9 @@ function getSphere( size, color=0xff84c8 ) {
 
 	var geometry = new THREE.SphereGeometry( size, 24, 24 );
 
-	var material = new THREE.MeshBasicMaterial({
+	var material = new THREE.MeshBasicMaterial( {
 		color: color
-	});
+	} );
 
 	var mesh = new THREE.Mesh(
 		geometry,
@@ -241,6 +247,7 @@ function getSphere( size, color=0xff84c8 ) {
 	);
 
 	return mesh;
+
 }
 
 
@@ -258,73 +265,59 @@ function updateLine() {
 
 // TARGET
 function resetTargetPosition() {
+
   target.position.set( ...getEndPointWorldPosition().toArray() );
+
 	target.position.x += ( Math.random() - 0.5 ) * 2;
 	target.position.y += ( Math.random() - 0.5 ) * 2;
 	target.position.z = 0;
+
 }
 
+
+
+
+// DAT GUI INTERFACE
+// TODO: modify number of bones in GUI, constraint types (XYZ rotate & move)
 function setDatGui() {
 
+	gui.add( mesh , 'pose' ).name( 'Reset Model' );
 	gui.add( mesh , 'randomPose' ).name( 'Pose Model' );
 	gui.add( line , 'visible' ).name( 'Hide Line' );
 
 	////////////////////////////////
 
-  var folderTarget = gui.addFolder('Target');
+  var folderTarget = gui.addFolder( 'Target' );
 
 	folderTarget.add( parameters, 'mouseTarget' ).name( 'Follow Mouse' );
 
-  folderTarget.add( target, 'predict').name( 'To Endpoint' );
+  folderTarget.add( target, 'predict' ).name( 'To Endpoint' );
 	folderTarget.add( target , 'pose' ).name( 'Near Endpoint' );
 
 	folderTarget.add( target.position, 'x', -20, 20 ).name( 'X Position' );
 	folderTarget.add( target.position, 'y', -20, 20 ).name( 'Y Position' );
 	folderTarget.add( target.position, 'z', -20, 20 ).name( 'Z Position' );
 
-
   ////////////////////////////////
 
-
-  var folderFK = gui.addFolder('Forward Kinematics / Pose');
+  var folderFK = gui.addFolder( 'Forward Kinematics / Pose' );
 
 	var bones = mesh.skeleton.bones;
-  var folder;
+  var bone, folder;
 
-  ////////////////////////////////
+	var constraints = Object.keys( parameters.constraints );
+	constraints.sort();
 
+	constraints.forEach( ( key1 ) => {
 
-  var bone = bones[ 0 ];
+		jointNumber = parseInt( key1[ 1 ] );
 
-  folder = folderFK.addFolder( 'Joint 1' );
+		bone = bones[ jointNumber ];
 
-	folderFK.add( bone.position, 'x', 0, 20 ).name( 'Move X' );
-	// folderFK.add( bone.rotation, 'y', 0, 2 ).name( 'Rotate Joint 1' );
-  // folderFK.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'Rotate Joint 1' );
+		folder = folderFK.addFolder( `Joint ${ jointNumber }` );
+		jointGUI( folder, bone );
 
-  //////////////
-
-  var bone = bones[ 1 ];
-
-  folder = folderFK.addFolder( 'Joint 2' );
-
-  folderFK.add( bone.position, 'y', 0, 20 ).name( 'Move Y' );
-  // folderFK.add( bone.rotation, 'x', 0, 2 ).name( 'Rotate Joint 2' );
-  // folder.add( bone.position, 'x', -5, 5 ).name( 'Move X' );
-  // folder.add( bone.position, 'z', -5, 5 ).name( 'Move Z' );
-
-  ////////////////
-
-  var bone = bones[ 2 ];
-
-  folder = folderFK.addFolder( 'Joint 3' );
-
-  // folder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'Rotate X' );
-  // folder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'Rotate Y' );
-	folderFK.add( bone.position, 'z', 0, 20 ).name( 'Move Z' );
-  // folderFK.add( bone.rotation, 'z', 0, 2 ).name( 'Rotate Joint 3' );
-  // folderFK.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'Rotate Joint 3' );
-
+	} );
 
   ////////////////////////////////
 
@@ -337,6 +330,21 @@ function setDatGui() {
   folderIK.add( methodParametersIK, 'method', Object.keys( methodFunctionsIK ) ).name( 'Method' );
 
   ////////////////////////////////
+
+	// folder = folderIK.addFolder( 'Parameters' );
+	// var folderParam;
+	//
+	// constraints.forEach( ( key1 ) => {
+	//
+	// 	jointNumber = parseInt( key1[ 1 ] );
+	//
+	// 	folderParam = folder.addFolder( `Joint ${ jointNumber }` );
+	// 	constraintsGUI( folderParam, jointNumber );
+	//
+	// } );
+
+
+  ////////////////
 
 	folder = folderIK.addFolder( 'Levenberg–Marquardt' );
 
@@ -359,4 +367,55 @@ function setDatGui() {
 	 } );
 	 folder.add( parametersSMCM, 'distribution', 1, 50 ).name( 'Distribution' )
 
+}
+
+
+function jointGUI( folder, bone ) {
+
+	folder.add( bone.position, 'x', 0, 20 ).name( 'Move X' );
+	folder.add( bone.position, 'y', 0, 20 ).name( 'Move Y' );
+	folder.add( bone.position, 'z', 0, 20 ).name( 'Move Z' );
+
+	folder.add( bone.rotation, 'x', - Math.PI, Math.PI ).name( 'Rotate X' );
+	folder.add( bone.rotation, 'y', - Math.PI, Math.PI ).name( 'Rotate Y' );
+	folder.add( bone.rotation, 'z', - Math.PI, Math.PI ).name( 'Rotate Z' );
+
+
+}
+
+function constraintsGUI( folder, i ) {
+
+	folder.add( parameters.constraints[`b${ i }`], 'px' ).name( 'Move X' );
+	folder.add( parameters.constraints[`b${ i }`], 'py' ).name( 'Move Y' );
+	folder.add( parameters.constraints[`b${ i }`], 'pz' ).name( 'Move Z' );
+
+	folder.add( parameters.constraints[`b${ i }`], 'rx' ).name( 'Rotate X' );
+	folder.add( parameters.constraints[`b${ i }`], 'ry' ).name( 'Rotate Y' );
+	folder.add( parameters.constraints[`b${ i }`], 'rz' ).name( 'Rotate Z' );
+
+}
+
+function updateConstraints() {
+
+	var constraints = {};
+
+	var bones = mesh.skeleton.bones;
+
+	for ( var i = 0; i < bones.length; i ++ ) {
+
+		constraints[ `b${ i }` ] = {
+
+			px: true,
+			py: true,
+			pz: true,
+
+			rx: false,
+			ry: false,
+			rz: false
+
+		}
+
+	}
+
+	return constraints;
 }
