@@ -26,12 +26,90 @@ function getEndPointWorldPosition() {
 // BETA POINT CONVERSION
 function betaToPoint( beta ) {
 
+	var bones = mesh.skeleton.bones;
+
 	var predictedPoint = new THREE.Vector3().copy( defaultEndPoint );
 
-	var i = ( ( defaultBone.length + 1 ) * 6 ) - 1;
-	for ( var j = defaultBone.length - 1; j > 0; j -- ) {
+	var j = 0;
 
-		transformPoint( predictedPoint, defaultBone[ j ], beta[ i - 5 ], beta[ i - 4 ], beta[ i - 3 ], beta[ i - 2 ], beta[ i - 1 ], beta[ i ] );
+	for ( var i = defaultBone.length - 1; i > 0; i -- ) {
+
+		transformValues = [ predictedPoint, defaultBone[ j ] ];
+
+		if ( parameters.constraints[`b${ i }`].mx ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].position.x );
+
+		}
+
+
+		if ( parameters.constraints[`b${ i }`].my ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].position.y );
+
+		}
+
+
+		if ( parameters.constraints[`b${ i }`].mz ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].position.z );
+
+		}
+
+
+
+		if ( parameters.constraints[`b${ i }`].rx ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].rotation.x );
+
+		}
+
+
+		if ( parameters.constraints[`b${ i }`].ry ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].rotation.y );
+
+		}
+
+
+		if ( parameters.constraints[`b${ i }`].rz ) {
+
+			transformValues.push( beta[ j ] );
+			j ++;
+
+		} else {
+
+			transformValues.push( bones[ i ].rotation.z );
+
+		}
+
+
+		transformPoint( ...transformValues );
 
 		i -= 6;
 
@@ -43,7 +121,7 @@ function betaToPoint( beta ) {
 
 }
 
-function transformPoint( point, pivot, rotateX, rotateY, rotateZ, moveX, moveY, moveZ ) {
+function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, rotateZ ) {
 
 	  // Translate to origin
 	  pivot.negate();
@@ -139,47 +217,100 @@ function maxIndex( vector ) {
 // DLS
 function DLShelper( y_hat, y ) {
 
-	var j = jacobian( y_hat );
-	var jt = math.transpose( j );
+	// paramLength x numDimensions
+	var jt = jacobianTranspose( y_hat );
+	// numDimensions x paramLength
+	var j = math.transpose( jt );
 
-	// U
- 	var jtj = j.clone().transpose().multiply( j );
+	// paramLength x numDimensions * numDimensions x paramLength =  paramLength x paramLength
+ 	var jtj = math.multiply( jt, j );
 
-	// -v
 	// numDimensions x numEndEffectors
 	var d = y_hat.clone().sub( y ).toArray();
 
 	// paramLength x numDimensions  * numDimensions x numEndEffectors = paramLength x numEndEffectors
 	var jtd = math.multiply( jt, d );
 
-	var negV = math.multiply( jtd, -1 );
+	var njtd = math.multiply( jtd, -1 );
 
 	return {
-
+		jtjDiag: diagMatrix( jtj ), // Matrix
 		jtj: jtj, // Matrix
-		negV: negV // Vector
+		njtd: njtd // Vector
 
 	};
 
 }
 
-function jacobian( y_hat ) {
+function jacobianTranspose( y_hat ) {
+
+	var jt = [];
 
 	var bones = mesh.skeleton.bones;
 
-	// Update: beta now shoulderRotateY, elbowRotateX, wristRotateZ
-	// // axis * ( y_hat - bone_pos )
-	// var shoulder = y_hat.clone().sub( getModelWorldPosition( bones[ 0 ] ) ).y;
-	// var elbow = y_hat.clone().sub( getModelWorldPosition( bones[ 1 ] ) ).x;
-	// var wrist = y_hat.clone().sub( getModelWorldPosition( bones[ 2 ] ) ).z;
+	var row, jointNumber, constraints;
 
-	// Jacobian for translational joints
-	var identity = new THREE.Matrix3();
-	var shoulder = new THREE.Vector3().setFromMatrixColumn( identity, 0 );
-	var elbow = new THREE.Vector3().setFromMatrixColumn( identity, 1 );
-	var wrist = new THREE.Vector3().setFromMatrixColumn( identity, 2 );
+	Object.keys( parameters.constraints ).forEach( ( key1 ) => {
 
-	return identity;
+		jointNumber = parseInt( key1[ 1 ] );
+
+		Object.keys( parameters.constraints[ key1 ] ).forEach( ( key2 ) => {
+
+			if ( parameters.constraints[ key1 ][ key2 ] ) {
+
+				switch ( key2[ 1 ] ) {
+
+					case 'x':
+
+						row = [1, 0, 0];
+						break;
+
+					case 'y':
+
+						row = [0, 1, 0];
+						break;
+
+					case 'z':
+
+						row = [0, 0, 1];
+						break;
+
+				}
+
+				switch ( key2[ 0 ] ) {
+
+					case 'p':
+
+						break;
+
+					case 'r':
+
+						row = y_hat.clone().sub( bone[ jointNumber ] ).multiply( new THREE.Vector3( ...row ) ).toArray();
+						break;
+
+				}
+
+				jt.push( row );
+
+			}
+
+		} );
+
+	} );
+
+}
+
+function diagMatrix( matrix ) {
+
+	return matrix.map( function ( value, index, matrix ) {
+
+      var row = [];
+
+      value.forEach( ( v, i )=>{ index == i? row.push( v ) : row.push( 0 ) } );
+
+      return row
+
+    } );
 
 }
 
@@ -224,22 +355,20 @@ function updateMeshKinematics( beta, speed ) {
 
 					case 'x':
 
-						constraints = constraints.x;
+						constraints.x = linear_interpolation( beta[ i ], constraints.x, speed );
 						break;
 
 					case 'y':
 
-						constraints = constraints.y;
+						constraints.y = linear_interpolation( beta[ i ], constraints.y, speed );
 						break;
 
 					case 'z':
 
-						constraints = constraints.z;
+						constraints.z = linear_interpolation( beta[ i ], constraints.z, speed );
 						break;
 
 				}
-
-				constraints = linear_interpolation( beta[ i ], constraints, speed );
 
 				i ++;
 

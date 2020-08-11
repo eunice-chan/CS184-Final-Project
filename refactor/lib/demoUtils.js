@@ -222,7 +222,10 @@ function createMesh( geometry, bones ) {
 
 function randomPose() {
 
-	updateMeshKinematics( [ ( Math.random() * 20 ) - 10, ( Math.random() * 20 ), 0 ], 1 );
+	var betaPrime = [];
+	modelToBeta().forEach( ( beta ) => { betaPrime.push( beta + ( Math.random() * 2 * Math.PI ) - Math.PI ) } );
+
+	updateMeshKinematics( betaPrime, 1 );
 
 }
 
@@ -278,6 +281,7 @@ function resetTargetPosition() {
 // TODO: modify number of bones in GUI, constraint types (XYZ rotate & move)
 function setDatGui() {
 
+	gui.add( mesh , 'pose' ).name( 'Reset Model' );
 	gui.add( mesh , 'randomPose' ).name( 'Pose Model' );
 	gui.add( line , 'visible' ).name( 'Hide Line' );
 
@@ -386,9 +390,9 @@ function updateConstraints() {
 			py: true,
 			pz: true,
 
-			rx: true,
-			ry: true,
-			rz: true
+			rx: false,
+			ry: false,
+			rz: false
 
 		}
 

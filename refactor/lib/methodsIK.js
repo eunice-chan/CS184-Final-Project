@@ -1,7 +1,5 @@
 function DLS( param ) {
 
-	//	var squaredJ = math.diag(jtj);
-
 		// Initialize Values
 
 		// Get current transformation of the model joints
@@ -18,7 +16,7 @@ function DLS( param ) {
 		var helper = DLShelper( y_hat, y );
 
 		var u = helper.jtj;
-		var v = helper.negV;
+		var v = helper.njtd;
 
 		var curr_obj_fn = squaredDistance( y_hat, y );
 
@@ -27,25 +25,25 @@ function DLS( param ) {
 			if ( param.lambda === Infinity ) {
 				console.warn( "Lambda reached infinity! Try a different initial pose." );
 				return;
-			}
-
-			if ( param.lambda === 0 ) {
+			} else if ( param.lambda === 0 ) {
 				console.warn( "Lambda is 0\nResetting to 1000." );
 				param.lambda = 1000;
 			}
 
-
 			param.lambda /= param.increment;
 
 			// System of equations
-			var h = helper.jtj;
-			h.elements[ 0 ] += param.lambda * ( 1 + helper.squaredJ.x );
-			h.elements[ 4 ] += param.lambda * ( 1 + helper.squaredJ.y );
-			h.elements[ 8 ] += param.lambda * ( 1 + helper.squaredJ.z );
+			var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size[ 0 ] ), helper.jtjDiag ) ) );
 
-			var delta = helper.negV.clone().applyMatrix3( new THREE.Matrix3().getInverse( h ) );
+			var delta = math.lusolve( h, helper.njtd );
 
-			var beta_prime = [ beta[ 0 ] + delta.x, beta[ 1 ] + delta.y, beta[ 2 ] + delta.z ];
+			var beta_prime = [];
+
+			for ( var i = 0; i < beta.length; i ++ )  {
+
+				beta_prime.push( beta[ i ] + delta[ i ][ 0 ] );
+			}
+			
 			var y_hat_prime = betaToPoint( beta_prime );
 
 			var next_obj_fn = squaredDistance( y_hat_prime, y );

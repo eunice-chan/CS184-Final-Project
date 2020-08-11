@@ -119,6 +119,7 @@ function initScene() {
   target.pose = resetTargetPosition;
   target.predict = () => {
     target.position.set( ...betaToPoint( modelToBeta() ).toArray() );
+		console.log( getTargetWorldPosition());
   }
   scene.add( target );
 
