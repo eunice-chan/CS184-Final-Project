@@ -40,37 +40,39 @@ function betaToPoint( beta ) {
 
 		if ( parameters.constraints[`b${ i }`].px ) {
 
-			transformValues.push( beta[ j ] - defaultLocalBonePos[ i ].x );
+			transformValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].position.x - defaultLocalBonePos[ i ].x );
+			transformValues.push( bones[ i ].position.x );
 
 		}
 
+
 		if ( parameters.constraints[`b${ i }`].py ) {
 
-			transformValues.push( beta[ j ] - defaultLocalBonePos[ i ].y );
+			transformValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].position.y - defaultLocalBonePos[ i ].y );
+			transformValues.push( bones[ i ].position.y );
 
 		}
 
 
 		if ( parameters.constraints[`b${ i }`].pz ) {
 
-			transformValues.push( beta[ j ] - defaultLocalBonePos[ i ].z );
+			transformValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].position.z - defaultLocalBonePos[ i ].z );
+			transformValues.push( bones[ i ].position.z );
 
 		}
+
 
 
 		if ( parameters.constraints[`b${ i }`].rx ) {
@@ -111,6 +113,9 @@ function betaToPoint( beta ) {
 		transformPoint( ...transformValues );
 
 	}
+	// TODO: idk why : | figure out why
+	predictedPoint.y -= modelParameters.boneHeight / 2 * modelParameters.numBones;
+	// console.log( distance( predictedPoint, getEndPointWorldPosition() ) );
 
 	return predictedPoint;
 
