@@ -22,9 +22,6 @@ function getEndPointWorldPosition() {
 
 }
 
-
-
-
 // BETA POINT CONVERSION
 function betaToPoint( beta ) {
 
@@ -32,114 +29,108 @@ function betaToPoint( beta ) {
 
 	var predictedPoint = defaultEndPoint.clone();
 
-	var j = 0;
+	var moveX = 0;
+	var moveY = - modelParameters.boneHeight / 2 * modelParameters.numBones;
+	var moveZ = 0;
 
+	var j = 0;
 	for ( var i = defaultWorldBone.length - 1; i >= 0; i -- ) {
 
-		transformValues = [ predictedPoint, defaultWorldBone[ i ] ];
+		rotateValues = [ predictedPoint, defaultWorldBone[ i ] ];
 
 		if ( parameters.constraints[ `b${ i }` ].px ) {
 
-			transformValues.push( beta[ j ] );
+			moveX += beta[ j ];
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].position.x );
+			moveX += bones[ i ].position.x;
 
 		}
 
 
 		if ( parameters.constraints[ `b${ i }` ].py ) {
 
-			transformValues.push( beta[ j ] );
+			moveY += beta[ j ];
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].position.y );
+			moveY += bones[ i ].position.y;
 
 		}
-
 
 		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
-			transformValues.push( beta[ j ] );
+			moveZ += beta[ j ];
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].position.z );
+			moveZ += bones[ i ].position.z;
 
 		}
-
 
 
 		if ( parameters.constraints[ `b${ i }` ].rx ) {
 
-			transformValues.push( beta[ j ] );
+			rotateValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].rotation.x );
+			rotateValues.push( bones[ i ].rotation.x );
 
 		}
 
 
 		if ( parameters.constraints[ `b${ i }` ].ry ) {
 
-			transformValues.push( beta[ j ] );
+			rotateValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].rotation.y );
+			rotateValues.push( bones[ i ].rotation.y );
 
 		}
 
 
-		console.log(beta[ j ], bones[ i ].rotation.z );
 		if ( parameters.constraints[ `b${ i }` ].rz ) {
 
-			transformValues.push( beta[ j ] );
+			rotateValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].rotation.z );
+			rotateValues.push( bones[ i ].rotation.z );
 
 		}
 
-
-		console.log( transformValues );
-
-		predictedPoint = transformPoint( ...transformValues );
+		predictedPoint = rotatePoint( ...rotateValues );
 
 	}
 
-	// predictedPoint.y -= modelParameters.boneHeight / 2 * modelParameters.numBones;
 	// console.log( distance( predictedPoint, getEndPointWorldPosition() ) );
+	predictedPoint.x += moveX;
+	predictedPoint.y += moveY;
+	predictedPoint.z += moveZ;
+
 
 	return predictedPoint;
 
 }
 
-function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, rotateZ ) {
+function rotatePoint( point, pivot, rotateX, rotateY, rotateZ ) {
 
   // Translate to origin
   pivot.negate();
   point.add( pivot );
 
-
   // Transform
   var transform = new THREE.Euler( rotateX, rotateY, rotateZ, 'XYZ' );
   point.applyEuler( transform );
-
-	// point.x += moveX;
-	// point.y += moveY;
-	// point.z += moveZ;
-
 
   // Translate back
   pivot.negate();
@@ -148,9 +139,6 @@ function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, ro
 	return point;
 
 }
-
-
-
 
 // GENERIC
 
@@ -295,7 +283,7 @@ function jacobianTranspose( yHat ) {
 
 					case 'r':
 
-						row = yHat.clone().sub( bone[ jointNumber ] ).multiply( new THREE.Vector3( ...row ) ).toArray();
+						row = yHat.clone().sub( bones[ jointNumber ].position ).cross( new THREE.Vector3( ...row ) ).toArray();
 						break;
 
 				}
@@ -420,7 +408,7 @@ function modelToBeta() {
 
 		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
-			beta.push( bones[ i ].position.x );
+			beta.push( bones[ i ].position.z );
 
 		}
 

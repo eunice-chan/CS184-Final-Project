@@ -406,9 +406,9 @@ function updateConstraints() {
 
 		constraints[ `b${ i }` ] = {
 
-			px: false,
-			py: false,
-			pz: false,
+			px: true,
+			py: true,
+			pz: true,
 
 			rx: true,
 			ry: true,

@@ -82,7 +82,7 @@ function initScene() {
 	// Model
 	modelParameters = {
 
-	  numBones: 1,
+	  numBones: 3,
 	  boneHeight: 8,
 
 		width: 5,
