@@ -223,7 +223,8 @@ function createMesh( geometry, bones ) {
 function randomPose() {
 
 	var betaPrime = [];
-	modelToBeta().forEach( ( beta ) => { betaPrime.push( beta + ( Math.random() * 2 * Math.PI ) - Math.PI ) } );
+
+	modelToBeta().forEach( ( beta ) => { betaPrime.push( ( Math.random() * 2 * Math.PI ) - Math.PI ) } );
 
 	updateMeshKinematics( betaPrime, 1 );
 
@@ -264,7 +265,7 @@ function updateLine() {
 }
 
 // TARGET
-function resetTargetPosition() {
+function setTargetPosition() {
 
   target.position.set( ...getEndPointWorldPosition().toArray() );
 
@@ -331,17 +332,17 @@ function setDatGui() {
 
   ////////////////////////////////
 
-	// folder = folderIK.addFolder( 'Parameters' );
-	// var folderParam;
-	//
-	// constraints.forEach( ( key1 ) => {
-	//
-	// 	jointNumber = parseInt( key1[ 1 ] );
-	//
-	// 	folderParam = folder.addFolder( `Joint ${ jointNumber }` );
-	// 	constraintsGUI( folderParam, jointNumber );
-	//
-	// } );
+	folder = folderIK.addFolder( 'Parameters' );
+	var folderParam;
+
+	constraints.forEach( ( key1 ) => {
+
+		jointNumber = parseInt( key1[ 1 ] );
+
+		folderParam = folder.addFolder( `Joint ${ jointNumber }` );
+		constraintsGUI( folderParam, jointNumber );
+
+	} );
 
 
   ////////////////

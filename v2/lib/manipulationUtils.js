@@ -30,49 +30,47 @@ function betaToPoint( beta ) {
 
 	var bones = mesh.skeleton.bones;
 
-	var predictedPoint = new THREE.Vector3().copy( defaultEndPoint );
+	var predictedPoint = defaultEndPoint.clone();
 
 	var j = 0;
 
-	for ( var i = defaultBone.length - 1; i >= 0; i -- ) {
+	for ( var i = defaultWorldBone.length - 1; i >= 0; i -- ) {
 
-		transformValues = [ predictedPoint, defaultBone[ i ] ];
+		transformValues = [ predictedPoint, defaultWorldBone[ i ] ];
 
 		if ( parameters.constraints[`b${ i }`].px ) {
 
-			transformValues.push( beta[ j ] );
+			transformValues.push( beta[ j ] - defaultLocalBonePos[ i ].x );
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].position.x );
+			transformValues.push( bones[ i ].position.x - defaultLocalBonePos[ i ].x );
 
 		}
 
-
 		if ( parameters.constraints[`b${ i }`].py ) {
 
-			transformValues.push( beta[ j ] );
+			transformValues.push( beta[ j ] - defaultLocalBonePos[ i ].y );
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].position.y );
+			transformValues.push( bones[ i ].position.y - defaultLocalBonePos[ i ].y );
 
 		}
 
 
 		if ( parameters.constraints[`b${ i }`].pz ) {
 
-			transformValues.push( beta[ j ] );
+			transformValues.push( beta[ j ] - defaultLocalBonePos[ i ].z );
 			j ++;
 
 		} else {
 
-			transformValues.push( bones[ i ].position.z );
+			transformValues.push( bones[ i ].position.z - defaultLocalBonePos[ i ].z );
 
 		}
-
 
 
 		if ( parameters.constraints[`b${ i }`].rx ) {
@@ -114,34 +112,29 @@ function betaToPoint( beta ) {
 
 	}
 
-	// TODO: idk why : | figure out why
-	predictedPoint.y -= 4 * modelParameters.numBones;
-
-	var bones = [];
-
 	return predictedPoint;
 
 }
 
 function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, rotateZ ) {
 
-	  // Translate to origin
-	  pivot.negate();
-	  point.add( pivot );
+  // Translate to origin
+  pivot.negate();
+  point.add( pivot );
 
 
-	  // Transform
-	  var transform = new THREE.Euler( rotateX, rotateY, rotateZ, 'XYZ' );
-	  point.applyEuler( transform );
+  // Transform
+  var transform = new THREE.Euler( rotateX, rotateY, rotateZ, 'XYZ' );
+  point.applyEuler( transform );
 
-		point.x += moveX;
-		point.y += moveY;
-		point.z += moveZ;
+	point.x += moveX;
+	point.y += moveY;
+	point.z += moveZ;
 
 
-	  // Translate back
-	  pivot.negate();
-	  point.add( pivot );
+  // Translate back
+  pivot.negate();
+  point.add( pivot );
 
 	return point;
 

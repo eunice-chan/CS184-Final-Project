@@ -8,7 +8,7 @@ var scene, camera, renderer, orbit;
 var lights;
 
 // Model
-var mesh, modelParameters, bones, defaultBone;
+var mesh, modelParameters, bones, defaultWorldBone, defaultLocalBonePos;
 
 // End point
 var endPoint, defaultEndPoint;
@@ -77,21 +77,21 @@ function initScene() {
   // POPULATE SCENE
 
   // Lighting
-	initLights( sceneColor )
+	initLights( sceneColor );
 
 	// Model
 	modelParameters = {
 
-	  numBones: 3,
+	  numBones: 2,
 	  boneHeight: 8,
 
-		width:5,
+		width: 5,
 		depth: 5,
 
 		widthSegments: 5,
 	  depthSegments: 5
 
-	}
+	};
 
 	initModel( modelParameters );
 
@@ -106,26 +106,29 @@ function initScene() {
 	// Save default end position for calculations
   scene.updateMatrixWorld( true );
 	defaultEndPoint = getEndPointWorldPosition();
+	// console.log(defaultEndPoint);
 
 	// Bones
 	// Save default bone positions for calculations
-  defaultBone = [];
+  defaultWorldBone = [];
+  defaultLocalBonePos = [];
 
   bones = mesh.skeleton.bones;
 	bones.forEach( ( bone ) => {
 
-		defaultBone.push( getModelWorldPosition( bone ) );
+		defaultWorldBone.push( getModelWorldPosition( bone ) );
+		defaultLocalBonePos.push( bone.position );
 
 	} );
 
   // Target point
   target = getSphere( 0.5 );
-  target.pose = resetTargetPosition;
+  target.pose = setTargetPosition;
   target.predict = () => {
 
     target.position.set( ...betaToPoint( modelToBeta() ).toArray() );
 
-  }
+  };
   scene.add( target );
 
 	// Target interaction
@@ -138,11 +141,10 @@ function initScene() {
 
 		constraints: updateConstraints()
 
-	}
+	};
 
 	// Randomly pose
   mesh.randomPose = randomPose;
-	mesh.randomPose();
 
   scene.updateMatrixWorld( true );
   target.pose();
@@ -172,7 +174,7 @@ function initScene() {
   methodParametersIK = {
 
     method: 'Levenberg–Marquardt',
-    enabled: true,
+    enabled: false,
     run: function() { methodFunctionsIK[ methodParametersIK.method ].function( methodFunctionsIK[ methodParametersIK.method ].parameters ) },
     speed: 0.1
 
@@ -221,9 +223,6 @@ function initScene() {
 	setDatGui();
 	scene.updateMatrixWorld( true );
 
-	// Initialize values for SMCM
-	initSMCM();
-
 }
 
 function render() {
@@ -238,6 +237,7 @@ function render() {
 
 	}
 
+	// TODO: fix when in motion.
   updateLine();
 
 	renderer.render( scene, camera );
