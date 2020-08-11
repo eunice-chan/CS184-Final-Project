@@ -2,8 +2,10 @@
 function getModelWorldPosition( model ) {
 
 	model.updateMatrixWorld();
+
   var worldMatrix = model.matrixWorld;
   var worldPosition  = new THREE.Vector3().setFromMatrixPosition( worldMatrix );
+
   return worldPosition;
 
 }
@@ -32,11 +34,11 @@ function betaToPoint( beta ) {
 
 	var j = 0;
 
-	for ( var i = defaultBone.length - 1; i > 0; i -- ) {
+	for ( var i = defaultBone.length - 1; i >= 0; i -- ) {
 
-		transformValues = [ predictedPoint, defaultBone[ j ] ];
+		transformValues = [ predictedPoint, defaultBone[ i ] ];
 
-		if ( parameters.constraints[`b${ i }`].mx ) {
+		if ( parameters.constraints[`b${ i }`].px ) {
 
 			transformValues.push( beta[ j ] );
 			j ++;
@@ -48,7 +50,7 @@ function betaToPoint( beta ) {
 		}
 
 
-		if ( parameters.constraints[`b${ i }`].my ) {
+		if ( parameters.constraints[`b${ i }`].py ) {
 
 			transformValues.push( beta[ j ] );
 			j ++;
@@ -60,7 +62,7 @@ function betaToPoint( beta ) {
 		}
 
 
-		if ( parameters.constraints[`b${ i }`].mz ) {
+		if ( parameters.constraints[`b${ i }`].pz ) {
 
 			transformValues.push( beta[ j ] );
 			j ++;
@@ -108,14 +110,14 @@ function betaToPoint( beta ) {
 
 		}
 
-
 		transformPoint( ...transformValues );
-
-		i -= 6;
 
 	}
 
-	predictedPoint.y -= modelParameters.boneHeight;
+	// TODO: idk why : | figure out why
+	predictedPoint.y -= 4 * modelParameters.numBones;
+
+	var bones = [];
 
 	return predictedPoint;
 
@@ -151,15 +153,15 @@ function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, ro
 // GENERIC
 
 // POINT FUNCTIONS
-function distance( y_hat, y ) {
+function distance( yHat, y ) {
 
-	return y.distanceTo( y_hat );
+	return y.distanceTo( yHat );
 
 }
 
-function squaredDistance( y_hat, y ) {
+function squaredDistance( yHat, y ) {
 
-	return y.distanceToSquared( y_hat );
+	return y.distanceToSquared( yHat );
 
 }
 
@@ -215,10 +217,10 @@ function maxIndex( vector ) {
 
 
 // DLS
-function DLShelper( y_hat, y ) {
+function DLShelper( yHat, y ) {
 
 	// paramLength x numDimensions
-	var jt = jacobianTranspose( y_hat );
+	var jt = jacobianTranspose( yHat );
 	// numDimensions x paramLength
 	var j = math.transpose( jt );
 
@@ -226,7 +228,7 @@ function DLShelper( y_hat, y ) {
  	var jtj = math.multiply( jt, j );
 
 	// numDimensions x numEndEffectors
-	var d = y_hat.clone().sub( y ).toArray();
+	var d = yHat.clone().sub( y ).toArray();
 
 	// paramLength x numDimensions  * numDimensions x numEndEffectors = paramLength x numEndEffectors
 	var jtd = math.multiply( jt, d );
@@ -234,15 +236,15 @@ function DLShelper( y_hat, y ) {
 	var njtd = math.multiply( jtd, -1 );
 
 	return {
-		jtjDiag: diagMatrix( jtj ), // Matrix
-		jtj: jtj, // Matrix
+		jtjDiag: math.matrix( diagMatrix( jtj ) ), // Matrix
+		jtj: math.matrix( jtj ), // Matrix
 		njtd: njtd // Vector
 
 	};
 
 }
 
-function jacobianTranspose( y_hat ) {
+function jacobianTranspose( yHat ) {
 
 	var jt = [];
 
@@ -250,11 +252,17 @@ function jacobianTranspose( y_hat ) {
 
 	var row, jointNumber, constraints;
 
-	Object.keys( parameters.constraints ).forEach( ( key1 ) => {
+	var constraintKeys = Object.keys( parameters.constraints );
+	constraintKeys.sort();
+
+	constraintKeys.forEach( ( key1 ) => {
 
 		jointNumber = parseInt( key1[ 1 ] );
 
-		Object.keys( parameters.constraints[ key1 ] ).forEach( ( key2 ) => {
+		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
+		paramKeys.sort();
+
+		paramKeys.forEach( ( key2 ) => {
 
 			if ( parameters.constraints[ key1 ][ key2 ] ) {
 
@@ -285,7 +293,7 @@ function jacobianTranspose( y_hat ) {
 
 					case 'r':
 
-						row = y_hat.clone().sub( bone[ jointNumber ] ).multiply( new THREE.Vector3( ...row ) ).toArray();
+						row = yHat.clone().sub( bone[ jointNumber ] ).multiply( new THREE.Vector3( ...row ) ).toArray();
 						break;
 
 				}
@@ -297,6 +305,8 @@ function jacobianTranspose( y_hat ) {
 		} );
 
 	} );
+
+	return jt;
 
 }
 
@@ -315,7 +325,7 @@ function diagMatrix( matrix ) {
 }
 
 
-function linear_interpolation( x, y, alpha ) {
+function linearInterpolation( x, y, alpha ) {
 
 	return ( alpha * x ) + ( ( 1 - alpha ) * y );
 
@@ -329,11 +339,17 @@ function updateMeshKinematics( beta, speed ) {
 
 	var jointNumber, constraints;
 
-	Object.keys( parameters.constraints ).forEach( ( key1 ) => {
+	var constraintKeys = Object.keys( parameters.constraints );
+	constraintKeys.sort();
+
+	constraintKeys.forEach( ( key1 ) => {
 
 		jointNumber = parseInt( key1[ 1 ] );
 
-		Object.keys( parameters.constraints[ key1 ] ).forEach( ( key2 ) => {
+		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
+		paramKeys.sort();
+
+		paramKeys.forEach( ( key2 ) => {
 
 			if ( parameters.constraints[ key1 ][ key2 ] ) {
 
@@ -355,17 +371,17 @@ function updateMeshKinematics( beta, speed ) {
 
 					case 'x':
 
-						constraints.x = linear_interpolation( beta[ i ], constraints.x, speed );
+						constraints.x = linearInterpolation( beta[ i ], constraints.x, speed );
 						break;
 
 					case 'y':
 
-						constraints.y = linear_interpolation( beta[ i ], constraints.y, speed );
+						constraints.y = linearInterpolation( beta[ i ], constraints.y, speed );
 						break;
 
 					case 'z':
 
-						constraints.z = linear_interpolation( beta[ i ], constraints.z, speed );
+						constraints.z = linearInterpolation( beta[ i ], constraints.z, speed );
 						break;
 
 				}
@@ -388,11 +404,17 @@ function modelToBeta() {
 
 	var jointNumber, constraints;
 
-	Object.keys( parameters.constraints ).forEach( ( key1 ) => {
+	var constraintKeys = Object.keys( parameters.constraints );
+	constraintKeys.sort();
+
+	constraintKeys.forEach( ( key1 ) => {
 
 		jointNumber = parseInt( key1[ 1 ] );
 
-		Object.keys( parameters.constraints[ key1 ] ).forEach( ( key2 ) => {
+		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
+		paramKeys.sort();
+
+		paramKeys.forEach( ( key2 ) => {
 
 			if ( parameters.constraints[ key1 ][ key2 ] ) {
 
@@ -447,11 +469,11 @@ function modelToBeta() {
 function sampleNewBeta( beta ) {
 
 	// TODO: replace with a Gaussian? Exponential? distribution
-	var beta_prime = [];
+	var betaPrime = [];
 
-	beta.forEach( ( value ) => { beta_prime.push( value + ( ( Math.random() - 0.5 ) * parametersSMCM.distribution ) ) } );
+	beta.forEach( ( value ) => { betaPrime.push( value + ( ( Math.random() - 0.5 ) * parametersSMCM.distribution ) ) } );
 
-	return beta_prime;
+	return betaPrime;
 
 }
 

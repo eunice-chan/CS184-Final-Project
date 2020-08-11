@@ -112,14 +112,19 @@ function initScene() {
   defaultBone = [];
 
   bones = mesh.skeleton.bones;
-	bones.forEach( ( bone ) => { defaultBone.push( getModelWorldPosition( bone ) ) } );
+	bones.forEach( ( bone ) => {
+
+		defaultBone.push( getModelWorldPosition( bone ) );
+
+	} );
 
   // Target point
   target = getSphere( 0.5 );
   target.pose = resetTargetPosition;
   target.predict = () => {
+
     target.position.set( ...betaToPoint( modelToBeta() ).toArray() );
-		console.log( getTargetWorldPosition());
+
   }
   scene.add( target );
 

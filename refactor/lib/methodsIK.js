@@ -10,15 +10,15 @@ function DLS( param ) {
 
 		param.lambda /= param.decrement;
 
-		// y_hat is the current position in space
-		var y_hat = betaToPoint( beta );
+		// yHat is the current position in space
+		var yHat = betaToPoint( beta );
 
-		var helper = DLShelper( y_hat, y );
+		var helper = DLShelper( yHat, y );
 
 		var u = helper.jtj;
 		var v = helper.njtd;
 
-		var curr_obj_fn = squaredDistance( y_hat, y );
+		var betaObjFn = squaredDistance( yHat, y );
 
 		for ( var j = 0; j < param.maxIter; j ++ ) {
 
@@ -33,27 +33,28 @@ function DLS( param ) {
 			param.lambda /= param.increment;
 
 			// System of equations
-			var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size[ 0 ] ), helper.jtjDiag ) ) );
+			var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size() ), helper.jtjDiag ) ) );
 
 			var delta = math.lusolve( h, helper.njtd );
+			delta = math.transpose( delta );
+			delta = delta._data[ 0 ];
 
-			var beta_prime = [];
+			var betaPrime = math.add( beta, math.transpose( delta ) );
 
-			for ( var i = 0; i < beta.length; i ++ )  {
+			var yHatPrime = betaToPoint( betaPrime );
+			console.log(beta);
+			console.log(yHat);
+			console.log(betaPrime);
+			console.log(yHatPrime);
 
-				beta_prime.push( beta[ i ] + delta[ i ][ 0 ] );
-			}
-			
-			var y_hat_prime = betaToPoint( beta_prime );
+			var betaPrimeObjFn = squaredDistance( yHatPrime, y );
 
-			var next_obj_fn = squaredDistance( y_hat_prime, y );
-
-			if ( next_obj_fn < curr_obj_fn || curr_obj_fn == 0 ) {
-				beta = beta_prime;
+			if ( betaPrimeObjFn < betaObjFn || betaObjFn == 0 ) {
+				beta = betaPrime;
 				updateMeshKinematics( beta, methodParametersIK.speed );
 
 				// Stopping criteron: Change too small
-				if ( next_obj_fn > 0.999999999 * curr_obj_fn || next_obj_fn < 0.000000001 ) {
+				if ( betaPrimeObjFn > 0.999999999 * betaObjFn || betaPrimeObjFn < 0.000000001 ) {
 
 					return beta;
 
@@ -62,7 +63,7 @@ function DLS( param ) {
 					break;
 
 				}
-			} else if ( curr_obj_fn > 0.999999999 * next_obj_fn ) {
+			} else if ( betaObjFn > 0.999999999 * betaPrimeObjFn ) {
 
 					return beta;
 			}
