@@ -1,5 +1,7 @@
 function DLS( param ) {
 
+	//	var squaredJ = math.diag(jtj);
+
 		// Initialize Values
 
 		// Get current transformation of the model joints
@@ -16,19 +18,19 @@ function DLS( param ) {
 		var helper = DLShelper( y_hat, y );
 
 		var u = helper.jtj;
-		var v = helper.jtd;
+		var v = helper.negV;
 
 		var curr_obj_fn = squaredDistance( y_hat, y );
 
 		for ( var j = 0; j < param.maxIter; j ++ ) {
 
-			if (param.lambda === Infinity) {
-				console.warn("Lambda reached infinity! Try a different initial pose.");
+			if ( param.lambda === Infinity ) {
+				console.warn( "Lambda reached infinity! Try a different initial pose." );
 				return;
 			}
 
-			if (param.lambda === 0) {
-				console.warn("Lambda is 0\nResetting to 1000.");
+			if ( param.lambda === 0 ) {
+				console.warn( "Lambda is 0\nResetting to 1000." );
 				param.lambda = 1000;
 			}
 
@@ -41,7 +43,7 @@ function DLS( param ) {
 			h.elements[ 4 ] += param.lambda * ( 1 + helper.squaredJ.y );
 			h.elements[ 8 ] += param.lambda * ( 1 + helper.squaredJ.z );
 
-			var delta = helper.jtd.clone().applyMatrix3( new THREE.Matrix3().getInverse( h ) );
+			var delta = helper.negV.clone().applyMatrix3( new THREE.Matrix3().getInverse( h ) );
 
 			var beta_prime = [ beta[ 0 ] + delta.x, beta[ 1 ] + delta.y, beta[ 2 ] + delta.z ];
 			var y_hat_prime = betaToPoint( beta_prime );
@@ -53,7 +55,7 @@ function DLS( param ) {
 				updateMeshKinematics( beta, methodParametersIK.speed );
 
 				// Stopping criteron: Change too small
-				if ( next_obj_fn > 0.999999999 * curr_obj_fn || next_obj_fn < 0.000000001) {
+				if ( next_obj_fn > 0.999999999 * curr_obj_fn || next_obj_fn < 0.000000001 ) {
 
 					return beta;
 
@@ -90,7 +92,7 @@ function initSMCM() {
 
 	 parametersSMCM.n = n;
 	 parametersSMCM.weights = normalize( weights );
-	 
+
 }
 
 function SMCM( param ) {
@@ -111,7 +113,6 @@ function SMCM( param ) {
 
 		}
 		parametersSMCM.n = n;
-		console.log(parametersSMCM);
 
 	 // Importance sample
  	 n = [];
