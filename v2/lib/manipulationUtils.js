@@ -22,9 +22,6 @@ function getEndPointWorldPosition() {
 
 }
 
-
-
-
 // BETA POINT CONVERSION
 function betaToPoint( beta ) {
 
@@ -58,7 +55,6 @@ function betaToPoint( beta ) {
 
 		}
 
-
 		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
 			calcBones[ i ].position.z = beta[ j ];
@@ -69,7 +65,6 @@ function betaToPoint( beta ) {
 			calcBones[ i ].position.z = bones[ i ].position.z;
 
 		}
-
 
 
 		if ( parameters.constraints[ `b${ i }` ].rx ) {
@@ -113,17 +108,20 @@ function betaToPoint( beta ) {
 	console.log(predictedPoint);
 	// predictedPoint.y -= modelParameters.boneHeight / 2 * modelParameters.numBones;
 	// console.log( distance( predictedPoint, getEndPointWorldPosition() ) );
+	predictedPoint.x += moveX;
+	predictedPoint.y += moveY;
+	predictedPoint.z += moveZ;
+
 
 	return predictedPoint;
 
 }
 
-function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, rotateZ ) {
+function rotatePoint( point, pivot, rotateX, rotateY, rotateZ ) {
 
   // Translate to origin
   pivot.negate();
   point.add( pivot );
-
 
   // Transform
   var transform = new THREE.Euler( rotateX, rotateY, rotateZ, 'XYZ' );
@@ -137,9 +135,6 @@ function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, ro
 	return point;
 
 }
-
-
-
 
 // GENERIC
 
@@ -261,17 +256,17 @@ function jacobianTranspose( yHat ) {
 
 					case 'x':
 
-						row = [1, 0, 0];
+						row = [ 1, 0, 0 ];
 						break;
 
 					case 'y':
 
-						row = [0, 1, 0];
+						row = [ 0, 1, 0 ];
 						break;
 
 					case 'z':
 
-						row = [0, 0, 1];
+						row = [ 0, 0, 1 ];
 						break;
 
 				}
@@ -284,7 +279,7 @@ function jacobianTranspose( yHat ) {
 
 					case 'r':
 
-						row = yHat.clone().sub( bone[ jointNumber ] ).multiply( new THREE.Vector3( ...row ) ).toArray();
+						row = yHat.clone().sub( bones[ jointNumber ].position ).cross( new THREE.Vector3( ...row ) ).toArray();
 						break;
 
 				}
@@ -409,7 +404,7 @@ function modelToBeta() {
 
 		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
-			beta.push( bones[ i ].position.x );
+			beta.push( bones[ i ].position.z );
 
 		}
 
