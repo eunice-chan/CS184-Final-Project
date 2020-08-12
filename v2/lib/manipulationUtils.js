@@ -106,7 +106,7 @@ function betaToPoint( beta ) {
 
 	}
 
-	render( scene );
+	renderer.render( scene, camera );
 
 	predictedPoint = getModelWorldPosition( calcBones[ calcBones.length - 1] );
 
@@ -219,6 +219,7 @@ function DLShelper( yHat, y ) {
 	var njtd = math.multiply( jtd, -1 );
 
 	return {
+
 		jtjDiag: math.matrix( diagMatrix( jtj ) ), // Matrix
 		jtj: math.matrix( jtj ), // Matrix
 		njtd: njtd // Vector
@@ -235,59 +236,64 @@ function jacobianTranspose( yHat ) {
 
 	var row, jointNumber, constraints;
 
-	var constraintKeys = Object.keys( parameters.constraints );
-	constraintKeys.sort();
+	var identity = new THREE.Matrix3();
+	var xAxis = new THREE.Vector3().setFromMatrix3Column( identity, 0 );
+	var yAxis = new THREE.Vector3().setFromMatrix3Column( identity, 1 );
+	var zAxis = new THREE.Vector3().setFromMatrix3Column( identity, 2 );
 
-	constraintKeys.forEach( ( key1 ) => {
+	var i = 0;
 
-		jointNumber = parseInt( key1[ 1 ] );
+	for ( var i = bones.length - 1; i >= 0; i -- ) {
 
-		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
-		paramKeys.sort();
 
-		paramKeys.forEach( ( key2 ) => {
+		if ( parameters.constraints[ `b${ i }` ].px ) {
 
-			if ( parameters.constraints[ key1 ][ key2 ] ) {
+			row = xAxis;
 
-				switch ( key2[ 1 ] ) {
+			jt.push( row.toArray() );
 
-					case 'x':
+		}
 
-						row = [ 1, 0, 0 ];
-						break;
+		if ( parameters.constraints[ `b${ i }` ].py ) {
 
-					case 'y':
+			row = yAxis;
 
-						row = [ 0, 1, 0 ];
-						break;
+			jt.push( row.toArray() );
 
-					case 'z':
+		}
 
-						row = [ 0, 0, 1 ];
-						break;
+		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
-				}
+			row = zAxis;
 
-				switch ( key2[ 0 ] ) {
+			jt.push( row.toArray() );
 
-					case 'p':
+		}
 
-						break;
+		if ( parameters.constraints[ `b${ i }` ].rx ) {
 
-					case 'r':
+			row = yHat.clone().sub( bones[ jointNumber ].position ).cross( xAxis ).toArray();
 
-						row = yHat.clone().sub( bones[ jointNumber ].position ).cross( new THREE.Vector3( ...row ) ).toArray();
-						break;
+			jt.push( row.toArray() );
+		}
 
-				}
+			if ( parameters.constraints[ `b${ i }` ].ry ) {
 
-				jt.push( row );
+				row = yHat.clone().sub( bones[ jointNumber ].position ).cross( yAxis ).toArray();
+
+				jt.push( row.toArray() );
 
 			}
 
-		} );
+			if ( parameters.constraints[ `b${ i }` ].rz ) {
 
-	} );
+				row = yHat.clone().sub( bones[ jointNumber ].position ).cross( zAxis ).toArray();
+
+				jt.push( row.toArray() );
+
+			}
+
+		}
 
 	return jt;
 

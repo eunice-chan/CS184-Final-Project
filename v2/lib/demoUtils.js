@@ -421,9 +421,9 @@ function updateConstraints() {
 			py: true,
 			pz: true,
 
-			rx: true,
-			ry: true,
-			rz: true
+			rx: false,
+			ry: false,
+			rz: false
 
 		}
 

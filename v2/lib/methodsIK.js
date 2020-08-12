@@ -12,30 +12,33 @@ function DLS( param ) {
 
 		// yHat is the current position in space
 		var yHat = betaToPoint( beta );
-
+console.log ("BETA="+ beta);
 		var helper = DLShelper( yHat, y );
 
-		var u = helper.jtj;
-		var v = helper.njtd;
-
+console.log ("jtj="+ helper.jtj);
 		var betaObjFn = squaredDistance( yHat, y );
 
 		for ( var j = 0; j < param.maxIter; j ++ ) {
 
 			if ( param.lambda === Infinity ) {
+
 				console.warn( "Lambda reached infinity! Try a different initial pose." );
 				return;
+
 			} else if ( param.lambda === 0 ) {
+
 				console.warn( "Lambda is 0\nResetting to 1000." );
 				param.lambda = 1000;
+
 			}
 
 			param.lambda /= param.increment;
 
 			// System of equations
 			var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size() ), helper.jtjDiag ) ) );
-
+			console.log ("jtj="+ helper.jtj);
 			var delta = math.lusolve( h, helper.njtd );
+
 			delta = math.transpose( delta );
 			delta = delta._data[ 0 ];
 
@@ -46,6 +49,7 @@ function DLS( param ) {
 			var betaPrimeObjFn = squaredDistance( yHatPrime, y );
 
 			if ( betaPrimeObjFn < betaObjFn || betaObjFn == 0 ) {
+
 				beta = betaPrime;
 				updateMeshKinematics( beta, methodParametersIK.speed );
 
