@@ -64,14 +64,19 @@ function initModel( param ) {
 
 	};
 
+
+	var geometry = createGeometry( param, sizing );
+	var bones = createBones( sizing );
+
+	calcMesh = createMesh( geometry, bones );
+	calcScene.add( calcMesh );
+
+
   var geometry = createGeometry( param, sizing );
 	var bones = createBones( sizing );
 
 	mesh = createMesh( geometry, bones );
 	scene.add( mesh );
-
-	calcMesh = mesh.clone();
-	calcScene.add( calcMesh );
 
 }
 

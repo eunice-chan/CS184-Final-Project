@@ -30,7 +30,7 @@ function betaToPoint( beta ) {
 
 	var j = 0;
 
-	for ( var i = 0; i < defaultWorldBone.length; i ++ ) {
+	for ( var i = defaultWorldBone.length - 1; i >= 0; i -- ) {
 
 		if ( parameters.constraints[ `b${ i }` ].px ) {
 
@@ -55,6 +55,7 @@ function betaToPoint( beta ) {
 
 		}
 
+
 		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
 			calcBones[ i ].position.z = beta[ j ];
@@ -65,6 +66,7 @@ function betaToPoint( beta ) {
 			calcBones[ i ].position.z = bones[ i ].position.z;
 
 		}
+
 
 
 		if ( parameters.constraints[ `b${ i }` ].rx ) {
@@ -102,17 +104,17 @@ function betaToPoint( beta ) {
 
 		}
 
+		console.log("CALCROT", calcBones[ i ].rotation);
+		console.log("CALCPOS", calcBones[ i ].position);
+		console.log("ROT", bones[ i ].rotation);
+		console.log("POS", bones[ i ].position);
+
 	}
 
 	predictedPoint = getModelWorldPosition( calcBones[ calcBones.length - 1 ] );
-	console.log(predictedPoint);
-	// predictedPoint.y -= modelParameters.boneHeight / 2 * modelParameters.numBones;
-	// console.log( distance( predictedPoint, getEndPointWorldPosition() ) );
-	predictedPoint.x += moveX;
-	predictedPoint.y += moveY;
-	predictedPoint.z += moveZ;
-
-
+	console.log("BETA", beta);
+	console.log("PRED", predictedPoint);
+	console.log("END", getEndPointWorldPosition());
 	return predictedPoint;
 
 }
@@ -323,62 +325,45 @@ function updateMeshKinematics( beta, speed ) {
 
 	var i = 0;
 
-	var jointNumber, constraints;
+	for ( var i = bones.length - 1; i >= 0; i -- ) {
 
-	var constraintKeys = Object.keys( parameters.constraints );
-	constraintKeys.sort();
+		if ( parameters.constraints[ `b${ i }` ].px ) {
 
-	constraintKeys.forEach( ( key1 ) => {
+			bones[ i ].position.x =  linearInterpolation( beta[ i ], bones[ i ].position.x, speed );
 
-		jointNumber = parseInt( key1[ 1 ] );
+		}
 
-		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
-		paramKeys.sort();
+		if ( parameters.constraints[ `b${ i }` ].py ) {
 
-		paramKeys.forEach( ( key2 ) => {
+			bones[ i ].position.y =  linearInterpolation( beta[ i ], bones[ i ].position.y, speed );
 
-			if ( parameters.constraints[ key1 ][ key2 ] ) {
+		}
 
-				switch ( key2[ 0 ] ) {
+		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
-					case 'p':
+			bones[ i ].position.z =  linearInterpolation( beta[ i ], bones[ i ].position.z, speed );
 
-						constraints = bones[ jointNumber ].position;
-						break;
+		}
 
-					case 'r':
+		if ( parameters.constraints[ `b${ i }` ].rx ) {
 
-						constraints = bones[ jointNumber ].rotation;
-						break;
+			bones[ i ].rotation.x =  linearInterpolation( beta[ i ], bones[ i ].rotation.x, speed );
 
-				}
+		}
 
-				switch ( key2[ 1 ] ) {
+		if ( parameters.constraints[ `b${ i }` ].ry ) {
 
-					case 'x':
+			bones[ i ].rotation.y = linearInterpolation( beta[ i ], bones[ i ].rotation.y, speed );
 
-						constraints.x = linearInterpolation( beta[ i ], constraints.x, speed );
-						break;
+		}
 
-					case 'y':
+		if ( parameters.constraints[ `b${ i }` ].rz ) {
 
-						constraints.y = linearInterpolation( beta[ i ], constraints.y, speed );
-						break;
+			bones[ i ].rotation.z =  linearInterpolation( beta[ i ], bones[ i ].rotation.z, speed );
 
-					case 'z':
+		}
 
-						constraints.z = linearInterpolation( beta[ i ], constraints.z, speed );
-						break;
-
-				}
-
-				i ++;
-
-			}
-
-		} );
-
-	} );
+	}
 
 }
 
