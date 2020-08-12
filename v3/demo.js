@@ -8,7 +8,7 @@ var scene, camera, renderer, orbit;
 var lights;
 
 // Model
-var mesh, modelParameters, bones, defaultBone;
+var mesh, modelParameters;
 
 // End point
 var endPoint, defaultEndPoint;
@@ -18,6 +18,9 @@ var target;
 
 // Target to end point line
 var line, lineGeometry;
+
+// For calculations
+var calcMesh;
 
 // Parameters
 var parameters;
@@ -55,6 +58,8 @@ function initScene() {
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( sceneColor );
 
+	scene = scene;
+
   // Camera
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 200 );
 	camera.position.z = 30;
@@ -77,7 +82,7 @@ function initScene() {
   // POPULATE SCENE
 
   // Lighting
-	initLights( sceneColor )
+	initLights( sceneColor );
 
 	// Model
 	modelParameters = {
@@ -85,13 +90,13 @@ function initScene() {
 	  numBones: 3,
 	  boneHeight: 8,
 
-		width:5,
+		width: 5,
 		depth: 5,
 
 		widthSegments: 5,
 	  depthSegments: 5
 
-	}
+	};
 
 	initModel( modelParameters );
 
@@ -107,25 +112,28 @@ function initScene() {
   scene.updateMatrixWorld( true );
 	defaultEndPoint = getEndPointWorldPosition();
 
+
 	// Bones
 	// Save default bone positions for calculations
-  defaultBone = [];
+  defaultWorldBone = [];
+  defaultLocalBonePos = [];
 
   bones = mesh.skeleton.bones;
 	bones.forEach( ( bone ) => {
 
-		defaultBone.push( getModelWorldPosition( bone ) );
+		defaultWorldBone.push( getModelWorldPosition( bone ) );
+		defaultLocalBonePos.push( bone.position );
 
 	} );
 
   // Target point
   target = getSphere( 0.5 );
-  target.pose = resetTargetPosition;
+  target.pose = setTargetPosition;
   target.predict = () => {
 
     target.position.set( ...betaToPoint( modelToBeta() ).toArray() );
 
-  }
+  };
   scene.add( target );
 
 	// Target interaction
@@ -138,11 +146,10 @@ function initScene() {
 
 		constraints: updateConstraints()
 
-	}
+	};
 
 	// Randomly pose
   mesh.randomPose = randomPose;
-	mesh.randomPose();
 
   scene.updateMatrixWorld( true );
   target.pose();
@@ -181,7 +188,7 @@ function initScene() {
 	// IK -- DLS parameters
   parametersDLS = {
 
-		maxIter: 5,
+		maxIter: 500,
 		lambda: 0.0001,
 		increment: 10,
 		decrement: 250
@@ -191,7 +198,7 @@ function initScene() {
 	// IK -- SMCM parameters
 	parametersSMCM = {
 
-		numParticles: 10000,
+		numParticles: 500,
 		distribution: 10,
 		n: null,
 		weights: null
@@ -221,7 +228,6 @@ function initScene() {
 	setDatGui();
 	scene.updateMatrixWorld( true );
 
-	// Initialize values for SMCM
 	initSMCM();
 
 }
@@ -238,6 +244,7 @@ function render() {
 
 	}
 
+	// TODO: fix when in motion.
   updateLine();
 
 	renderer.render( scene, camera );

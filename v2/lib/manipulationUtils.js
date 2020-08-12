@@ -22,116 +22,133 @@ function getEndPointWorldPosition() {
 
 }
 
+
+
+
 // BETA POINT CONVERSION
 function betaToPoint( beta ) {
 
-	var calcBones = calcMesh.skeleton.bones;
 	var bones = mesh.skeleton.bones;
+
+	var predictedPoint = new THREE.Vector3().copy( defaultEndPoint );
 
 	var j = 0;
 
-	for ( var i = defaultWorldBone.length - 1; i >= 0; i -- ) {
+	for ( var i = defaultBone.length - 1; i >= 0; i -- ) {
 
-		if ( parameters.constraints[ `b${ i }` ].px ) {
+		transformValues = [ predictedPoint, defaultBone[ i ] ];
 
-			calcBones[ i ].position.x = beta[ j ];
+		if ( parameters.constraints[`b${ i }`].px ) {
+
+			transformValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			calcBones[ i ].position.x = bones[ i ].position.x;
+			transformValues.push( bones[ i ].position.x );
 
 		}
 
 
-		if ( parameters.constraints[ `b${ i }` ].py ) {
+		if ( parameters.constraints[`b${ i }`].py ) {
 
-			calcBones[ i ].position.y = beta[ j ];
+			transformValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			calcBones[ i ].position.y = bones[ i ].position.y;
+			transformValues.push( bones[ i ].position.y );
 
 		}
 
 
-		if ( parameters.constraints[ `b${ i }` ].pz ) {
+		if ( parameters.constraints[`b${ i }`].pz ) {
 
-			calcBones[ i ].position.z = beta[ j ];
+			transformValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			calcBones[ i ].position.z = bones[ i ].position.z;
+			transformValues.push( bones[ i ].position.z );
 
 		}
 
 
 
-		if ( parameters.constraints[ `b${ i }` ].rx ) {
+		if ( parameters.constraints[`b${ i }`].rx ) {
 
-			calcBones[ i ].rotation.x = beta[ j ];
+			transformValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			calcBones[ i ].rotation.x = bones[ i ].rotation.x;
+			transformValues.push( bones[ i ].rotation.x );
 
 		}
 
 
-		if ( parameters.constraints[ `b${ i }` ].ry ) {
+		if ( parameters.constraints[`b${ i }`].ry ) {
 
-			calcBones[ i ].rotation.y = beta[ j ];
+			transformValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			calcBones[ i ].rotation.y = bones[ i ].rotation.y;
+			transformValues.push( bones[ i ].rotation.y );
 
 		}
 
 
-		if ( parameters.constraints[ `b${ i }` ].rz ) {
+		if ( parameters.constraints[`b${ i }`].rz ) {
 
-			calcBones[ i ].rotation.z = beta[ j ];
+			transformValues.push( beta[ j ] );
 			j ++;
 
 		} else {
 
-			calcBones[ i ].rotation.z = bones[ i ].rotation.z;
+			transformValues.push( bones[ i ].rotation.z );
 
 		}
+
+		transformPoint( ...transformValues );
 
 	}
 
-	renderer.render( scene, camera );
+	// TODO: idk why : | figure out why
+	predictedPoint.y -= 4 * modelParameters.numBones;
 
-	predictedPoint = getModelWorldPosition( calcBones[ calcBones.length - 1] );
+	var bones = [];
 
 	return predictedPoint;
 
 }
 
-function rotatePoint( point, pivot, rotateX, rotateY, rotateZ ) {
+function transformPoint( point, pivot, moveX, moveY, moveZ, rotateX, rotateY, rotateZ ) {
 
-  // Translate to origin
-  pivot.negate();
-  point.add( pivot );
-
-  // Transform
-  var transform = new THREE.Euler( rotateX, rotateY, rotateZ, 'XYZ' );
-  point.applyEuler( transform );
+	  // Translate to origin
+	  pivot.negate();
+	  point.add( pivot );
 
 
-  // Translate back
-  pivot.negate();
-  point.add( pivot );
+	  // Transform
+	  var transform = new THREE.Euler( rotateX, rotateY, rotateZ, 'XYZ' );
+	  point.applyEuler( transform );
+
+		point.x += moveX;
+		point.y += moveY;
+		point.z += moveZ;
+
+
+	  // Translate back
+	  pivot.negate();
+	  point.add( pivot );
 
 	return point;
 
 }
+
+
+
 
 // GENERIC
 
@@ -219,7 +236,6 @@ function DLShelper( yHat, y ) {
 	var njtd = math.multiply( jtd, -1 );
 
 	return {
-
 		jtjDiag: math.matrix( diagMatrix( jtj ) ), // Matrix
 		jtj: math.matrix( jtj ), // Matrix
 		njtd: njtd // Vector
@@ -234,67 +250,61 @@ function jacobianTranspose( yHat ) {
 
 	var bones = mesh.skeleton.bones;
 
-	var row, constraints;
+	var row, jointNumber, constraints;
 
-	var identity = new THREE.Matrix3();
-	var xAxis = new THREE.Vector3().setFromMatrix3Column( identity, 0 );
-	var yAxis = new THREE.Vector3().setFromMatrix3Column( identity, 1 );
-	var zAxis = new THREE.Vector3().setFromMatrix3Column( identity, 2 );
+	var constraintKeys = Object.keys( parameters.constraints );
+	constraintKeys.sort();
 
-	var i = 0;
+	constraintKeys.forEach( ( key1 ) => {
 
-	for ( var i = bones.length - 1; i >= 0; i -- ) {
+		jointNumber = parseInt( key1[ 1 ] );
 
+		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
+		paramKeys.sort();
 
-		if ( parameters.constraints[ `b${ i }` ].px ) {
+		paramKeys.forEach( ( key2 ) => {
 
-			row = xAxis.clone();
+			if ( parameters.constraints[ key1 ][ key2 ] ) {
 
-			jt.push( row.toArray() );
+				switch ( key2[ 1 ] ) {
 
-		}
+					case 'x':
 
-		if ( parameters.constraints[ `b${ i }` ].py ) {
+						row = [1, 0, 0];
+						break;
 
-			row = yAxis.clone();
+					case 'y':
 
-			jt.push( row.toArray() );
+						row = [0, 1, 0];
+						break;
 
-		}
+					case 'z':
 
-		if ( parameters.constraints[ `b${ i }` ].pz ) {
+						row = [0, 0, 1];
+						break;
 
-			row = zAxis.clone();
+				}
 
-			jt.push( row.toArray() );
+				switch ( key2[ 0 ] ) {
 
-		}
+					case 'p':
 
-		if ( parameters.constraints[ `b${ i }` ].rx ) {
+						break;
 
-			row = xAxis.clone().cross( yHat.clone().sub( bones[ i ].position ) );
+					case 'r':
 
-			jt.push( row.toArray() );
+						row = yHat.clone().sub( bone[ jointNumber ] ).multiply( new THREE.Vector3( ...row ) ).toArray();
+						break;
 
-		}
+				}
 
-			if ( parameters.constraints[ `b${ i }` ].ry ) {
-
-				row = yAxis.clone().cross( yHat.clone().sub( bones[ i ].position ) );
-
-				jt.push( row.toArray() );
-
-			}
-
-			if ( parameters.constraints[ `b${ i }` ].rz ) {
-
-				row = zAxis.clone().cross( yHat.clone().sub( bones[ i ].position ) );
-
-				jt.push( row.toArray() );
+				jt.push( row );
 
 			}
 
-		}
+		} );
+
+	} );
 
 	return jt;
 
@@ -326,53 +336,63 @@ function updateMeshKinematics( beta, speed ) {
 	var bones = mesh.skeleton.bones;
 
 	var i = 0;
-	var j = 0;
 
-	for ( var i = bones.length - 1; i >= 0; i -- ) {
+	var jointNumber, constraints;
 
-		if ( parameters.constraints[ `b${ i }` ].px ) {
+	var constraintKeys = Object.keys( parameters.constraints );
+	constraintKeys.sort();
 
-			bones[ i ].position.x = linearInterpolation( beta[ j ], bones[ i ].position.x, speed );
-			j ++;
+	constraintKeys.forEach( ( key1 ) => {
 
-		}
+		jointNumber = parseInt( key1[ 1 ] );
 
-		if ( parameters.constraints[ `b${ i }` ].py ) {
+		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
+		paramKeys.sort();
 
-			bones[ i ].position.y = linearInterpolation( beta[ j ], bones[ i ].position.y, speed );
-			j ++;
+		paramKeys.forEach( ( key2 ) => {
 
-		}
+			if ( parameters.constraints[ key1 ][ key2 ] ) {
 
-		if ( parameters.constraints[ `b${ i }` ].pz ) {
+				switch ( key2[ 0 ] ) {
 
-			bones[ i ].position.z = linearInterpolation( beta[ j ], bones[ i ].position.z, speed );
-			j ++;
+					case 'p':
 
-		}
+						constraints = bones[ jointNumber ].position;
+						break;
 
-		if ( parameters.constraints[ `b${ i }` ].rx ) {
+					case 'r':
 
-			bones[ i ].rotation.x = linearInterpolation( beta[ j ], bones[ i ].rotation.x, speed );
-			j ++;
+						constraints = bones[ jointNumber ].rotation;
+						break;
 
-		}
+				}
 
-		if ( parameters.constraints[ `b${ i }` ].ry ) {
+				switch ( key2[ 1 ] ) {
 
-			bones[ i ].rotation.y = linearInterpolation( beta[ j ], bones[ i ].rotation.y, speed );
-			j ++;
+					case 'x':
 
-		}
+						constraints.x = linearInterpolation( beta[ i ], constraints.x, speed );
+						break;
 
-		if ( parameters.constraints[ `b${ i }` ].rz ) {
+					case 'y':
 
-			bones[ i ].rotation.z = linearInterpolation( beta[ j ], bones[ i ].rotation.z, speed );
-			j ++;
+						constraints.y = linearInterpolation( beta[ i ], constraints.y, speed );
+						break;
 
-		}
+					case 'z':
 
-	}
+						constraints.z = linearInterpolation( beta[ i ], constraints.z, speed );
+						break;
+
+				}
+
+				i ++;
+
+			}
+
+		} );
+
+	} );
 
 }
 
@@ -382,45 +402,63 @@ function modelToBeta() {
 
 	var beta = [];
 
-	for ( var i = bones.length - 1; i >= 0; i -- ) {
+	var jointNumber, constraints;
 
-		if ( parameters.constraints[ `b${ i }` ].px ) {
+	var constraintKeys = Object.keys( parameters.constraints );
+	constraintKeys.sort();
 
-			beta.push( bones[ i ].position.x );
+	constraintKeys.forEach( ( key1 ) => {
 
-		}
+		jointNumber = parseInt( key1[ 1 ] );
 
-		if ( parameters.constraints[ `b${ i }` ].py ) {
+		var paramKeys = Object.keys( parameters.constraints[ key1 ] );
+		paramKeys.sort();
 
-			beta.push( bones[ i ].position.y );
+		paramKeys.forEach( ( key2 ) => {
 
-		}
+			if ( parameters.constraints[ key1 ][ key2 ] ) {
 
-		if ( parameters.constraints[ `b${ i }` ].pz ) {
+				switch ( key2[ 0 ] ) {
 
-			beta.push( bones[ i ].position.z );
+					case 'p':
 
-		}
+						constraints = bones[ jointNumber ].position;
+						break;
 
-		if ( parameters.constraints[ `b${ i }` ].rx ) {
+					case 'r':
 
-			beta.push( bones[ i ].rotation.x );
+						constraints = bones[ jointNumber ].rotation;
+						break;
 
-		}
+				}
 
-		if ( parameters.constraints[ `b${ i }` ].ry ) {
+				switch ( key2[ 1 ] ) {
 
-			beta.push( bones[ i ].rotation.y );
+					case 'x':
 
-		}
+						constraints = constraints.x;
+						break;
 
-		if ( parameters.constraints[ `b${ i }` ].rz ) {
+					case 'y':
 
-			beta.push( bones[ i ].rotation.z );
+						constraints = constraints.y;
+						break;
 
-		}
+					case 'z':
 
-	}
+						constraints = constraints.z;
+						break;
+
+				}
+
+				beta.push( constraints );
+
+			}
+
+		} );
+
+	} );
+
 
 	return beta;
 

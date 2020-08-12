@@ -64,8 +64,17 @@ function initModel( param ) {
 
 	};
 
-  var geometry = createGeometry( param, sizing );
+
+	var geometry = createGeometry( param, sizing );
 	var bones = createBones( sizing );
+
+	calcMesh = createMesh( geometry, bones );
+	calcMesh.visible = false;
+	scene.add( calcMesh );
+
+
+  geometry = createGeometry( param, sizing );
+	bones = createBones( sizing );
 
 	mesh = createMesh( geometry, bones );
 	scene.add( mesh );
@@ -175,7 +184,7 @@ function createGeometry( param, sizing ) {
 
 function createBones( sizing ) {
 
-	bones = [];
+	var bones = [];
 
 	var prevBone = new THREE.Bone();
 	bones.push( prevBone );
@@ -213,8 +222,6 @@ function createMesh( geometry, bones ) {
 	mesh.add( bones[ 0 ] );
 
 	mesh.bind( skeleton );
-	skeletonHelper = new THREE.SkeletonHelper( mesh );
-	scene.add( skeletonHelper );
 
 	return mesh;
 
@@ -223,7 +230,8 @@ function createMesh( geometry, bones ) {
 function randomPose() {
 
 	var betaPrime = [];
-	modelToBeta().forEach( ( beta ) => { betaPrime.push( beta + ( Math.random() * 2 * Math.PI ) - Math.PI ) } );
+
+	modelToBeta().forEach( ( beta ) => { betaPrime.push( ( Math.random() * 2 * Math.PI ) - Math.PI ) } );
 
 	updateMeshKinematics( betaPrime, 1 );
 
@@ -264,13 +272,13 @@ function updateLine() {
 }
 
 // TARGET
-function resetTargetPosition() {
+function setTargetPosition() {
 
   target.position.set( ...getEndPointWorldPosition().toArray() );
 
 	target.position.x += ( Math.random() - 0.5 ) * 2;
 	target.position.y += ( Math.random() - 0.5 ) * 2;
-	target.position.z = 0;
+	target.position.z += ( Math.random() - 0.5 ) * 2;
 
 }
 
@@ -331,17 +339,17 @@ function setDatGui() {
 
   ////////////////////////////////
 
-	// folder = folderIK.addFolder( 'Parameters' );
-	// var folderParam;
-	//
-	// constraints.forEach( ( key1 ) => {
-	//
-	// 	jointNumber = parseInt( key1[ 1 ] );
-	//
-	// 	folderParam = folder.addFolder( `Joint ${ jointNumber }` );
-	// 	constraintsGUI( folderParam, jointNumber );
-	//
-	// } );
+	folder = folderIK.addFolder( 'Parameters' );
+	var folderParam;
+
+	constraints.forEach( ( key1 ) => {
+
+		jointNumber = parseInt( key1[ 1 ] );
+
+		folderParam = folder.addFolder( `Joint ${ jointNumber }` );
+		constraintsGUI( folderParam, jointNumber );
+
+	} );
 
 
   ////////////////
@@ -362,36 +370,40 @@ function setDatGui() {
 	folder.add( parametersSMCM, 'numParticles', 100, 10000 ).name( '# of Particles' ).onChange( ()=>{
 
 		parametersSMCM.numParticles = Math.floor( parametersSMCM.numParticles );
-		initSMCM( );
+		initSMCM();
 
 	 } );
-	 folder.add( parametersSMCM, 'distribution', 1, 50 ).name( 'Distribution' )
+	 folder.add( parametersSMCM, 'distribution', 0.1, 50 ).name( 'Distribution' )
 
 }
 
 
 function jointGUI( folder, bone ) {
 
-	folder.add( bone.position, 'x', 0, 20 ).name( 'Move X' );
-	folder.add( bone.position, 'y', 0, 20 ).name( 'Move Y' );
-	folder.add( bone.position, 'z', 0, 20 ).name( 'Move Z' );
+	var moveFolder = folder.addFolder( 'Move' );
+	moveFolder.add( bone.position, 'x', -20, 20 ).name( 'Move X' );
+	moveFolder.add( bone.position, 'y', -20, 20 ).name( 'Move Y' );
+	moveFolder.add( bone.position, 'z', -20, 20 ).name( 'Move Z' );
 
-	folder.add( bone.rotation, 'x', - Math.PI, Math.PI ).name( 'Rotate X' );
-	folder.add( bone.rotation, 'y', - Math.PI, Math.PI ).name( 'Rotate Y' );
-	folder.add( bone.rotation, 'z', - Math.PI, Math.PI ).name( 'Rotate Z' );
+	var rotateFolder = folder.addFolder( 'Rotate' );
+	rotateFolder.add( bone.rotation, 'x', - Math.PI, Math.PI ).name( 'Rotate X' );
+	rotateFolder.add( bone.rotation, 'y', - Math.PI, Math.PI ).name( 'Rotate Y' );
+	rotateFolder.add( bone.rotation, 'z', - Math.PI, Math.PI ).name( 'Rotate Z' );
 
 
 }
 
 function constraintsGUI( folder, i ) {
 
-	folder.add( parameters.constraints[`b${ i }`], 'px' ).name( 'Move X' );
-	folder.add( parameters.constraints[`b${ i }`], 'py' ).name( 'Move Y' );
-	folder.add( parameters.constraints[`b${ i }`], 'pz' ).name( 'Move Z' );
+	var moveFolder = folder.addFolder( 'Move' );
+	moveFolder.add( parameters.constraints[ `b${ i }` ], 'px' ).name( 'Move X' );
+	moveFolder.add( parameters.constraints[ `b${ i }` ], 'py' ).name( 'Move Y' );
+	moveFolder.add( parameters.constraints[ `b${ i }` ], 'pz' ).name( 'Move Z' );
 
-	folder.add( parameters.constraints[`b${ i }`], 'rx' ).name( 'Rotate X' );
-	folder.add( parameters.constraints[`b${ i }`], 'ry' ).name( 'Rotate Y' );
-	folder.add( parameters.constraints[`b${ i }`], 'rz' ).name( 'Rotate Z' );
+	var rotateFolder = folder.addFolder( 'Rotate' );
+	rotateFolder.add( parameters.constraints[ `b${ i }` ], 'rx' ).name( 'Rotate X' );
+	rotateFolder.add( parameters.constraints[ `b${ i }` ], 'ry' ).name( 'Rotate Y' );
+	rotateFolder.add( parameters.constraints[ `b${ i }` ], 'rz' ).name( 'Rotate Z' );
 
 }
 
@@ -405,13 +417,13 @@ function updateConstraints() {
 
 		constraints[ `b${ i }` ] = {
 
-			px: true,
-			py: true,
-			pz: true,
+			px: false,
+			py: false,
+			pz: false,
 
-			rx: false,
-			ry: false,
-			rz: false
+			rx: true,
+			ry: true,
+			rz: true
 
 		}
 
