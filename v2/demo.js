@@ -179,7 +179,7 @@ function initScene() {
   methodParametersIK = {
 
     method: 'Levenberg–Marquardt',
-    enabled: false,
+    enabled: true,
     run: function() { methodFunctionsIK[ methodParametersIK.method ].function( methodFunctionsIK[ methodParametersIK.method ].parameters ) },
     speed: 0.1
 
@@ -188,7 +188,7 @@ function initScene() {
 	// IK -- DLS parameters
   parametersDLS = {
 
-		maxIter: 5,
+		maxIter: 500,
 		lambda: 0.0001,
 		increment: 10,
 		decrement: 250
@@ -198,7 +198,7 @@ function initScene() {
 	// IK -- SMCM parameters
 	parametersSMCM = {
 
-		numParticles: 10000,
+		numParticles: 500,
 		distribution: 10,
 		n: null,
 		weights: null
@@ -227,6 +227,8 @@ function initScene() {
 	// Interaction interface
 	setDatGui();
 	scene.updateMatrixWorld( true );
+
+	initSMCM();
 
 }
 

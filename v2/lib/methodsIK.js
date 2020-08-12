@@ -12,10 +12,8 @@ function DLS( param ) {
 
 		// yHat is the current position in space
 		var yHat = betaToPoint( beta );
-console.log ("BETA="+ beta);
 		var helper = DLShelper( yHat, y );
 
-console.log ("jtj="+ helper.jtj);
 		var betaObjFn = squaredDistance( yHat, y );
 
 		for ( var j = 0; j < param.maxIter; j ++ ) {
@@ -36,8 +34,17 @@ console.log ("jtj="+ helper.jtj);
 
 			// System of equations
 			var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size() ), helper.jtjDiag ) ) );
-			console.log ("jtj="+ helper.jtj);
-			var delta = math.lusolve( h, helper.njtd );
+
+			try {
+
+				var delta = math.lusolve( h, helper.njtd );
+
+			} catch ( error ) {
+
+				console.warn( 'Could not solve system of equations. try another lambda!' );
+				return beta;
+
+			}
 
 			delta = math.transpose( delta );
 			delta = delta._data[ 0 ];
@@ -95,12 +102,6 @@ function initSMCM() {
 
 function SMCM( param ) {
 
-		if ( parametersSMCM.n.length == 0 ) {
-
-			initSMCM();
-
-		}
-
 		// Resample
 		// To prevent particle degeneracy
 		var n = [];
@@ -126,7 +127,7 @@ function SMCM( param ) {
 		 n.push( betaPrime );
 
 	 	 // calulate weight
-	 	 // Supposed to be p( y_t | x_t ). I'm going make the probability = 1 / distance
+	 	 // Supposed to be p( y_t | x_t ). I'm going make the probability = e^( 1 / distance )
 	 	 weights.push( Math.exp( 1 / distance( betaToPoint( betaPrime ), target ) ) );
 
 	 }

@@ -234,7 +234,7 @@ function jacobianTranspose( yHat ) {
 
 	var bones = mesh.skeleton.bones;
 
-	var row, jointNumber, constraints;
+	var row, constraints;
 
 	var identity = new THREE.Matrix3();
 	var xAxis = new THREE.Vector3().setFromMatrix3Column( identity, 0 );
@@ -248,7 +248,7 @@ function jacobianTranspose( yHat ) {
 
 		if ( parameters.constraints[ `b${ i }` ].px ) {
 
-			row = xAxis;
+			row = xAxis.clone();
 
 			jt.push( row.toArray() );
 
@@ -256,7 +256,7 @@ function jacobianTranspose( yHat ) {
 
 		if ( parameters.constraints[ `b${ i }` ].py ) {
 
-			row = yAxis;
+			row = yAxis.clone();
 
 			jt.push( row.toArray() );
 
@@ -264,7 +264,7 @@ function jacobianTranspose( yHat ) {
 
 		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
-			row = zAxis;
+			row = zAxis.clone();
 
 			jt.push( row.toArray() );
 
@@ -272,14 +272,15 @@ function jacobianTranspose( yHat ) {
 
 		if ( parameters.constraints[ `b${ i }` ].rx ) {
 
-			row = yHat.clone().sub( bones[ jointNumber ].position ).cross( xAxis ).toArray();
+			row = xAxis.clone().cross( yHat.clone().sub( bones[ i ].position ) );
 
 			jt.push( row.toArray() );
+
 		}
 
 			if ( parameters.constraints[ `b${ i }` ].ry ) {
 
-				row = yHat.clone().sub( bones[ jointNumber ].position ).cross( yAxis ).toArray();
+				row = yAxis.clone().cross( yHat.clone().sub( bones[ i ].position ) );
 
 				jt.push( row.toArray() );
 
@@ -287,7 +288,7 @@ function jacobianTranspose( yHat ) {
 
 			if ( parameters.constraints[ `b${ i }` ].rz ) {
 
-				row = yHat.clone().sub( bones[ jointNumber ].position ).cross( zAxis ).toArray();
+				row = zAxis.clone().cross( yHat.clone().sub( bones[ i ].position ) );
 
 				jt.push( row.toArray() );
 
@@ -325,42 +326,49 @@ function updateMeshKinematics( beta, speed ) {
 	var bones = mesh.skeleton.bones;
 
 	var i = 0;
+	var j = 0;
 
 	for ( var i = bones.length - 1; i >= 0; i -- ) {
 
 		if ( parameters.constraints[ `b${ i }` ].px ) {
 
-			bones[ i ].position.x =  linearInterpolation( beta[ i ], bones[ i ].position.x, speed );
+			bones[ i ].position.x = linearInterpolation( beta[ j ], bones[ i ].position.x, speed );
+			j ++;
 
 		}
 
 		if ( parameters.constraints[ `b${ i }` ].py ) {
 
-			bones[ i ].position.y =  linearInterpolation( beta[ i ], bones[ i ].position.y, speed );
+			bones[ i ].position.y = linearInterpolation( beta[ j ], bones[ i ].position.y, speed );
+			j ++;
 
 		}
 
 		if ( parameters.constraints[ `b${ i }` ].pz ) {
 
-			bones[ i ].position.z =  linearInterpolation( beta[ i ], bones[ i ].position.z, speed );
+			bones[ i ].position.z = linearInterpolation( beta[ j ], bones[ i ].position.z, speed );
+			j ++;
 
 		}
 
 		if ( parameters.constraints[ `b${ i }` ].rx ) {
 
-			bones[ i ].rotation.x =  linearInterpolation( beta[ i ], bones[ i ].rotation.x, speed );
+			bones[ i ].rotation.x = linearInterpolation( beta[ j ], bones[ i ].rotation.x, speed );
+			j ++;
 
 		}
 
 		if ( parameters.constraints[ `b${ i }` ].ry ) {
 
-			bones[ i ].rotation.y = linearInterpolation( beta[ i ], bones[ i ].rotation.y, speed );
+			bones[ i ].rotation.y = linearInterpolation( beta[ j ], bones[ i ].rotation.y, speed );
+			j ++;
 
 		}
 
 		if ( parameters.constraints[ `b${ i }` ].rz ) {
 
-			bones[ i ].rotation.z =  linearInterpolation( beta[ i ], bones[ i ].rotation.z, speed );
+			bones[ i ].rotation.z = linearInterpolation( beta[ j ], bones[ i ].rotation.z, speed );
+			j ++;
 
 		}
 

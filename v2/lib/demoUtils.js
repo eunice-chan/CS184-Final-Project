@@ -370,10 +370,10 @@ function setDatGui() {
 	folder.add( parametersSMCM, 'numParticles', 100, 10000 ).name( '# of Particles' ).onChange( ()=>{
 
 		parametersSMCM.numParticles = Math.floor( parametersSMCM.numParticles );
-		initSMCM( );
+		initSMCM();
 
 	 } );
-	 folder.add( parametersSMCM, 'distribution', 1, 50 ).name( 'Distribution' )
+	 folder.add( parametersSMCM, 'distribution', 0.1, 50 ).name( 'Distribution' )
 
 }
 
@@ -417,13 +417,13 @@ function updateConstraints() {
 
 		constraints[ `b${ i }` ] = {
 
-			px: true,
-			py: true,
-			pz: true,
+			px: false,
+			py: false,
+			pz: false,
 
-			rx: false,
-			ry: false,
-			rz: false
+			rx: true,
+			ry: true,
+			rz: true
 
 		}
 
