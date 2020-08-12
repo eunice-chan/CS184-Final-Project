@@ -374,9 +374,9 @@ function setDatGui() {
 function jointGUI( folder, bone ) {
 
 	var moveFolder = folder.addFolder( 'Move' );
-	moveFolder.add( bone.position, 'x', 0, 20 ).name( 'Move X' );
-	moveFolder.add( bone.position, 'y', 0, 20 ).name( 'Move Y' );
-	moveFolder.add( bone.position, 'z', 0, 20 ).name( 'Move Z' );
+	moveFolder.add( bone.position, 'x', -20, 20 ).name( 'Move X' );
+	moveFolder.add( bone.position, 'y', -20, 20 ).name( 'Move Y' );
+	moveFolder.add( bone.position, 'z', -20, 20 ).name( 'Move Z' );
 
 	var rotateFolder = folder.addFolder( 'Rotate' );
 	rotateFolder.add( bone.rotation, 'x', - Math.PI, Math.PI ).name( 'Rotate X' );
@@ -389,14 +389,14 @@ function jointGUI( folder, bone ) {
 function constraintsGUI( folder, i ) {
 
 	var moveFolder = folder.addFolder( 'Move' );
-	moveFolder.add( parameters.constraints[`b${ i }`], 'px' ).name( 'Move X' );
-	moveFolder.add( parameters.constraints[`b${ i }`], 'py' ).name( 'Move Y' );
-	moveFolder.add( parameters.constraints[`b${ i }`], 'pz' ).name( 'Move Z' );
+	moveFolder.add( parameters.constraints[ `b${ i }` ], 'px' ).name( 'Move X' );
+	moveFolder.add( parameters.constraints[ `b${ i }` ], 'py' ).name( 'Move Y' );
+	moveFolder.add( parameters.constraints[ `b${ i }` ], 'pz' ).name( 'Move Z' );
 
 	var rotateFolder = folder.addFolder( 'Rotate' );
-	rotateFolder.add( parameters.constraints[`b${ i }`], 'rx' ).name( 'Rotate X' );
-	rotateFolder.add( parameters.constraints[`b${ i }`], 'ry' ).name( 'Rotate Y' );
-	rotateFolder.add( parameters.constraints[`b${ i }`], 'rz' ).name( 'Rotate Z' );
+	rotateFolder.add( parameters.constraints[ `b${ i }` ], 'rx' ).name( 'Rotate X' );
+	rotateFolder.add( parameters.constraints[ `b${ i }` ], 'ry' ).name( 'Rotate Y' );
+	rotateFolder.add( parameters.constraints[ `b${ i }` ], 'rz' ).name( 'Rotate Z' );
 
 }
 

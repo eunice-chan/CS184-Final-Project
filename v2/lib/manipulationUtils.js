@@ -25,6 +25,7 @@ function getEndPointWorldPosition() {
 // BETA POINT CONVERSION
 function betaToPoint( beta ) {
 
+
 	// Scale -> Rotate -> Translate
 
 	var bones = mesh.skeleton.bones;
@@ -111,6 +112,53 @@ function betaToPoint( beta ) {
 		}
 
 		predictedPoint = rotatePoint( ...rotateValues );
+
+	}
+
+	for ( var i = defaultWorldBone.length - 1; i >= 0; i -- ) {
+
+		if ( parameters.constraints[ `b${ i }` ].px ) {
+
+			moveX += beta[ j ];
+			j ++;
+
+		}
+
+
+		if ( parameters.constraints[ `b${ i }` ].py ) {
+
+			moveY += beta[ j ];
+			j ++;
+
+		}
+
+		if ( parameters.constraints[ `b${ i }` ].pz ) {
+
+			moveZ += beta[ j ];
+			j ++;
+
+		}
+
+
+		if ( parameters.constraints[ `b${ i }` ].rx ) {
+
+			j ++;
+
+		}
+
+		if ( parameters.constraints[ `b${ i }` ].ry ) {
+
+			j ++;
+
+		}
+
+
+		if ( parameters.constraints[ `b${ i }` ].rz ) {
+
+			j ++;
+
+		}
+
 
 	}
 
@@ -262,17 +310,17 @@ function jacobianTranspose( yHat ) {
 
 					case 'x':
 
-						row = [1, 0, 0];
+						row = [ 1, 0, 0 ];
 						break;
 
 					case 'y':
 
-						row = [0, 1, 0];
+						row = [ 0, 1, 0 ];
 						break;
 
 					case 'z':
 
-						row = [0, 0, 1];
+						row = [ 0, 0, 1 ];
 						break;
 
 				}
