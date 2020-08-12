@@ -289,6 +289,7 @@ function setTargetPosition() {
 // TODO: modify number of bones in GUI, constraint types (XYZ rotate & move)
 function setDatGui() {
 
+	gui.add( orbit , 'reset' ).name( 'Reset View' );
 	gui.add( mesh , 'pose' ).name( 'Reset Model' );
 	gui.add( mesh , 'randomPose' ).name( 'Pose Model' );
 	gui.add( line , 'visible' ).name( 'Hide Line' );
@@ -356,10 +357,10 @@ function setDatGui() {
 
 	folder = folderIK.addFolder( 'Levenberg–Marquardt' );
 
-	folder.add( parametersDLS, 'maxIter', 1, 1000 ).name( 'Max Iter' ).onChange( ()=>{ parametersDLS.maxIter = Math.floor( parametersDLS.maxIter ) } );
+	folder.add( parametersDLS, 'maxIter', 1, 1000 ).name( 'Max Iter' ).onChange( () => { parametersDLS.maxIter = Math.floor( parametersDLS.maxIter ) } );
 
 	folderLambda = folder.addFolder( 'Lambda' );
-	folderLambda.add( parametersDLS, 'lambda', 0, 1000 ).name( 'Lambda' );
+	folderLambda.add( parametersDLS, 'lambda', 0, 1 ).name( 'Lambda' );
 	folderLambda.add( parametersDLS, 'increment', 0, 300 ).name( 'Increment' );
 	folderLambda.add( parametersDLS, 'decrement', 0, 300 ).name( 'Decrement' );
 
@@ -413,19 +414,67 @@ function updateConstraints() {
 
 	var bones = mesh.skeleton.bones;
 
-	for ( var i = 0; i < bones.length; i ++ ) {
+	// for ( var i = 0; i < bones.length; i ++ ) {
+	//
+	// 	constraints[ `b${ i }` ] = {
+	//
+	// 		px: true,
+	// 		py: true,
+	// 		pz: true,
+	//
+	// 		rx: false,
+	// 		ry: false,
+	// 		rz: false
+	//
+	// 	}
+	//
+	// }
 
-		constraints[ `b${ i }` ] = {
+	constraints[ 'b0' ] = {
 
-			px: false,
-			py: false,
-			pz: false,
+		px: false,
+		py: false,
+		pz: false,
 
-			rx: true,
-			ry: true,
-			rz: true
+		rx: false,
+		ry: false,
+		rz: false
 
-		}
+	}
+
+	constraints[ 'b1' ] = {
+
+		px: true,
+		py: false,
+		pz: false,
+
+		rx: false,
+		ry: false,
+		rz: false
+
+	}
+
+	constraints[ 'b2' ] = {
+
+		px: false,
+		py: true,
+		pz: false,
+
+		rx: false,
+		ry: false,
+		rz: false
+
+	}
+
+	constraints[ 'b3' ] = {
+
+		px: false,
+		py: false,
+		pz: true,
+
+		rx: false,
+		ry: false,
+		rz: false
 
 	}
 

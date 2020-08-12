@@ -25,24 +25,27 @@ function DLS( param ) {
 
 			} else if ( param.lambda === 0 ) {
 
-				console.warn( "Lambda is 0\nResetting to 1000." );
-				param.lambda = 1000;
+				console.warn( "Lambda is 0\nResetting lambda." );
+				param.lambda = 5;
 
 			}
 
-			param.lambda /= param.increment;
+			param.lambda *= param.increment;
 
 			// System of equations
-			var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size() ), helper.jtjDiag ) ) );
+			// var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size() ), helper.jtjDiag ) ) );
+			var h = math.add( helper.jtj, math.multiply( param.lambda, helper.jtjDiag ) );
 
 			try {
 
 				var delta = math.lusolve( h, helper.njtd );
+				//var delta = math.multiply( math.inv( h ), helper.njtd );
 
 			} catch ( error ) {
 
-				console.warn( 'Could not solve system of equations. try another lambda!' );
-				return beta;
+				console.warn(param.lambda + ' Could not solve system of equations.' );
+				param.lambda = 5;
+				return;
 
 			}
 
