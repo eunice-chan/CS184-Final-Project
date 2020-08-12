@@ -104,17 +104,12 @@ function betaToPoint( beta ) {
 
 		}
 
-		console.log("CALCROT", calcBones[ i ].rotation);
-		console.log("CALCPOS", calcBones[ i ].position);
-		console.log("ROT", bones[ i ].rotation);
-		console.log("POS", bones[ i ].position);
-
 	}
 
-	predictedPoint = getModelWorldPosition( calcBones[ calcBones.length - 1 ] );
-	console.log("BETA", beta);
-	console.log("PRED", predictedPoint);
-	console.log("END", getEndPointWorldPosition());
+	render( calcScene );
+
+	predictedPoint = getModelWorldPosition( calcBones[ calcBones.length - 1] );
+	
 	return predictedPoint;
 
 }

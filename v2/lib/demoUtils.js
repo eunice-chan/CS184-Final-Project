@@ -72,8 +72,8 @@ function initModel( param ) {
 	calcScene.add( calcMesh );
 
 
-  var geometry = createGeometry( param, sizing );
-	var bones = createBones( sizing );
+  geometry = createGeometry( param, sizing );
+	bones = createBones( sizing );
 
 	mesh = createMesh( geometry, bones );
 	scene.add( mesh );
