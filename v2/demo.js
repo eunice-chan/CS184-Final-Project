@@ -8,7 +8,7 @@ var scene, camera, renderer, orbit;
 var lights;
 
 // Model
-var mesh, modelParameters, bones, defaultWorldBone, defaultLocalBonePos;
+var mesh, modelParameters;
 
 // End point
 var endPoint, defaultEndPoint;
@@ -18,6 +18,9 @@ var target;
 
 // Target to end point line
 var line, lineGeometry;
+
+// For calculations
+var calcScene, calcMesh;
 
 // Parameters
 var parameters;
@@ -54,6 +57,8 @@ function initScene() {
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( sceneColor );
+
+	calcScene = new THREE.Scene();
 
   // Camera
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 200 );
@@ -106,7 +111,7 @@ function initScene() {
 	// Save default end position for calculations
   scene.updateMatrixWorld( true );
 	defaultEndPoint = getEndPointWorldPosition();
-	// console.log(defaultEndPoint);
+
 
 	// Bones
 	// Save default bone positions for calculations

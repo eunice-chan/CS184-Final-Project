@@ -70,6 +70,9 @@ function initModel( param ) {
 	mesh = createMesh( geometry, bones );
 	scene.add( mesh );
 
+	calcMesh = mesh.clone();
+	calcScene.add( calcMesh );
+
 }
 
 function createGeometry( param, sizing ) {
@@ -175,7 +178,7 @@ function createGeometry( param, sizing ) {
 
 function createBones( sizing ) {
 
-	bones = [];
+	var bones = [];
 
 	var prevBone = new THREE.Bone();
 	bones.push( prevBone );
