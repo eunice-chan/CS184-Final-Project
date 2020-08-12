@@ -20,7 +20,7 @@ var target;
 var line, lineGeometry;
 
 // For calculations
-var calcScene, calcMesh;
+var calcMesh;
 
 // Parameters
 var parameters;
@@ -58,7 +58,7 @@ function initScene() {
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( sceneColor );
 
-	calcScene = new THREE.Scene();
+	scene = scene;
 
   // Camera
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 200 );

@@ -106,10 +106,10 @@ function betaToPoint( beta ) {
 
 	}
 
-	render( calcScene );
+	render( scene );
 
 	predictedPoint = getModelWorldPosition( calcBones[ calcBones.length - 1] );
-	
+
 	return predictedPoint;
 
 }

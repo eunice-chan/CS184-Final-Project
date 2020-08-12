@@ -69,7 +69,8 @@ function initModel( param ) {
 	var bones = createBones( sizing );
 
 	calcMesh = createMesh( geometry, bones );
-	calcScene.add( calcMesh );
+	calcMesh.visible = false;
+	scene.add( calcMesh );
 
 
   geometry = createGeometry( param, sizing );
@@ -221,8 +222,6 @@ function createMesh( geometry, bones ) {
 	mesh.add( bones[ 0 ] );
 
 	mesh.bind( skeleton );
-	skeletonHelper = new THREE.SkeletonHelper( mesh );
-	scene.add( skeletonHelper );
 
 	return mesh;
 
