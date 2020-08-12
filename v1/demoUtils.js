@@ -92,7 +92,7 @@ function setupDatGui() {
 		initSMCM( );
 
 	 } );
-	 folder.add( parametersSMCM, 'distribution', 1, 50 ).name( 'Distribution' )
+	 folder.add( parametersSMCM, 'distribution', 0.1, 10 ).name( 'Distribution' );
 
 }
 

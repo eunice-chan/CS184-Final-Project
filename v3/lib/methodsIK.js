@@ -33,8 +33,8 @@ function DLS( param ) {
 			param.lambda *= param.increment;
 
 			// System of equations
-			// var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size() ), helper.jtjDiag ) ) );
-			var h = math.add( helper.jtj, math.multiply( param.lambda, helper.jtjDiag ) );
+			var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size() ), helper.jtjDiag ) ) );
+			// var h = math.add( helper.jtj, math.multiply( param.lambda, helper.jtjDiag ) );
 
 			try {
 
