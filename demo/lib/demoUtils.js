@@ -292,7 +292,7 @@ function setDatGui() {
 	gui.add( orbit , 'reset' ).name( 'Reset View' );
 	gui.add( mesh , 'pose' ).name( 'Reset Model' );
 	gui.add( mesh , 'randomPose' ).name( 'Pose Model' );
-	gui.add( line , 'visible' ).name( 'Hide Line' );
+	gui.add( line , 'visible' ).name( 'Toggle Line' );
 
 	////////////////////////////////
 

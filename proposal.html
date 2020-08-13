@@ -332,25 +332,36 @@ Add style to the movements and wrap up project.
   </li>
   <li>
     <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">[Reach Goal] Include more joints (rotational and otherwise)</span>
+  </li>
+  <li>
+    <div class="checkbox checkbox-on"></div>
     <span class="to-do-children-checked">[Reach Goal] Add multiple degrees of freedom</span>
   </li>
   <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Add explanations about GUI options</span>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Currently very slow. Make more efficient/optimize!</span>
   </li>
+</ul>
+<ul>
+  <li>Initial attempt.</li>
+  <li>Some combinations of joint constraints cause a lot of issues. Should probably look into that more later.</li>
+  <li>Main reason as to why SMCM so slow is because of the hacky way I calculate the position from beta. Maybe consider some other method.</li>
+</ul>
+<ul class="to-do-list">
   <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">Currently very slow. Make more efficient/optimize!</span>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Currently very slow. Make more efficient/optimize!</span>
   </li>
+</ul>
+<ul>
+  <li>Much better now :). Could probably still be better.</li>
+</ul>
+<ul class="to-do-list">
   <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">[Reach Goal] Include more joints (rotational and otherwise)</span>
+    <div class="checkbox checkbox-on"></div>
+    <span class="to-do-children-checked">Add explanations about GUI options</span>
   </li>
-  <li>
-    <div class="checkbox checkbox-off"></div>
-    <span class="to-do-children-unchecked">[Reach Goal] Implement IK methods for arm model: Selectively damped least squares</span>
-  </li>
-  <b>Thursday+</b>
   <li>
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">Make final deliverable presentation</span>
@@ -367,6 +378,10 @@ Add style to the movements and wrap up project.
 <h3>Reach Goals</h3>
 <p>Things I didn't end up doing for the project, but had once considered.</p>
 <ul class="to-do-list">
+  <li>
+    <div class="checkbox checkbox-off"></div>
+    <span class="to-do-children-unchecked">[Reach Goal] Implement IK methods for arm model: Selectively damped least squares</span>
+  </li>
   <li>
     <div class="checkbox checkbox-off"></div>
     <span class="to-do-children-unchecked">[Reach Goal] Limit movement range for IK</span>
@@ -402,14 +417,6 @@ Add style to the movements and wrap up project.
       <li>
         <div class="checkbox checkbox-off"></div>
         <span class="to-do-children-unchecked">[Reach Goal] SMCM</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] SMCM with interpolation for trajectory smoothing</span>
-      </li>
-      <li>
-        <div class="checkbox checkbox-off"></div>
-        <span class="to-do-children-unchecked">[Reach Goal] Look into stylization</span>
       </li>
     </ul>
   </li>
@@ -528,7 +535,7 @@ Add style to the movements and wrap up project.
   <li>
     <a href="https://discoverthreejs.com/">https://discoverthreejs.com/</a>
     <ul>
-      <li>Three.js SkeletonHelper documentation (to visualize skeleton)</li>
+      <li>Three.js tutorial site</li>
     </ul>
   </li>
   <li>
@@ -556,7 +563,7 @@ Add style to the movements and wrap up project.
       </ul>
   </li>
   <li>
-      <a href="https://www.researchgate.net/publication/224240315_Solvability-Unconcerned_Inverse_Kinematics_by_the_Levenberg-Marquardt_Method/link/59259217a6fdcc4443363257">https://www.researchgate.net/publication/224240315_Solvability-Unconcerned_Inverse_Kinematics_by_the_Levenberg-Marquardt_Method/link/59259217a6fdcc4443363257</a>
+      <a href="https://www.researchgate.net/publication/224240315_Solvability-Unconcerned_Inverse_Kinematics_by_the_Levenberg-Marquardt_Method">https://www.researchgate.net/publication/224240315_Solvability-Unconcerned_Inverse_Kinematics_by_the_Levenberg-Marquardt_Method</a>
       <ul>
         <li>Paper on LM for IK</li>
       </ul>

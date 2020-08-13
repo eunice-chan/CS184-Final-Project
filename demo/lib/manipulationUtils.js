@@ -106,7 +106,7 @@ function betaToPoint( beta ) {
 
 	}
 
-	renderer.render( scene, camera );
+	scene.updateMatrixWorld();
 
 	predictedPoint = getModelWorldPosition( calcBones[ calcBones.length - 1] );
 
@@ -430,12 +430,16 @@ function modelToBeta() {
 
 function sampleNewBeta( beta ) {
 
-	// TODO: replace with a Gaussian? Exponential? distribution
-	var betaPrime = [];
+	if ( beta ) {
 
-	beta.forEach( ( value ) => { betaPrime.push( value + ( ( Math.random() - 0.5 ) * parametersSMCM.distribution ) ) } );
+		// TODO: replace with a Gaussian? Exponential? distribution
+		var betaPrime = [];
 
-	return betaPrime;
+		beta.forEach( ( value ) => { betaPrime.push( value + ( ( Math.random() - 0.5 ) * parametersSMCM.distribution ) ) } );
+
+		return betaPrime;
+
+	}
 
 }
 

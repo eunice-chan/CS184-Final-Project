@@ -1,4 +1,4 @@
-Kinematics<html>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>Kinematics | CS 184 Final Project Demo</title>
@@ -10,34 +10,50 @@ Kinematics<html>
 <br />
 <br />
 <br />
-<br />
 <h1 class="page-title">Kinematics</h1><h1>CS 184 Final Project Demo</h1>
 Eunice Chan | <i>August 14, 2020</i>
 <br />
 <br />
 <br />
-Inverse Kinematics with Three Translational Joints (1 degree of freedom each)
-<p><a href="./v1/iktjd3.html">Fullscreen here.</a></p>
-<iframe style="width:100%;height:50vw" src="./v1/iktjd1.html"></iframe>
-<br />
-<br />
-<br />
-<br />
-Inverse Kinematics with Three Translational Joints (3 degrees of freedom each)
-<p><a href="./v2/iktjd3.html">Fullscreen here.</a></p>
-<iframe style="width:100%;height:50vw" src="./v2/iktjd3.html"></iframe>
-<br />
-<br />
-<br />
-<br />
-Inverse Kinematics with Three Joints (custom degrees of freedom each)
-<p><a href="./v3/ikajdc.html">Fullscreen here.</a></p>
-<iframe style="width:100%;height:50vw" src="./v3/ikajdc.html"></iframe>
-
-<!-- <h1>Instructions</h1>
+<h2>Kinematics with Three Joints (custom degrees of freedom each)</h2>
+<p><a href="./demo/ikajdc.html">Fullscreen here.</a></p>
+<iframe style="width:100%;height:50vw" src="./demo/ikajdc.html"></iframe>
+<h1>Instructions</h1>
 <ul>
-  <li>WASD to move target point along the X-Z axes.</li>
-  <li><code>SHIFT</code> + move mouse up or down to move along the Y axis.</li>
-</ul> -->
+  <li>Reset view: resets view position to the default position.</li>
+  <li>Reset model: resets model position to the default position.</li>
+  <li>Pose model: randomly translates bones to randomly pose model.</li>
+  <li>Toggle line: show/hide the line betweenn the target and end point/effector. Doesn't affect functionality. Helpful for visualizing the distance between the two.</li>
+  <li>Target - follow mouse: sets the XY position of the target to the mouse position.</li>
+  <li>Target - to endpoint: sets the position of the target to the endpoint.</li>
+  <li>Target - near endpoint: sets the position of the target near the endpoint.</li>
+  <li>Target - X/Y/Z position: manually set the XYZ position of the target.</li>
+  <li>Forward Kinematics / Pose - Joint # - Move: set the XYZ position of the joint.</li>
+  <li>Forward Kinematics / Pose - Joint # - Rotate: set the XYZ rotation of the joint.</li>
+  <li>Inverse Kinematics - Update Speed: sets alpha value used to linearly interpolates between calculated parameters and current parameters.</li>
+  <li>Inverse Kinematics - Repeat: run the method's function every frame.</li>
+  <li>Inverse Kinematics - One Step: run the method's function once.</li>
+  <li>Inverse Kinematics - Method: choose the method to use to calculate IK.</li>
+  <li>Inverse Kinematics - Joint # - Move: enable/disable XYZ position of the joint as a parameter for the IK method.</li>
+  <li>Inverse Kinematics - Joint # - Rotate: enable/disable XYZ rotation of the joint as a parameter for the IK method.</li>
+  <li>Inverse Kinematics - Levenberg-Marquardt: aka DLS (damped least squares). Modify parameters related to this method.</li>
+  <ul>
+    <li>Max Iter: maximum number of times to fail to find a better set of parameter values before deciding to stick with the current set of parameter values.</li>
+    <li>Lambda: the initial value of lambda.</li>
+    <li>Increment: factor by which to increase lambda.</li>
+    <li>Decrement: factor by which to decrease lambda.</li>
+  </ul>
+  <li>Inverse Kinematics - Sequential Monte Carlo: aka particle filter. Modify parameters related to this method.</li>
+  <ul>
+    <li># of Particles: number of samples/particles to take at a time.</li>
+    <li>Distribution: factor of how much the particle is mutated.</li>
+  </ul>
+</ul>
+
+<h1>Notes</h1>
+<ul>
+  <li>Some parameter combinations are difficult for the implemented LM algorithm so it may look like it is frozen. Sometimes it takes a while to find better parameter values, so it acts like it's laggy, and sometimes it just doesn't move, ever. In that case, just move the target to the endpoint and try to guide it to a different position, or just reposition it directly with forward kinematics.</li>
+  <li>Sometimes, the end point/effector doesn't reach the target. This may be because it can't reach from the position it got itself to--that is, it had fallen into a local minimum and can't get out. :"(</li>
+</ul>
 </body>
 </html>

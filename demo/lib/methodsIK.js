@@ -12,30 +12,43 @@ function DLS( param ) {
 
 		// yHat is the current position in space
 		var yHat = betaToPoint( beta );
-
 		var helper = DLShelper( yHat, y );
-
-		var u = helper.jtj;
-		var v = helper.njtd;
 
 		var betaObjFn = squaredDistance( yHat, y );
 
 		for ( var j = 0; j < param.maxIter; j ++ ) {
 
 			if ( param.lambda === Infinity ) {
+
 				console.warn( "Lambda reached infinity! Try a different initial pose." );
 				return;
+
 			} else if ( param.lambda === 0 ) {
-				console.warn( "Lambda is 0\nResetting to 1000." );
-				param.lambda = 1000;
+
+				console.warn( "Lambda is 0\nResetting lambda." );
+				param.lambda = 1;
+
 			}
 
-			param.lambda /= param.increment;
+			param.lambda *= param.increment;
 
 			// System of equations
 			var h = math.add( helper.jtj, math.multiply( param.lambda, math.add( math.identity( ...helper.jtj.size() ), helper.jtjDiag ) ) );
+			// var h = math.add( helper.jtj, math.multiply( param.lambda, helper.jtjDiag ) );
 
-			var delta = math.lusolve( h, helper.njtd );
+			try {
+
+				var delta = math.lusolve( h, helper.njtd );
+				//var delta = math.multiply( math.inv( h ), helper.njtd );
+
+			} catch ( error ) {
+
+				console.warn(param.lambda + ' Could not solve system of equations.' );
+				param.lambda = 1;
+				return;
+
+			}
+
 			delta = math.transpose( delta );
 			delta = delta._data[ 0 ];
 
@@ -46,6 +59,7 @@ function DLS( param ) {
 			var betaPrimeObjFn = squaredDistance( yHatPrime, y );
 
 			if ( betaPrimeObjFn < betaObjFn || betaObjFn == 0 ) {
+
 				beta = betaPrime;
 				updateMeshKinematics( beta, methodParametersIK.speed );
 
@@ -91,22 +105,17 @@ function initSMCM() {
 
 function SMCM( param ) {
 
-		if ( parametersSMCM.n.length == 0 ) {
-
-			initSMCM();
-
-		}
-
 		// Resample
 		// To prevent particle degeneracy
-		var n = [];
-
-		for ( var i = 0; i < parametersSMCM.n.length; i ++ ) {
-
-			n.push( sampleNewBeta( sampleParticle() ) );
-
-		}
-		parametersSMCM.n = n;
+		initSMCM(); // To accomodate for constraint changes/redefinition of beta
+		// var n = [];
+		//
+		// for ( var i = 0; i < parametersSMCM.n.length; i ++ ) {
+		//
+		// 	n.push( sampleNewBeta( sampleParticle() ) );
+		//
+		// }
+		// parametersSMCM.n = n;
 
 	 // Importance sample
  	 n = [];
@@ -122,7 +131,7 @@ function SMCM( param ) {
 		 n.push( betaPrime );
 
 	 	 // calulate weight
-	 	 // Supposed to be p( y_t | x_t ). I'm going make the probability = 1 / distance
+	 	 // Supposed to be p( y_t | x_t ). I'm going make the probability = e^( 1 / distance )
 	 	 weights.push( Math.exp( 1 / distance( betaToPoint( betaPrime ), target ) ) );
 
 	 }

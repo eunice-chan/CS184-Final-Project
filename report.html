@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
-<title>My Computer Graphics Work</title>
+<title>Kinematics | CS 184 Final Project Report</title>
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="penrosetriangle.svg">
 </head>
@@ -19,7 +19,106 @@
 Eunice Chan | <i>August 14, 2020</i>
 <br />
 <br />
-<h2>The Report</h2>
+<h2>Abstract</h2>
+<p>In this project, I explored the concept of kinematics, the field concerned with the motion of objects without reference to the forces causing them. To this end, I implemented forward kinematics, and inverse kinematics. Inverse kinematics is not as straightforward as forward kinematics and there have been many approaches to the task. I implemented a numerical-based approach, using the Levenberg-Marquardt algorithm, and a sampling-based approach, using the Sequential Monte Carlo method.</p>
+<h2>Technical Approach</h2>
+<h3>Environment</h3>
+<h3>Scene</h3>
+<p>To prepare for implementing the kinematics approaches, I had to have something to act upon, and some way to see it. After looking around, I settled on using <a href="https://threejs.org/">Three.js</a>. To familarize myself, I went through <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">this course</a>. My notes are <a href="./three.html">here</a>.</p>
+<p>It was a little rough getting started and getting to where I wanted to be. After starting and scrapping my code four times, I found an example in the <a href="https://threejs.org/docs/scenes/bones-browser.html">documentation</a> that was very similar to what I wanted to do, so I used it as starter code. Below is the example without any modifications.</p>
+<iframe style="width:100%;height:50vw" src="https://threejs.org/docs/scenes/bones-browser.html"></iframe>
+<h3>Model</h3>
+<p>The second step was to import my model. I found this part to be unexpectedly challenginga and ended up trying 4/5 different approaches and creating 3 models.</p>
+<p>In my first approach, referencing <a href="https://www.youtube.com/watch?v=z0MJ2KdGPFE">this Youtube video</a> and <a href="https://www.youtube.com/watch?v=eEqB-eKcv7k">this Youtube video</a>, I modeled the figure in Blender, and rigged it. After creating the model, I had to load it into the scene. My initial plan was to create the model in Blender and export it as a Three.js native model with the Three.js model exporter plugin, as the videos had suggested. However, I found out that it was deprecated and that Three.js suggests loading in a <code>.GLTF</code> (Graphics Library Transmission Format) file instead.</p>
+<p>A <code>.GLTF</code> file is a kind of file format for 3D scenes and models using the <code>JSON</code> (JavaScript Object Notation) format. It is intended for web use and therefore has a minimum file size and runtime processing by apps. I couldn't see any downsides to following Three.js' suggestion, so I created my model in Blender and exported it as a <code>.GLTF</code> file.
+So, I decided to take their suggestion and export as a <code>.GLTF</code> file.</p>
+<p>Unfortunately, I ran into unexpected difficulty loading it in because the Three.js Github repo has everything in modules, which I cannot use if I do not have a server. I wanted to avoid a server if I could, so that I could host on Github Pages. As a result, I spent a long time trying to find the piece of the code that could load in my file. I did not have much luck.</p>
+<p>Fortunately, I had taken an online course I took to get up to speed on Three.js. In that course, there were exercise files to accompany the videos. Most importantly, the libraries the exercises depended on were included, and one of the files in the library held the code for loading in <code>.OBJ</code> files.</p>
+<p>Therefore, my next approach was to convert the <code>.GLTF</code> file I had into a <code>.OBJ</code> file. With this approach, I was able to successfully load it in. However, while working with the model, I ran into issues accessing the model's armature. After searching online, I was unable to find much information. The model was relatively simple, so I decided it would be a better use of my time to create the model in Three.js instead of loading it. Thus, I dropped this approach.</p>
+<p>Hence, I started my second approach. I decided to shape the model by scaling the bones so that a wavy shape would form. It went well. However, when I was implementing forward kinematics, I realized I could not pretend two bones were one. I had split up each segment of the arm into two so that I could put a swell in the middle of each segment, and had assumed the fact there were two bones wouldn't change anything, as long as I only translate the "real" bones. That was a misconception. As a result, I dropped this approach and moved on once again.</p>
+<p>In my final approach, I used a <code>BoxBufferGeometry</code> and modified the vertices. This required a lot of trial and error as I had to figure out what was the order in which the vertices were given to me (it was left, right, top, bottom, front back), then caulating the vertices' positions based on the  layer they are at and whether they are part of the top/bottom or not. I calculated the number of points per layer and points per top/bottom given the  input settings which allowed me to shape the model in the desired general shape even with an arbitrary number of bones/joints, although I did not end up implementing such a feature.</p>
+<p>At this point, it doesn't really look like an arm, but it looks much more like an arm than a simple rectangle, and the shape helps me identify the joints, so I chalked this up to a win and moved on.</p>
+<table>
+  <tr>
+    <td>
+      <img src="./images/blender_model.png" />
+      <figcaption>Blender model</figcaption>
+    </td>
+    <td>
+      <img src="./images/bone_model.png" />
+      <figcaption>Bone scaling</figcaption>
+    </td>
+    <td>
+      <img src="./images/geometry_model.png" />
+      <figcaption>Manual positioning</figcaption>
+    </td>
+  </tr>
+</table>
+<h3>Debug/Interactive Features</h3>
+<p>I also implemented a movable target point in the GUI for inverse kinematics. Essentially, in inverse kinematics, the problem statement is: given n end-effectors, and n target points, find a combination of parameters to apply to the bones to get the end-effectors to the target point or, if that is impossible, as close as possible.</p>
+<p>In this project, I implemented a single end effector and thus needed a single target point to identify the goal position (in some implementations, a goal rotation is included, but I decided to stick with just position).</p>
+<p>My first thought was to implement it with the arrow keys. However, I quickly realized that the arrow keys can only control two dimensions and there are three dimensions (four if you include time) in the demo. The arrows keys are also being use by the <code>OrbitControls</code> and I really enjoyed having the ability to move around the scene, so I was reluctant to part with it.</p>
+<p>In the end, I decided to implement the controls to be WASD & <code>shift</code> + mouseMoveDirection (calculated by storing the previous mouse location and the current) with <code>space</code> being the key that resets its position.</p>
+<p>I find it a little clunky, but it's much better than tediously dragging sliders around, so I decided to stick with this approach unless I think of something better. After several days of debugging and finding out my target-moving priorities, I removed this feaature and implemented the sliders that I had initially thought was clunky. In addition to the slides, I implemented a follow-mouse feature so that the target would follow the mouse around.</p>
+<br />
+<video style="width:100%;padding:0 10%;" muted playsinline autoplay loop>
+    <source src="./images/target_demo2.mov" />
+    <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo2.mov">link to the video</a> instead.</p>
+</video>
+<br />
+<p>Other things I did to set up the environment was expose some parameters for the user to play with. A full list of all the parameters are in the instructions on the <a href="./demo.html">demo page</a>.</p>
+<h3>Kinematics</h3>
+<h3>Forward Kinematics</h3>
+<h3>Inverse Kinematics: Levenberg-Marquardt Algorithm (Damped Least Squares)</h3>
+<h3>Inverse Kinematics: Sequential Monte Carlo Method (Particle Filter)</h3>
+<!-- A 1-2 page summary of your technical approach, techniques used, algorithms implemented, etc. (use references to papers or other resources for further detail). Highlight how your approach varied from the references used (did you implement a subset, or did you change or enhance anything), the unique decisions you made and why.
+A description of problems encountered and how you tackled them.
+A description of lessons learned. -->
+<h2>Results</h2>
+<p><a href="./demo.html">Demo here.</a></p>
+ <!-- Your final images, animations, video of your system (whichever is relevant). You can include results that you think show off what you built but that you did not have time to go over on presentation day. -->
+
+<h2>Contributions</h2>
+<p>Although the final project is typically done in groups of three, this offering of the course is in no way typical. Due to the fast pace of a summer version of the course and the fact it is fully online due to COVID, the students of this course were allowed to work on the final project alone. As I wanted to gain a thorough experience and understanding of kinematics, I decided to undertake this project alone.</p>
+
+<h2>References</h2>
+<p>Of course, I was not truly alone, as I had the entire Internet at my disposal. Here is a list in no particular order of the material I found the most helpful.</p>
+<ul>
+  <li>
+    <a href="https://threejs.org/">https://threejs.org/</a>
+  </li>
+  <li>
+    <a href="https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js">https://www.linkedin.com/learning/learning-3d-graphics-on-the-web-with-three-js</a>
+  </li>
+  <li>
+    <a href="https://medium.com/unity3danimation/overview-of-jacobian-ik-a33939639ab2">https://medium.com/unity3danimation/overview-of-jacobian-ik-a33939639ab2</a>
+  </li>
+  <li>
+    <a href="http://andreasaristidou.com/publications/papers/IK_survey.pdf">http://andreasaristidou.com/publications/papers/IK_survey.pdf</a>
+  </li>
+  <li>
+    <a href="http://math.ucsd.edu/~sbuss/ResearchWeb/ikmethods/iksurvey.pdf">http://math.ucsd.edu/~sbuss/ResearchWeb/ikmethods/iksurvey.pdf</a>
+  </li>
+  <li>
+    <a href="http://perception.inrialpes.fr/Publications/2008/CA08/amdo08.pdf">http://perception.inrialpes.fr/Publications/2008/CA08/amdo08.pdf</a>
+  </li>
+  <li>
+    <a href="https://www.youtube.com/watch?v=z0MJ2KdGPFE">https://www.youtube.com/watch?v=z0MJ2KdGPFE</a>
+  </li>
+  <li>
+    <a href="https://www.youtube.com/watch?v=eEqB-eKcv7k">https://www.youtube.com/watch?v=eEqB-eKcv7k</a>
+  </li>
+  <li>
+    <a href="http://www.brnt.eu/publications/brunet2010phd.pdf">http://www.brnt.eu/publications/brunet2010phd.pdf</a>
+  </li>
+  <li>
+      <a href="https://www.researchgate.net/publication/273166356_Inverse_Kinematics_a_review_of_existing_techniques_and_introduction_of_a_new_fast_iterative_solver#pf1d">Aristidou, Andreas & Lasenby, Joan. (2009). Inverse Kinematics: a review of existing techniques and introduction of a new fast iterative solver. </a>
+  </li>
+  <li>
+      <a href="https://www.researchgate.net/publication/224240315_Solvability-Unconcerned_Inverse_Kinematics_by_the_Levenberg-Marquardt_Method">Sugihara, Tomomichi. (2011). Solvability-Unconcerned Inverse Kinematics by the Levenberg–Marquardt Method. Robotics, IEEE Transactions on. 27. 984 - 991. 10.1109/TRO.2011.2148230.</a>
+  </li>
+</ul>
+
 <h2>Statistics</h2>
 <p><a href="https://github.com/eunice-chan/CS184-Final-Project">Github Repo</a></p>
 <ul>
