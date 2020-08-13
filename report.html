@@ -10,7 +10,7 @@
 <link rel="icon" href="penrosetriangle.svg">
 </head>
 <body class="sans">
-<a href="./index.html">HOME</a> / <a href="./proposal.html">PROPOSAL</a> / <a href="./milestone.html">MILESTONE</a> / <a href="./project.html">NOTES</a> / <b><a href="#">REPORT</a></b> / <a href="./demo.html">DEMO</a>
+<a href="./index.html">HOME</a> / <a href="./proposal.html">PROPOSAL</a> / <a href="./milestone.html">MILESTONE</a> / <b><a href="#">REPORT</a></b> / <a href="./demo.html">DEMO</a>
 <br />
 <br />
 <br />
@@ -69,8 +69,107 @@ So, I decided to take their suggestion and export as a <code>.GLTF</code> file.<
 <p>Other things I did to set up the environment was expose some parameters for the user to play with. A full list of all the parameters are in the instructions on the <a href="./demo.html">demo page</a>.</p>
 <h3>Kinematics</h3>
 <h3>Forward Kinematics</h3>
+<p>Forward kinematics was relatively straightforward once all the groundwork was done due to the data structure representing the mesh. Given the user input for the XYZ position/rotation of the joints that make up the armature of the model, I set the position and rotation properties of the joint, and Three.js abstracts away the calculations when rendering it.</p>
+<p>I actually ended up calcuating the effects of the joint positions and rotations on a single mesh point's location for a part of the inverse kinematics (to convert the parameters to a location to be compared to the target position in the objective function). However, when I expanded the number and types of joints to both rotation and translation, I ran into issues with my calculations. After some debugging, I got it to the point where it works if all the joints were rotational, or all the joints were translational, but when they were mixed, the calculations were frequently wrong. After sinking far too much time on it, I decided to switch approaches leaning on the Three.js' library.</p>
+<video style="width:100%;padding:0 10%;" muted playsinline autoplay loop>
+    <source src="./images/FK_demo.mov" />
+    <p>Your browser doesn't support my video. Here is a <a href="./images/FK_demo.mov">link to the video</a> instead.</p>
+</video>
 <h3>Inverse Kinematics: Levenberg-Marquardt Algorithm (Damped Least Squares)</h3>
+<p>This optimization algorithm is the Gauss–Newton (GN) algorithm with the addition of a trust region to solve non-linear least squares problems. This is an iterative algorithm, so the choice of starting point may cause it to be trapped in a local minima or the global minima, which may happen in this use-case since inverse kinematics is riddled with local minima.</p>
+<p>LM takes in as an input a cost function \(f\) and a parameter vector \(\beta\) initialized with some values and returns a local minimum of the cost function. If there is only one minimum, \(\beta\) can be initialized to anything. In contrast, if there are many local minima, it should be initialized to a vector close to the global minimum to avoid converging to local minima.</p>
+<br />
+<img src="http://www.brnt.eu/phd/img251.png" />
+<br />
+<br />
+<p>We iterate until either the stopping criterion \(\text{STOP-CRIT}\) is reached, or the number of interations \(k\) is equal to the maximal number of iterations \(k < k_{max}\). The stopping criterion can be anything. Typically in LM, we stop when the change (in the solution, in the cost function, relative change, etc.) is very small, because that means it is sufficiently near the minimum. In each iterations, we update our estimated \(\beta\) to be \(\beta + \delta\).</p>
+<p>In GN, \(\delta=(J^TJ)^{-1}Jf\) where J is the Jacobian of the function evaluated at x. LM modifies this by adding a damping factor. The resulting equations are called the augmented normal equations. \(\delta\) is thus defined as the solution to that linear system of equations: \((J^TJ + \lambda\text{diag}(J^TJ))\delta = Jf\) where \(\lambda\) is a positive damping parameter, which should be large so that it is well-behaved near singularities (although if it is too large, it will converge slowly). It acts as the Lagrange multipler for the constraint that each search is limited to the trust region radius.</p>
+<p>Initially, Levenberg modified the system of equations to \((J^TJ + \lambda\text{diag}(I))\delta = Jf\) which had the issue of inverting \((J^TJ + \lambda\text{diag}(I))\) not being used at all when \(\lambda\) is large. In a 1971 paper titled <i>A modified Marquardt subroutine for non-linear least squares</i>, Fletcher modified this algorithm, creating the LM algorithm, in which each component of the gradient is scaled according to the curvature, so that there is larger movement along the directions where the gradient is smaller. In my implementation, I include the modification made by Nash in which \(\lambda\text{diag}(J^TJ)\) is replaced with \(\lambda\text{diag}(I + J^TJ)\) so that it is positive definite and symmetric so I can use Cholesky decomposition to solve the system.</p>
+<p>The augmented matrix \(J^TJ + \lambda\text{diag}(I + J^TJ)\) has the property of positive definiteness making \(\delta\) a step in the descent direction. Thus, this algorithm is like gradient descent when \(\lambda\) is large, and like Gauss-Newton when \(\lambda\) is small, which is good because the convergence of the Gauss-Newton method can be almost quadratic near the minimum. The LM method tends to act similarly to the pseudoinverse method away from singularities and effectively smooths out the performance of pseudoinverse method in the neighborhood of singularities.</p>
+<p>At each iteration, \(\beta\) is updated if the new version has a lower cost, and \(\lambda\) is updated by either increasing or decreasing by a constant \(v\) (typically set to 2), if there is an improvement or deprovement of the cost function respectively.</p>
+<p>To simplify things, I will not consider joint constraints or self-collisions.</p>
+<h3>Implementation</h3>
+<p>I had an incredibly difficult time implementing it as the wording of the documents required very careful reading to get all the details. Additionally, the wording was vague around some terms, so I had to cross reference the papers to make educated guesses about what the authors meant.</p>
+<p>I kept debugging and paring down the complexity of my implementation until I got a working implementation. This occurred when I used three translational joints with 1 degree of freedom each. The epiphany I had was while reading yet anotehr survey of IK methods. I read the Jacobian can be interpreted as an m by n matrix of positions or a 3k by n matrix of points where m = 3k. That finally answered my question about how to store a position as a single value in a matrix. Initially I was incredibly confused about how to matrix multiplication would work out, and I ended up assuming I had to put the positions in the matrix as a scalar, so I used Euclidean distance for residuals and for the Jacobian, took only the x, y, or z value, depending on the associated axis (essentially, treating the gradiant's cross product as a dot product because I thought they were using the cross loosely to mean any kind of multiplication) and put it in as the position to the matrix.</p>
+<p>In the specific case of the arm model, there is one end effector as identified with the green sphere that is associated with the target point identified by the pink sphere.</p>
+<p>The objective function is sum of squares. In this case, it is just one square because there is only one end effector. I am trying to minimize the squared distance between the target and the end effector.</p>
+<p>\(J\) is the Jacobian matrix with each row being the position of the end effector and each element in the row being the partial deriviative of the end effector with respect to an element of the parameter. In the arm model case, since there is only one end effector, the Jacobian matrix is just a row vector.</p>
+<p>Since I was using Three.js's <code>Vector3</code> and <code>Matrix3</code> instead of a dedicated linear algebra library, the functionality was very limited and I had to do a lot of manual calculations as well as was limited to vectors of length three and matrices of length three by three. This was part of the reason why I decided to limit my parameters to three. However, now that I've finished this implementation, I do not think these restrictions is worth the easy integration with the rest of the Three.js parts of my code.</p>
+<figure>
+<video style="width:100%;padding:0 10%;" muted playsinline autoplay loop>
+    <source src="./images/IK_translation_LM.mov" />
+    <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
+    <figcaption>Using LM to perform IK</figcaption>
+</figure>
+<p>Some notes about the demo:</p>
+<ul>
+  <li>The black line is there to visualize the distance between the target point and the endpoint (associated end effector).</li>
+  <li>The <code>One Step</code> button specifically divides \(\lambda\) once and multiplies \(\lambda\) <code>maxIter</code> times or until an improvement to the objective function is made, whichever comes first.</li>
+  <li><code>Repeat</code> runs <code>One Step</code> once every render cycle. Seeing the mesh exactly follow the target is a little underwhelming, so I linearly interpolate the current mesh joint parameters and the joint parameters calculated by LM so it would smoothly follow the target.</li>
+</ul>
+<p>In the first example in the demo, LM takes 3 steps. You can see that each time I run one step, it modifies the bone parameters (joint 1x-translation, joint 2 y-translation, joint 3 z-translation) to the end effector closer to the target point until it reached that target point/minimum.</p>
+<p>In the second example, it reaches the target point immediately in one step.</p>
+<p>The example after that, I sent multiple target points and it is able to follow along smoothly, meaning that the IK calculations are able to be done in a real-time environment (if speed is set to 1, it will always overlap the target point. However, for illustrative purposes, I set the speed to 0.1, which allows the target and end effector point to be clearly seen.)<p>
+<p>The parameters such as <code>lambda</code> and <code>maxIter</code> is in the GUI for anyone to manipulate. However, as it converges very quickly, it makes no notable difference.</p>
 <h3>Inverse Kinematics: Sequential Monte Carlo Method (Particle Filter)</h3>
+<p>Particle filters, also known as sequential Monte Carlo methods are simulation-based methods for calculating approximations to posterior distributions. The are preferred to related methods, such as Kalman filter because they avoid making linearity or normality assumptions which may not be true.</p>
+<p>The algorithm has roughly three major steps:</p>
+<ol>
+  <li>Initialization. Draw N particles from a probability distribution.</li>
+  <li>Importance sampling. Add \(\tilde x_t^{(i)}\) drawn from a probability distribution \(p(x_t^{(i)}|x_{t-1}^{(i)})\) to a set \(\tilde x_{0:t}^{(i)}\). Then, calculate the importance weights and normalize them.</li>
+  <li>Resampling. Draw N samples with replacement from the weighted set \(\tilde x_{0:t}^{(i)}\).</li>
+</ol>
+<h3>Implementation</h3>
+<p>To use this algorithm for IK, each render runs one iteration of this and take the parameter that has the heaviest weight associated with it.</p>
+<p>Initially, I had planned to faithfully follow <a href="http://perception.inrialpes.fr/Publications/2008/CA08/amdo08.pdf">this paper</a>. However, as I had to submit soon and there were further major changes I wanted to add to the demo, and my attempt to faithfully follow the paper using the LM algorithm was a bit of a headache, I decided a good compromise would be to simplify the algorithm.</p>
+<p>Following that train of thought, I took inspiration from that paper and the general particle filter algorithm (which I got a high-level understanding of <a href="https://jblevins.org/notes/smc-intro">here</a>).</p>
+<p>The steps are as follows:</p>
+<ol>
+  <li>Explore the state space with N copies of the system (particles). For \(i = 1...N\), draw \(Q^{(i)}_k \sim p(Q_k|Q^{(i)}_{k−1})\) where \(p(Q_k|Q^{(i)}_{k−1})\) is the evolution prior. We do this by rejection sampling from a distribution (centered at Q^{(i)}_{k−1}) if there's no a prior knowledge. Otherwise, change the mean to reflect the knowledge) until the sample is accepted. Put hard constraints like joint limits or self-intersection avoidance here. The main advantage of using SMCM is that it deals with inequality constraints simply--either accepting or rejecting.</li>
+  <ul>
+    <li>In the demo, I sample uniformly at random N times near the current position from the sample space and since there is no constraint, I do not reject any sample.</li>
+  </ul>
+  <li>Calculate the weights to be equal to the \(w^{(i)}_k \propto p(y_k|Q^{(i)}_k)\), then normalize them to sum to 1. Here, \(p(y_k|Q^{(i)}_k)\) is the likelihood. It acts like the objective function and gives an evaluation of how good the configuration is with respect to the desired task. For example, one can set likelihood to be the distance between the end effector configuration and the desired configuration. Put soft or numerical constraints (such as minimizing a given function) here.</li>
+  <li>Set the mesh position to be the MAP estimate (the particle with the greatest probability). To smooth out the motion, interpolate.</li>
+  <li>Mutate and reselect the particles.</li>
+</ol>
+<p>Since these are random samples, it's very Here, the speed slider's linear interpolations serves to smooth the trajectory.</p>
+<br />
+<table style="width:80vw;margin:0 -10vw">
+  <tr>
+    <td style="padding:1% 1%">
+      <video style="width:100%" muted playsinline autoplay loop>
+          <source src="./images/SMCM_nosmooth_100.mov" />
+          <p>Your browser doesn't support my video. Here is a <a href="./images/SMCM_nosmooth_5.mov">link to the video</a> instead.</p>
+      </video>
+      <figcaption>Particle count n = 100, no smoothing</figcaption>
+    </td>
+    <td style="padding:1% 1%">
+      <video style="width:100%" muted playsinline autoplay loop>
+          <source src="./images/SMCM_nosmooth_10000.mov" />
+          <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
+      </video>
+      <figcaption>Particle count n = 10000, no smoothing</figcaption>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="padding:1% 1%">
+      <video style="width:100%" muted playsinline autoplay loop>
+          <source src="./images/SMCM_smooth_100.mov" />
+          <p>Your browser doesn't support my video. Here is a <a href="./images/SMCM_smooth_5.mov">link to the video</a> instead.</p>
+      </video>
+      <figcaption>Particle count n = 100, smoothing</figcaption>
+    </td>
+    <td style="padding:1% 1%">
+      <video style="width:100%" muted playsinline autoplay loop>
+          <source src="./images/SMCM_smooth_10000.mov" />
+          <p>Your browser doesn't support my video. Here is a <a href="./images/target_demo.mov">link to the video</a> instead.</p>
+      </video>
+      <figcaption>Particle count n = 10000, smoothing</figcaption>
+    </td>
+  </tr>
+</table>
 <!-- A 1-2 page summary of your technical approach, techniques used, algorithms implemented, etc. (use references to papers or other resources for further detail). Highlight how your approach varied from the references used (did you implement a subset, or did you change or enhance anything), the unique decisions you made and why.
 A description of problems encountered and how you tackled them.
 A description of lessons learned. -->
