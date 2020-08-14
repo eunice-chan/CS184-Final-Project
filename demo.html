@@ -53,7 +53,7 @@ Eunice Chan | <i>August 14, 2020</i>
 <h1>Notes</h1>
 <ul>
   <li>Some parameter combinations are difficult for the implemented LM algorithm so it may look like it is frozen. Sometimes it takes a while to find better parameter values, so it acts like it's laggy, and sometimes it just doesn't move, ever. In that case, just move the target to the endpoint and try to guide it to a different position, or just reposition it directly with forward kinematics.</li>
-  <li>Sometimes, the end point/effector doesn't reach the target. This may be because it can't reach from the position it got itself to--that is, it had fallen into a local minimum and can't get out. :"(</li>
+  <li>With LM, sometimes, the end point/effector doesn't reach the target. This may be because it can't reach from the position it got itself to--that is, it had fallen into a local minimum and can't get out. This algorithm works best when the initial guess is close to the global minimum, or if there is only one minimum. Like other iterative algorithms, LM can get stuck in local minima.</li>
 </ul>
 </body>
 </html>
